@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generative AI & LangChain - Comprehensive Notes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        nav {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 3px solid #667eea;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #667eea;
+            padding: 10px 20px;
+            border-radius: 25px;
+            background: white;
+            transition: all 0.3s;
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        nav a:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        nav a.lcel-link::before {
+            content: '⚡';
+            margin-right: 5px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        section {
+            margin-bottom: 50px;
+            scroll-margin-top: 80px;
+        }
+
+        h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            color: #764ba2;
+            font-size: 1.5em;
+            margin: 25px 0 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h4 {
+            color: #555;
+            font-size: 1.2em;
+            margin: 20px 0 10px 0;
+        }
+
+        .card {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #ffd89b 0%, #19547b 100%);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .code-block {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .code-block code {
+            color: #61dafb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin: 5px;
+        }
+
+        .workflow {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin: 30px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 10px;
+        }
+
+        .workflow-step {
+            background: white;
+            padding: 20px;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin: 10px;
+        }
+
+        .arrow {
+            font-size: 2em;
+            color: #667eea;
+            margin: 0 10px;
+        }
+
+        ul, ol {
+            margin-left: 30px;
+            margin-top: 10px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .tip {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .warning {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        footer {
+            background: #343a40;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .workflow {
+                flex-direction: column;
+            }
+            
+            .arrow {
+                transform: rotate(90deg);
+            }
+
+            nav ul {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Comprehensive Guide to Generative AI & LangChain</h1>
+            <p>Mastering AI Foundations, Prompt Engineering, and LCEL Patterns</p>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="#intro">Introduction</a></li>
+                <li><a href="#nlp">NLP Basics</a></li>
+                <li><a href="#prompts">Prompt Engineering</a></li>
+                <li><a href="#lcel" class="lcel-link">LCEL Patterns</a></li>
+                <li><a href="#rag">RAG</a></li>
+                <li><a href="#cheatsheet">Cheat Sheet</a></li>
+                <li><a href="#tools">Tools & Frameworks</a></li>
+                <li><a href="#summary">Summary</a></li>
+                <li><a href="#resources">Resources</a></li>
+            </ul>
+        </nav>
+
+        <div class="content">
+            <!-- INTRODUCTION SECTION -->
+            <section id="intro">
+                <h2>🌟 Introduction to Generative AI</h2>
+                
+                <div class="card">
+                    <h3>🧠 What is Generative AI?</h3>
+                    <p><strong>Generative AI</strong> refers to the <span class="highlight">ability of machines to generate new content</span> (text, images, videos, code, etc.) based on training data.</p>
+                </div>
+
+                <h3>⚖️ Discriminative vs Generative AI</h3>
+                <table>
+                    <tr>
+                        <th>Aspect</th>
+                        <th>Discriminative AI</th>
+                        <th>Generative AI</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Function</strong></td>
+                        <td>Classifies and labels data</td>
+                        <td>Creates and imagines new data</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Skill Type</strong></td>
+                        <td>Analytical</td>
+                        <td>Creative</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Task</strong></td>
+                        <td>Classification, Prediction</td>
+                        <td>Creation, Generation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Example</strong></td>
+                        <td>Email spam detection, Fraud detection</td>
+                        <td>Text-to-image creation, Code generation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Limitation</strong></td>
+                        <td>Cannot create new content</td>
+                        <td>May produce hallucinations</td>
+                    </tr>
+                </table>
+
+                <h3>🧬 Deep Learning & Foundation Models</h3>
+                <div class="card">
+                    <p><strong>Deep Learning:</strong> A subfield of AI where artificial neural networks learn from data in a layered structure, mimicking the human brain.</p>
+                    <br>
+                    <p><strong>Foundation Models:</strong> Large, pre-trained AI models with general knowledge that can be adapted for specific tasks.</p>
+                </div>
+
+                <h4>Key Generative AI Models:</h4>
+                <ul>
+                    <li><span class="badge">GANs</span> Generative Adversarial Networks - Compete generator & discriminator networks</li>
+                    <li><span class="badge">VAEs</span> Variational Autoencoders - Learn latent representations</li>
+                    <li><span class="badge">Transformers</span> Enable sequence-based understanding and generation</li>
+                    <li><span class="badge">Diffusion Models</span> Generate data by reversing noise patterns</li>
+                </ul>
+
+                <h3>🧰 Popular Generative AI Tools</h3>
+                <table>
+                    <tr>
+                        <th>Category</th>
+                        <th>Tools</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td>Text Generation</td>
+                        <td>ChatGPT, Gemini, Claude</td>
+                        <td>Write essays, chat, summarize, brainstorm ideas</td>
+                    </tr>
+                    <tr>
+                        <td>Image Generation</td>
+                        <td>DALL·E 2, Midjourney, Stable Diffusion</td>
+                        <td>Create visuals from text prompts</td>
+                    </tr>
+                    <tr>
+                        <td>Code Generation</td>
+                        <td>GitHub Copilot, AlphaCode</td>
+                        <td>Assist in programming and code suggestions</td>
+                    </tr>
+                    <tr>
+                        <td>Video Generation</td>
+                        <td>Synthesia</td>
+                        <td>Generate AI-based video avatars and scenes</td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- NLP SECTION -->
+            <section id="nlp">
+                <h2>🌐 Natural Language Processing (NLP)</h2>
+
+                <div class="card">
+                    <h3>Definition</h3>
+                    <p>Natural Language Processing enables computers to <span class="highlight">understand, interpret, and generate human language</span>.</p>
+                </div>
+
+                <h3>🧩 Unstructured vs Structured Text</h3>
+                <table>
+                    <tr>
+                        <th>Type</th>
+                        <th>Definition</th>
+                        <th>Example</th>
+                        <th>Challenge/Importance</th>
+                    </tr>
+                    <tr>
+                        <td>🌀 Unstructured</td>
+                        <td>Raw human language as spoken or written</td>
+                        <td>"Add eggs and milk to my shopping list"</td>
+                        <td>Hard for computers to process directly</td>
+                    </tr>
+                    <tr>
+                        <td>🧱 Structured</td>
+                        <td>Organized format machines can understand</td>
+                        <td>Shopping list with categorized items</td>
+                        <td>NLP converts unstructured → structured</td>
+                    </tr>
+                </table>
+
+                <h3>⚙️ NLP Core Functions</h3>
+                <div class="workflow">
+                    <div class="workflow-step">🧭 NLU<br>Natural Language Understanding</div>
+                    <span class="arrow">→</span>
+                    <div class="workflow-step">🗣️ NLG<br>Natural Language Generation</div>
+                </div>
+
+                <h3>🔍 NLP Processing Steps</h3>
+                <table>
+                    <tr>
+                        <th>Step</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                    </tr>
+                    <tr>
+                        <td>📝 Input</td>
+                        <td>Raw human text (spoken or written)</td>
+                        <td>"Add eggs and milk to my shopping list"</td>
+                    </tr>
+                    <tr>
+                        <td>✂️ Tokenization</td>
+                        <td>Break text into smaller units (tokens)</td>
+                        <td>"Add / eggs / and / milk..." → 8 tokens</td>
+                    </tr>
+                    <tr>
+                        <td>🌱 Stemming</td>
+                        <td>Reduce words to root forms</td>
+                        <td>"running," "runs," "ran" → "run"</td>
+                    </tr>
+                    <tr>
+                        <td>📘 Lemmatization</td>
+                        <td>Smarter stemming using dictionaries</td>
+                        <td>"better" → "good"</td>
+                    </tr>
+                    <tr>
+                        <td>🏷️ POS Tagging</td>
+                        <td>Identify roles of words (noun, verb, etc.)</td>
+                        <td>"make" can be verb or noun by context</td>
+                    </tr>
+                    <tr>
+                        <td>🧑‍🚀 NER</td>
+                        <td>Detect proper nouns and key entities</td>
+                        <td>"Ralph" → Person, "Arizona" → Place</td>
+                    </tr>
+                </table>
+
+                <h3>💼 Common NLP Use Cases</h3>
+                <ul>
+                    <li><strong>Machine Translation:</strong> Translates text between languages with context understanding</li>
+                    <li><strong>Virtual Assistants:</strong> Siri, Alexa - Understand spoken commands</li>
+                    <li><strong>Chatbots:</strong> Process written text and reply appropriately</li>
+                    <li><strong>Sentiment Analysis:</strong> Determine positive, negative, or neutral feelings</li>
+                    <li><strong>Spam Detection:</strong> Identify legitimate vs spam emails</li>
+                </ul>
+            </section>
+
+            <!-- PROMPT ENGINEERING SECTION -->
+            <section id="prompts">
+                <h2>💬 Prompt Engineering</h2>
+
+                <div class="card">
+                    <h3>What are Prompts?</h3>
+                    <p><strong>Prompts</strong> are inputs given to an LLM to guide it toward performing a specific task.</p>
+                    <br>
+                    <p><strong>Prompt Engineering</strong> is a process where you design and refine the prompt questions, commands, or statements to get relevant and accurate responses.</p>
+                </div>
+
+                <h3>✨ Advantages of Prompt Engineering</h3>
+                <ul>
+                    <li>✅ Boosts the effectiveness and accuracy of LLMs</li>
+                    <li>✅ Ensures relevant responses</li>
+                    <li>✅ Facilitates meeting user expectations</li>
+                    <li>✅ Eliminates the need for continual fine-tuning</li>
+                </ul>
+
+                <h3>🧩 Four Key Elements of a Prompt</h3>
+                <table>
+                    <tr>
+                        <th>Element</th>
+                        <th>Purpose</th>
+                        <th>Example</th>
+                    </tr>
+                    <tr>
+                        <td>📋 <strong>Instructions</strong></td>
+                        <td>Tell LLM what needs to be done</td>
+                        <td>'Classify the following customer review into neutral, negative, or positive sentiment.'</td>
+                    </tr>
+                    <tr>
+                        <td>🎯 <strong>Context</strong></td>
+                        <td>Helps LLM understand the scenario</td>
+                        <td>'This review is part of feedback for a recently launched product.'</td>
+                    </tr>
+                    <tr>
+                        <td>📊 <strong>Input Data</strong></td>
+                        <td>The actual data the LLM will process</td>
+                        <td>'The product arrived late, but the quality exceeded my expectations.'</td>
+                    </tr>
+                    <tr>
+                        <td>🎨 <strong>Output Indicator</strong></td>
+                        <td>Where the LLM's response is expected</td>
+                        <td>'Sentiment:'</td>
+                    </tr>
+                </table>
+
+                <h3>🎯 Advanced Prompting Techniques</h3>
+
+                <div class="card">
+                    <h4>1️⃣ Basic Prompt</h4>
+                    <p>The simplest form of prompting - provide a short text or phrase without special formatting.</p>
+                    <div class="code-block">
+<code>prompt = "The wind is"</code>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h4>2️⃣ Zero-Shot Prompt</h4>
+                    <p>Model performs a task without any examples or prior specific training.</p>
+                    <div class="code-block">
+<code>prompt = """Classify the following statement as true or false:
+'The Eiffel Tower is located in Berlin.'
+Answer:
+"""</code>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h4>3️⃣ One-Shot Prompt</h4>
+                    <p>Provides the model with a single example before asking it to perform a similar task.</p>
+                    <div class="code-block">
+<code>prompt = """Here is an example of translating a sentence:
+English: "How is the weather today?"
+French: "Comment est le temps aujourd'hui?"
+
+Now, translate the following:
+English: "Where is the nearest supermarket?"
+"""</code>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h4>4️⃣ Few-Shot Prompt</h4>
+                    <p>Provides multiple examples (typically 2-5) to establish a clearer pattern.</p>
+                    <div class="code-block">
+<code>prompt = """Here are few examples of classifying emotions:
+Statement: 'I just won my first marathon!'
+Emotion: Joy
+
+Statement: 'I can't believe I lost my keys again.'
+Emotion: Frustration
+
+Statement: 'My best friend is moving to another country.'
+Emotion: Sadness
+
+Now, classify the emotion in:
+Statement: 'That movie was so scary I had to cover my eyes.'
+"""</code>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h4>5️⃣ Chain-of-Thought (CoT) Prompting</h4>
+                    <p>Encourages the model to break down complex problems into step-by-step reasoning.</p>
+                    <div class="code-block">
+<code>prompt = """Consider the problem: 
+'A store had 22 apples. They sold 15 apples today and got 
+a new delivery of 30 apples. How many apples are there now?'
+
+Break down each step of your calculation
+"""</code>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h4>6️⃣ Self-Consistency</h4>
+                    <p>Model generates multiple independent solutions to determine the most consistent result.</p>
+                    <div class="code-block">
+<code>prompt = """When I was 6, my sister was half of my age. 
+Now I am 70, what age is my sister?
+
+Provide three independent calculations and explanations, 
+then determine the most consistent result.
+"""</code>
+                    </div>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Tip:</strong> In-context learning is a prompt engineering method where demonstrations of the task are provided to the model as part of the prompt.
+                </div>
+            </section>
+
+            <!-- LCEL SECTION -->
+            <section id="lcel">
+                <h2>🔗 LangChain LCEL (LangChain Expression Language)</h2>
+                
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);">
+                    <h3 style="color: white; font-size: 2em; margin-bottom: 15px;">✨ What is LCEL?</h3>
+                    <p style="font-size: 1.2em; line-height: 1.8;"><strong>LangChain Expression Language (LCEL)</strong> is a revolutionary syntax pattern for building modular chains using a <span style="background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 5px; font-weight: bold;">pipe-based composition style (|)</span>.</p>
+                    <p style="font-size: 1.1em; margin-top: 15px; opacity: 0.95;">Instead of writing nested function calls, LCEL lets you chain together components like Lego blocks - creating clean, readable, and powerful AI pipelines.</p>
+                </div>
+
+                <div class="card" style="background: linear-gradient(120deg, #ffd89b 0%, #19547b 100%); border: none; color: white;">
+                    <h3 style="color: white;">🎯 The Power of the Pipe Operator |</h3>
+                    <p style="font-size: 1.1em;">LCEL transforms complex nested code into elegant, visual data flows that anyone can understand at a glance.</p>
+                </div>
+
+                <h3>🌊 Advantages of LCEL</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 30px 0;">
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+                        <h4 style="color: white; font-size: 1.3em; margin-bottom: 10px;">🧼 Clean Data Flow</h4>
+                        <p>Data flows logically from input → output</p>
+                        <p style="margin-top: 10px; font-weight: 600; opacity: 0.9;">✨ Easier to debug & visualize</p>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+                        <h4 style="color: white; font-size: 1.3em; margin-bottom: 10px;">🧩 Composability</h4>
+                        <p>Connect multiple components seamlessly</p>
+                        <p style="margin-top: 10px; font-weight: 600; opacity: 0.9;">✨ Build reusable pipelines</p>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+                        <h4 style="color: white; font-size: 1.3em; margin-bottom: 10px;">🧠 Type Coercion</h4>
+                        <p>Auto converts Python objects into runnables</p>
+                        <p style="margin-top: 10px; font-weight: 600; opacity: 0.9;">✨ Simplifies coding</p>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+                        <h4 style="color: white; font-size: 1.3em; margin-bottom: 10px;">🕸️ Parallelism</h4>
+                        <p>Execute multiple tasks at once</p>
+                        <p style="margin-top: 10px; font-weight: 600; opacity: 0.9;">✨ Faster processing</p>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+                        <h4 style="color: white; font-size: 1.3em; margin-bottom: 10px;">🧰 Modern Syntax</h4>
+                        <p>Uses pipe operator (|) instead of nested calls</p>
+                        <p style="margin-top: 10px; font-weight: 600; opacity: 0.9;">✨ Clean, readable code</p>
+                    </div>
+                </div>
+
+                <h3>📊 Before vs After LCEL</h3>
+                
+                <div style="background: #fff3cd; border: 3px solid #ffc107; padding: 25px; border-radius: 15px; margin: 20px 0;">
+                    <h4 style="color: #856404;">❌ Without LCEL - Complex & Nested:</h4>
+                    <div class="code-block" style="margin-top: 15px;">
+<code>output = StrOutputParser().invoke(
+    llm.invoke(
+        prompt_template.format(text="Hello")
+    )
+)</code>
+                    </div>
+                    <p style="color: #856404; margin-top: 10px; font-weight: 600;">😰 Hard to read, difficult to maintain, confusing data flow</p>
+                </div>
+
+                <div style="background: #d1f2eb; border: 3px solid #00d084; padding: 25px; border-radius: 15px; margin: 20px 0;">
+                    <h4 style="color: #0a6b4c;">✅ With LCEL - Clean & Simple:</h4>
+                    <div class="code-block" style="margin-top: 15px; border: 2px solid #00d084;">
+<code>chain = prompt_template | llm | StrOutputParser()
+result = chain.invoke({"text": "Hello"})</code>
+                    </div>
+                    <p style="color: #0a6b4c; margin-top: 10px; font-weight: 600; font-size: 1.1em;">🎉 Crystal clear, easy to understand, visual data flow!</p>
+                </div>
+
+                <h3>🔄 Creating an LCEL Pattern - 4 Steps</h3>
+                <div class="workflow">
+                    <div class="workflow-step">1️⃣<br>Define template with variables {}</div>
+                    <span class="arrow">→</span>
+                    <div class="workflow-step">2️⃣<br>Create PromptTemplate instance</div>
+                    <span class="arrow">→</span>
+                    <div class="workflow-step">3️⃣<br>Build chain using pipe (|) operator</div>
+                    <span class="arrow">→</span>
+                    <div class="workflow-step">4️⃣<br>Invoke with input values</div>
+                </div>
+
+                <h3>⚙️ Key Runnables in LangChain</h3>
+                
+                <div class="card">
+                    <h4>1️⃣ RunnableSequence</h4>
+                    <p>Executes components <strong>one after another</strong>.</p>
+                    <div class="code-block">
+<code>chain = prompt | llm | StrOutputParser()</code>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h4>2️⃣ RunnableParallel</h4>
+                    <p>Runs <strong>multiple components concurrently</strong> on the same input.</p>
+                    <div class="code-block">
+<code>parallel_tasks = {
+    "translate": translate_chain,
+    "summarize": summarize_chain
+}
+combined = RunnableParallel(parallel_tasks)
+output = combined.invoke({"text": "LangChain is amazing!"})</code>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h4>3️⃣ RunnableLambda</h4>
+                    <p>Wraps a Python function into a runnable component for custom logic.</p>
+                    <div class="code-block">
+<code>def format_prompt(input_dict):
+    return f"Translate to French: {input_dict['text']}"
+
+runnable_lambda = RunnableLambda(format_prompt)
+chain = runnable_lambda | llm | StrOutputParser()</code>
+                    </div>
+                </div>
+
+                <h3>⚡ Auto Type Conversion</h3>
+                <table>
+                    <tr>
+                        <th>Python Type</th>
+                        <th>Auto-Converted To</th>
+                        <th>Behavior</th>
+                    </tr>
+                    <tr>
+                        <td>Dict</td>
+                        <td>RunnableParallel</td>
+                        <td>Runs multiple subtasks simultaneously</td>
+                    </tr>
+                    <tr>
+                        <td>Function</td>
+                        <td>RunnableLambda</td>
+                        <td>Runs custom logic in the chain</td>
+                    </tr>
+                    <tr>
+                        <td>PromptTemplate</td>
+                        <td>RunnablePrompt</td>
+                        <td>Handles templated prompts</td>
+                    </tr>
+                    <tr>
+                        <td>LLM</td>
+                        <td>RunnableLLM</td>
+                        <td>Calls the model and gets response</td>
+                    </tr>
+                </table>
+
+                <h3>😹 Complete Example: Joke Chain</h3>
+                <div class="code-block">
+<code>from langchain.prompts import PromptTemplate
+from langchain.llms import OpenAI
+from langchain.schema.output_parser import StrOutputParser
+
+# Step 1: Create template
+joke_template = "Tell me a funny joke about {topic}."
+joke_prompt = PromptTemplate(template=joke_template)
+
+# Step 2: Create chain
+llm = OpenAI()
+joke_chain = joke_prompt | llm | StrOutputParser()
+
+# Step 3: Run
+result = joke_chain.invoke({"topic": "cats"})
+print(result)
+
+# Output: "Why did the cat sit on the computer? 
+# To keep an eye on the mouse!"</code>
+                </div>
+
+                <h3>🧭 When to Use LCEL vs LangGraph</h3>
+                <table>
+                    <tr>
+                        <th>Scenario</th>
+                        <th>Use LCEL</th>
+                        <th>Use LangGraph</th>
+                    </tr>
+                    <tr>
+                        <td>Simple linear pipelines (Prompt → LLM → Output)</td>
+                        <td>✅</td>
+                        <td>❌</td>
+                    </tr>
+                    <tr>
+                        <td>Parallel tasks (Summarize + Translate)</td>
+                        <td>✅</td>
+                        <td>❌</td>
+                    </tr>
+                    <tr>
+                        <td>Complex branching or loops</td>
+                        <td>⚠️ Limited</td>
+                        <td>✅</td>
+                    </tr>
+                    <tr>
+                        <td>Stateful workflows / agent orchestration</td>
+                        <td>❌</td>
+                        <td>✅</td>
+                    </tr>
+                    <tr>
+                        <td>Debugging & tracing</td>
+                        <td>✅ Basic</td>
+                        <td>✅ Advanced</td>
+                    </tr>
+                </table>
+
+                <div class="tip">
+                    <strong>💡 Best Practice:</strong> For complex workflows, embed LCEL chains inside LangGraph nodes for maximum flexibility.
+                </div>
+            </section>
+
+            <!-- RAG SECTION -->
+            <section id="rag">
+                <h2>🔍 RAG - Retrieval-Augmented Generation</h2>
+                
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);">
+                    <h3 style="color: white; font-size: 2em; margin-bottom: 15px;">✨ What is RAG?</h3>
+                    <p style="font-size: 1.2em; line-height: 1.8;"><strong>RAG (Retrieval-Augmented Generation)</strong> is a technique that enhances LLM responses by combining external knowledge retrieval with text generation.</p>
+                    <p style="font-size: 1.1em; margin-top: 15px; opacity: 0.95;">Instead of relying solely on the model's training data, RAG fetches relevant information from external sources and uses it to generate more accurate, up-to-date responses.</p>
+                </div>
+
+                <h3>🔤 Breaking Down R-A-G</h3>
+                
+                <div class="card" style="background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); border: none; color: #333;">
+                    <h4 style="color: #0a6b4c; font-size: 1.5em;">🔍 R - RETRIEVAL</h4>
+                    <p style="font-size: 1.1em; margin-top: 10px;"><strong>Meaning:</strong> Searching and fetching relevant information from external knowledge sources (databases, documents, vector stores).</p>
+                    <br>
+                    <p><strong>How it works:</strong></p>
+                    <ul style="margin-left: 20px;">
+                        <li>User query is converted into an embedding (vector representation)</li>
+                        <li>System searches vector database for semantically similar documents</li>
+                        <li>Top-k most relevant documents/chunks are retrieved</li>
+                    </ul>
+                    <br>
+                    <p><strong>Example:</strong> User asks "What are the company's vacation policies?" → System retrieves relevant sections from HR policy documents.</p>
+                </div>
+
+                <div class="card" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); border: none; color: #333;">
+                    <h4 style="color: #8b4513; font-size: 1.5em;">🔗 A - AUGMENTED</h4>
+                    <p style="font-size: 1.1em; margin-top: 10px;"><strong>Meaning:</strong> Enhancing or enriching the original user query by adding retrieved context.</p>
+                    <br>
+                    <p><strong>How it works:</strong></p>
+                    <ul style="margin-left: 20px;">
+                        <li>Retrieved documents are combined with the user's original question</li>
+                        <li>Creates an enriched prompt with relevant context</li>
+                        <li>Context is formatted to help the LLM understand and answer accurately</li>
+                    </ul>
+                    <br>
+                    <p><strong>Example:</strong> Original query + Retrieved HR policies = Augmented prompt: "Based on these policy documents [context], answer: What are the vacation policies?"</p>
+                </div>
+
+                <div class="card" style="background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); border: none; color: #333;">
+                    <h4 style="color: #1a5490; font-size: 1.5em;">💬 G - GENERATION</h4>
+                    <p style="font-size: 1.1em; margin-top: 10px;"><strong>Meaning:</strong> The LLM generates a response based on both its training and the augmented context.</p>
+                    <br>
+                    <p><strong>How it works:</strong></p>
+                    <ul style="margin-left: 20px;">
+                        <li>LLM receives the augmented prompt (query + retrieved context)</li>
+                        <li>Model generates an answer grounded in the provided context</li>
+                        <li>Response is more accurate and factual than using LLM alone</li>
+                    </ul>
+                    <br>
+                    <p><strong>Example:</strong> LLM reads the HR policy context and generates: "According to company policy, full-time employees receive 15 days of paid vacation per year, accruing at 1.25 days per month."</p>
+                </div>
+
+                <h3>🔄 Complete RAG Workflow</h3>
+                <div class="workflow">
+                    <div class="workflow-step" style="background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);">1️⃣<br><strong>Retrieval</strong><br>Query Vector DB</div>
+                    <span class="arrow">→</span>
+                    <div class="workflow-step" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);">2️⃣<br><strong>Augmentation</strong><br>Combine Context</div>
+                    <span class="arrow">→</span>
+                    <div class="workflow-step" style="background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);">3️⃣<br><strong>Generation</strong><br>LLM Output</div>
+                </div>
+
+                <h3>💡 Real-World RAG Example</h3>
+                <div class="code-block">
+<code># Scenario: Customer Support Chatbot for Tech Company
+
+# 1. RETRIEVAL
+user_query = "How do I reset my password?"
+# System searches knowledge base and retrieves:
+retrieved_docs = [
+    "Password Reset Guide: Go to Settings > Security > Reset Password",
+    "For security, passwords must be 12+ characters with special symbols",
+    "Password reset link expires in 24 hours"
+]
+
+# 2. AUGMENTATION
+augmented_prompt = f"""
+Use the following documentation to answer the user's question:
+
+Documentation:
+{retrieved_docs}
+
+User Question: {user_query}
+
+Provide a clear, step-by-step answer based on the documentation.
+"""
+
+# 3. GENERATION
+# LLM generates response:
+response = """
+To reset your password:
+1. Go to Settings > Security > Reset Password
+2. Enter your email to receive a reset link
+3. Click the link within 24 hours (it expires after that)
+4. Create a new password (must be 12+ characters with special symbols)
+
+Need more help? Contact support@company.com
+"""</code>
+                </div>
+
+                <h3>✅ Benefits of RAG</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin: 30px 0;">
+                    <div style="background: #d1f2eb; border-left: 5px solid #00d084; padding: 20px; border-radius: 10px;">
+                        <h4 style="color: #0a6b4c; margin-bottom: 10px;">🎯 Factual Accuracy</h4>
+                        <p>Grounds responses in real documents, reducing hallucinations</p>
+                    </div>
+                    <div style="background: #d1ecf1; border-left: 5px solid #17a2b8; padding: 20px; border-radius: 10px;">
+                        <h4 style="color: #0c5460; margin-bottom: 10px;">🔄 Up-to-Date Info</h4>
+                        <p>Access current data without retraining the model</p>
+                    </div>
+                    <div style="background: #fff3cd; border-left: 5px solid #ffc107; padding: 20px; border-radius: 10px;">
+                        <h4 style="color: #856404; margin-bottom: 10px;">🏢 Domain Knowledge</h4>
+                        <p>Use private/specialized documents not in training data</p>
+                    </div>
+                    <div style="background: #f8d7da; border-left: 5px solid #dc3545; padding: 20px; border-radius: 10px;">
+                        <h4 style="color: #721c24; margin-bottom: 10px;">📚 Source Attribution</h4>
+                        <p>Can cite sources and show where answers come from</p>
+                    </div>
+                    <div style="background: #e7e7ff; border-left: 5px solid #667eea; padding: 20px; border-radius: 10px;">
+                        <h4 style="color: #4a4a9e; margin-bottom: 10px;">💰 Cost Effective</h4>
+                        <p>No need for expensive model fine-tuning</p>
+                    </div>
+                    <div style="background: #ffe7f0; border-left: 5px solid #e83e8c; padding: 20px; border-radius: 10px;">
+                        <h4 style="color: #731835; margin-bottom: 10px;">🔒 Privacy Control</h4>
+                        <p>Keep sensitive data in secure knowledge bases</p>
+                    </div>
+                </div>
+
+                <h3>🛠️ RAG Technology Stack</h3>
+                <table>
+                    <tr>
+                        <th>Component</th>
+                        <th>Tools/Technologies</th>
+                        <th>Purpose</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Vector Databases</strong></td>
+                        <td>Pinecone, Chroma, FAISS, Weaviate</td>
+                        <td>Store and search document embeddings</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Embedding Models</strong></td>
+                        <td>OpenAI Embeddings, Sentence-BERT</td>
+                        <td>Convert text to vector representations</td>
+                    </tr>
+                    <tr>
+                        <td><strong>RAG Frameworks</strong></td>
+                        <td>LangChain, LlamaIndex, Haystack</td>
+                        <td>Build end-to-end RAG pipelines</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Document Loaders</strong></td>
+                        <td>PyPDF, UnstructuredIO, Docx</td>
+                        <td>Parse PDFs, Word docs, web pages</td>
+                    </tr>
+                    <tr>
+                        <td><strong>LLMs</strong></td>
+                        <td>GPT-4, Claude, Llama, Granite</td>
+                        <td>Generate final responses</td>
+                    </tr>
+                </table>
+
+                <h3>🎯 RAG vs Traditional LLM</h3>
+                <table>
+                    <tr>
+                        <th>Aspect</th>
+                        <th>Traditional LLM</th>
+                        <th>RAG-Enhanced LLM</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Knowledge Source</strong></td>
+                        <td>Only training data (fixed)</td>
+                        <td>Training data + external documents (dynamic)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Accuracy</strong></td>
+                        <td>May hallucinate or guess</td>
+                        <td>Grounded in retrieved facts</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Updates</strong></td>
+                        <td>Requires retraining</td>
+                        <td>Update knowledge base only</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Private Data</strong></td>
+                        <td>Cannot access</td>
+                        <td>Can search private documents</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Citations</strong></td>
+                        <td>Cannot provide sources</td>
+                        <td>Can cite specific documents</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cost</strong></td>
+                        <td>Lower (single API call)</td>
+                        <td>Higher (retrieval + generation)</td>
+                    </tr>
+                </table>
+
+                <h3>📝 Simple RAG Implementation Example</h3>
+                <div class="code-block">
+<code>from langchain.vectorstores import Chroma
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.chains import RetrievalQA
+from langchain.llms import OpenAI
+
+# Step 1: Load and split documents
+documents = load_documents("company_policies.pdf")
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1000,
+    chunk_overlap=200
+)
+docs = text_splitter.split_documents(documents)
+
+# Step 2: Create embeddings and vector store
+embeddings = OpenAIEmbeddings()
+vectorstore = Chroma.from_documents(
+    documents=docs,
+    embedding=embeddings
+)
+
+# Step 3: Create retriever
+retriever = vectorstore.as_retriever(
+    search_kwargs={"k": 3}  # Retrieve top 3 documents
+)
+
+# Step 4: Create RAG chain
+llm = OpenAI(temperature=0)
+qa_chain = RetrievalQA.from_chain_type(
+    llm=llm,
+    chain_type="stuff",
+    retriever=retriever
+)
+
+# Step 5: Ask questions
+query = "What is the vacation policy?"
+response = qa_chain.run(query)
+print(response)</code>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Pro Tip:</strong> For best RAG results, chunk your documents intelligently (500-1500 tokens), use high-quality embeddings, and experiment with retrieval parameters (k, similarity threshold) to find the optimal balance.
+                </div>
+
+                <div class="warning">
+                    <strong>⚠️ RAG Limitations:</strong>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>Increased latency (retrieval adds time)</li>
+                        <li>Retrieval quality affects final output</li>
+                        <li>More complex to set up than basic LLM</li>
+                        <li>Higher costs (embedding + storage + compute)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- CHEAT SHEET SECTION -->
+            <section id="cheatsheet">
+                <h2>📚 LangChain & Watsonx Cheat Sheet</h2>
+
+                <h3>🔧 Installation</h3>
+                <div class="code-block">
+<code>%%capture
+!pip install "ibm-watsonx-ai==1.0.8" --user
+!pip install "langchain==0.2.11" --user
+!pip install "langchain-ibm==0.1.7" --user
+!pip install "langchain-core==0.2.43" --user
+
+import warnings
+warnings.filterwarnings('ignore')</code>
+                </div>
+
+                <h3>🤖 Setting Up WatsonxLLM</h3>
+                <div class="code-block">
+<code>from langchain_ibm import WatsonxLLM
+
+granite_llm = WatsonxLLM(
+    model_id="ibm/granite-3-2-8b-instruct",
+    url="https://us-south.ml.cloud.ibm.com",
+    project_id="skills-network",
+    params={
+        "max_new_tokens": 256,
+        "temperature": 0.5,
+        "top_p": 0.2
+    }
+)</code>
+                </div>
+
+                <h3>⚙️ Custom LLM Model Function</h3>
+                <div class="code-block">
+<code>def llm_model(prompt_txt, params=None):
+    model_id = "ibm/granite-3-2-8b-instruct"
+    default_params = {
+        "max_new_tokens": 256,
+        "temperature": 0.5,
+        "top_p": 0.2
+    }
+    if params:
+        default_params.update(params)
+    
+    granite_llm = WatsonxLLM(
+        model_id=model_id,
+        url="https://us-south.ml.cloud.ibm.com",
+        project_id="skills-network",
+        params=default_params
+    )
+    response = granite_llm.invoke(prompt_txt)
+    return response</code>
+                </div>
+
+                <h3>📊 GenParams - Text Generation Parameters</h3>
+                <div class="code-block">
+<code>from ibm_watsonx_ai.metanames import GenTextParamsMetaNames as GenParams
+
+# Get example values
+GenParams().get_example_values()
+
+# Use in parameters
+parameters = {
+    GenParams.MAX_NEW_TOKENS: 256,
+    GenParams.TEMPERATURE: 0.5,
+}</code>
+                </div>
+
+                <h3>📝 Prompt Templates</h3>
+                <div class="code-block">
+<code>from langchain_core.prompts import PromptTemplate
+
+# Create template
+template = """Tell me a {adjective} joke about {content}."""
+prompt = PromptTemplate.from_template(template)
+
+# Format the prompt
+formatted_prompt = prompt.format(
+    adjective="funny",
+    content="chickens"
+)</code>
+                </div>
+
+                <h3>🔗 Building Chains with LCEL</h3>
+                <div class="code-block">
+<code>from langchain_core.runnables import RunnableLambda
+from langchain_core.output_parsers import StrOutputParser
+
+# Define formatting function
+def format_prompt(variables):
+    return prompt.format(**variables)
+
+# Create chain
+joke_chain = (
+    RunnableLambda(format_prompt)
+    | llm
+    | StrOutputParser()
+)
+
+# Run the chain
+response = joke_chain.invoke({"variable": "value"})</code>
+                </div>
+
+                <h3>🎯 Complete LCEL Pattern Example</h3>
+                <div class="code-block">
+<code># Define template
+template = """
+Answer the {question} based on the {content}.
+Respond "Unsure about answer" if not sure.
+Answer:
+"""
+
+prompt = PromptTemplate.from_template(template)
+
+# Create QA chain
+qa_chain = (
+    RunnableLambda(format_prompt)
+    | llm
+    | StrOutputParser()
+)
+
+# Execute
+answer = qa_chain.invoke({
+    "question": "Which planets are rocky?",
+    "content": "The inner planets are rocky."
+})</code>
+                </div>
+
+                <h3>📋 Quick Reference: Prompting Techniques</h3>
+                <table>
+                    <tr>
+                        <th>Technique</th>
+                        <th>Description</th>
+                        <th>When to Use</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Basic Prompt</strong></td>
+                        <td>Simple text or phrase without formatting</td>
+                        <td>Simple completions, creative writing</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Zero-Shot</strong></td>
+                        <td>Task without examples</td>
+                        <td>Testing model's general knowledge</td>
+                    </tr>
+                    <tr>
+                        <td><strong>One-Shot</strong></td>
+                        <td>Single example provided</td>
+                        <td>Simple pattern matching tasks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Few-Shot</strong></td>
+                        <td>Multiple examples (2-5)</td>
+                        <td>Complex patterns, classification tasks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Chain-of-Thought</strong></td>
+                        <td>Step-by-step reasoning</td>
+                        <td>Math problems, logical reasoning</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Self-Consistency</strong></td>
+                        <td>Multiple independent solutions</td>
+                        <td>Critical decisions, validation needed</td>
+                    </tr>
+                </table>
+
+                <h3>⚡ Parameter Tuning Guide</h3>
+                <table>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Range</th>
+                        <th>Effect</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    <tr>
+                        <td><strong>max_new_tokens</strong></td>
+                        <td>1-2048+</td>
+                        <td>Controls output length</td>
+                        <td>128-512 for most tasks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>temperature</strong></td>
+                        <td>0.0-1.0</td>
+                        <td>Controls randomness/creativity</td>
+                        <td>0.1-0.3 for factual, 0.7-0.9 for creative</td>
+                    </tr>
+                    <tr>
+                        <td><strong>top_p</strong></td>
+                        <td>0.0-1.0</td>
+                        <td>Nucleus sampling threshold</td>
+                        <td>0.2-0.5 for focused outputs</td>
+                    </tr>
+                    <tr>
+                        <td><strong>top_k</strong></td>
+                        <td>1-100</td>
+                        <td>Limits token selection pool</td>
+                        <td>1 for deterministic, 50+ for diverse</td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- TOOLS & FRAMEWORKS SECTION -->
+            <section id="tools">
+                <h2>🛠️ GenAI Tools & Frameworks</h2>
+
+                <h3>Model Development & Deployment</h3>
+                <table>
+                    <tr>
+                        <th>Tool/Framework</th>
+                        <th>Purpose</th>
+                        <th>Use Cases</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Hugging Face</strong></td>
+                        <td>Platform hosting pre-trained models and datasets</td>
+                        <td>Accessing GPT-2, BERT, Stable Diffusion</td>
+                    </tr>
+                    <tr>
+                        <td><strong>LangChain</strong></td>
+                        <td>Framework for building LLM applications</td>
+                        <td>Creating chatbots with memory and web search</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AutoGen</strong></td>
+                        <td>Multi-agent conversational systems</td>
+                        <td>Simulating debates between AI agents</td>
+                    </tr>
+                    <tr>
+                        <td><strong>CrewAI</strong></td>
+                        <td>Collaborative AI agents with role-based tasks</td>
+                        <td>Task automation with specialized agents</td>
+                    </tr>
+                    <tr>
+                        <td><strong>BeeAI</strong></td>
+                        <td>Lightweight multi-agent framework</td>
+                        <td>Distributed problem-solving systems</td>
+                    </tr>
+                    <tr>
+                        <td><strong>LlamaIndex</strong></td>
+                        <td>Connect LLMs to data sources</td>
+                        <td>Building Q&A systems over private documents</td>
+                    </tr>
+                    <tr>
+                        <td><strong>LangGraph</strong></td>
+                        <td>Stateful, multi-actor applications</td>
+                        <td>Cyclic workflows, agent simulations</td>
+                    </tr>
+                </table>
+
+                <h3>Retrieval & Infrastructure</h3>
+                <table>
+                    <tr>
+                        <th>Tool/Framework</th>
+                        <th>Purpose</th>
+                        <th>Use Cases</th>
+                    </tr>
+                    <tr>
+                        <td><strong>FAISS</strong></td>
+                        <td>Efficient similarity search of dense vectors</td>
+                        <td>Retrieving top-k documents for RAG</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Pinecone</strong></td>
+                        <td>Managed cloud vector database</td>
+                        <td>Storing embeddings for real-time retrieval</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Chroma</strong></td>
+                        <td>Open-source embedding database</td>
+                        <td>Local vector storage and retrieval</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Weaviate</strong></td>
+                        <td>Cloud-native vector search engine</td>
+                        <td>Semantic search applications</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Haystack</strong></td>
+                        <td>End-to-end RAG pipeline framework</td>
+                        <td>Deploying enterprise search systems</td>
+                    </tr>
+                </table>
+
+                <h3>🔍 RAG (Retrieval-Augmented Generation) Pipeline</h3>
+                <div class="workflow">
+                    <div class="workflow-step">1️⃣<br>Retrieval<br>(Query Vector DB)</div>
+                    <span class="arrow">→</span>
+                    <div class="workflow-step">2️⃣<br>Augmentation<br>(Combine Context)</div>
+                    <span class="arrow">→</span>
+                    <div class="workflow-step">3️⃣<br>Generation<br>(LLM Output)</div>
+                </div>
+
+                <div class="card">
+                    <p><strong>RAG Benefits:</strong></p>
+                    <ul>
+                        <li>✅ Enhances factual accuracy</li>
+                        <li>✅ Provides real-time data access</li>
+                        <li>✅ Reduces hallucinations</li>
+                        <li>✅ Enables domain-specific knowledge</li>
+                    </ul>
+                </div>
+
+                <h3>🤝 Multi-Agent Systems</h3>
+                <div class="card">
+                    <p><strong>Components:</strong></p>
+                    <ul>
+                        <li><strong>Agents:</strong> Specialized roles (researcher, writer, critic)</li>
+                        <li><strong>Orchestration:</strong> LangGraph for cyclic workflows, AutoGen for conversations</li>
+                        <li><strong>Tools:</strong> Web search, code execution, API integrations</li>
+                    </ul>
+                </div>
+
+                <h3>🎓 Fine-Tuning Techniques</h3>
+                <table>
+                    <tr>
+                        <th>Technique</th>
+                        <th>Description</th>
+                        <th>When to Use</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Full Fine-Tuning</strong></td>
+                        <td>Update all model parameters</td>
+                        <td>Large datasets, complete task adaptation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>LoRA</strong></td>
+                        <td>Low-Rank Adaptation - efficient fine-tuning</td>
+                        <td>Limited compute, domain-specific tasks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>QLoRA</strong></td>
+                        <td>Quantized LoRA - memory efficient</td>
+                        <td>Resource-constrained environments</td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- SUMMARY SECTION -->
+            <section id="summary">
+                <h2>📝 Key Takeaways & Summary</h2>
+
+                <div class="card">
+                    <h3>🌟 Core Concepts</h3>
+                    <ul>
+                        <li><strong>Generative AI</strong> creates new content using training data</li>
+                        <li>Powered by <strong>Deep Learning</strong> and models like GANs, VAEs, Transformers, Diffusion Models</li>
+                        <li><strong>Foundation Models (LLMs)</strong> enable wide adaptability</li>
+                        <li><strong>NLP</strong> bridges human language and machine understanding</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>💬 Prompt Engineering Essentials</h3>
+                    <ul>
+                        <li><strong>In-context learning:</strong> Provide demonstrations within the prompt</li>
+                        <li><strong>Prompts</strong> guide LLMs toward specific tasks</li>
+                        <li><strong>Four key elements:</strong> Instructions, Context, Input Data, Output Indicator</li>
+                        <li><strong>Advanced methods:</strong> Zero-shot, Few-shot, Chain-of-Thought, Self-consistency</li>
+                        <li>Boosts effectiveness and eliminates continual fine-tuning needs</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>🔗 LCEL (LangChain Expression Language)</h3>
+                    <ul>
+                        <li>Uses <strong>pipe operator (|)</strong> for clear data flow</li>
+                        <li>Prompts defined using <strong>templates with variables {}</strong></li>
+                        <li><strong>RunnableSequence:</strong> Sequential execution</li>
+                        <li><strong>RunnableParallel:</strong> Concurrent execution</li>
+                        <li><strong>Type coercion:</strong> Auto-converts functions and dicts</li>
+                        <li>Provides composability, flexibility, and cleaner code</li>
+                    </ul>
+                </div>
+
+                <div class="note">
+                    <strong>⚡ Universal Pattern:</strong><br>
+                    <code>PromptTemplate | LLM | OutputParser</code><br>
+                    This becomes your foundation for building LLM applications - whether for translation, Q&A, summarization, or chatbot logic.
+                </div>
+
+                <h3>💡 Best Practices</h3>
+                <div class="card">
+                    <ul>
+                        <li>✅ Keep chains modular and readable</li>
+                        <li>✅ Use <strong>PromptTemplate</strong> for flexibility</li>
+                        <li>✅ Use <strong>RunnableParallel</strong> for multiple concurrent tasks</li>
+                        <li>✅ Wrap functions with <strong>RunnableLambda</strong> for custom logic</li>
+                        <li>✅ For complex workflows, embed LCEL chains inside <strong>LangGraph nodes</strong></li>
+                        <li>✅ Test each component individually before chaining</li>
+                        <li>✅ Use RAG to reduce hallucinations and improve accuracy</li>
+                        <li>✅ Fine-tune parameters (temperature, top_p) based on task requirements</li>
+                    </ul>
+                </div>
+
+                <h3>🎯 Future Directions</h3>
+                <div class="card">
+                    <p>Generative AI is transforming industries through:</p>
+                    <ul>
+                        <li>🤖 <strong>AI Agents:</strong> Autonomous systems that plan, reason, and execute</li>
+                        <li>🔍 <strong>RAG Systems:</strong> Combining retrieval with generation for accuracy</li>
+                        <li>👥 <strong>Multi-Agent Collaboration:</strong> Specialized agents working together</li>
+                        <li>📊 <strong>Enterprise Automation:</strong> Streamlining workflows and decision-making</li>
+                        <li>🧠 <strong>Reasoning Engines:</strong> Advanced problem-solving capabilities</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- RESOURCES SECTION -->
+            <section id="resources">
+                <h2>📚 Additional Resources</h2>
+
+                <h3>📖 Official Documentation</h3>
+                <ul>
+                    <li><strong>LangChain Documentation:</strong> Comprehensive guides and API references</li>
+                    <li><strong>LangGraph Documentation:</strong> Stateful workflows and agent simulations</li>
+                    <li><strong>Hugging Face:</strong> Pre-trained models and datasets</li>
+                    <li><strong>IBM Watsonx AI:</strong> Enterprise AI platform documentation</li>
+                </ul>
+
+                <h3>📄 Research Papers</h3>
+                <ul>
+                    <li><strong>Retrieval-Augmented Generation (RAG) Paper:</strong> Foundational RAG concepts</li>
+                    <li><strong>Chain-of-Thought Prompting:</strong> Step-by-step reasoning techniques</li>
+                    <li><strong>Attention Is All You Need:</strong> Transformer architecture paper</li>
+                </ul>
+
+                <h3>🎓 Learning Paths</h3>
+                <ul>
+                    <li><strong>Prompt Engineering Guide:</strong> Comprehensive prompting techniques</li>
+                    <li><strong>CrewAI Documentation:</strong> Building collaborative AI agents</li>
+                    <li><strong>AutoGen Tutorials:</strong> Multi-agent conversational systems</li>
+                </ul>
+
+                <div class="tip">
+                    <strong>💡 Pro Tip:</strong> Start with simple LCEL chains, master the fundamentals, then gradually incorporate advanced concepts like RAG, multi-agent systems, and LangGraph for complex workflows.
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <p><strong>📘 Comprehensive Guide to Generative AI & LangChain</strong></p>
+            <p>Author: Hailey Quach</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">
+                This guide combines foundations of Generative AI, NLP, Prompt Engineering, and LangChain LCEL patterns.<br>
+                Perfect for developers, data scientists, and AI enthusiasts building modern LLM applications.
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
