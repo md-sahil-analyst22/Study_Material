@@ -1,0 +1,2787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete LangChain Study Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #43e97b;
+            --text-color: #333;
+            --light-bg: #f8f9fa;
+            --dark-bg: #1e1e1e;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            padding: 0;
+        }
+
+        /* Navigation Styles */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            padding: 15px 0;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .nav-toggle span {
+            width: 25px;
+            height: 3px;
+            background: var(--primary-color);
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 80px auto 0;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 80px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 15s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .hero h1 {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero p {
+            font-size: 1.4em;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Content Area */
+        .content {
+            padding: 60px 40px;
+        }
+
+        .section {
+            margin-bottom: 80px;
+            scroll-margin-top: 100px;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 30px 40px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: translateX(-100%);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            100% { transform: translateX(100%); }
+        }
+
+        .section-header h2 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-header p {
+            opacity: 0.95;
+            font-size: 1.2em;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--light-bg);
+            border-left: 5px solid var(--primary-color);
+            padding: 40px;
+            margin-bottom: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .card h3 {
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            font-size: 2em;
+            border-bottom: 3px solid #e0e0e0;
+            padding-bottom: 15px;
+        }
+
+        .card h4 {
+            color: var(--secondary-color);
+            margin: 25px 0 15px 0;
+            font-size: 1.5em;
+        }
+
+        .card p {
+            font-size: 1.1em;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: #34495e;
+        }
+
+        /* Explanation Box */
+        .explanation-box {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+            border-left: 5px solid #2196f3;
+        }
+
+        .explanation-box h5 {
+            color: #1976d2;
+            font-size: 1.3em;
+            margin-bottom: 12px;
+        }
+
+        .explanation-box p {
+            color: #0d47a1;
+            font-size: 1.05em;
+        }
+
+        /* Key Concept */
+        .key-concept {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 6px 25px rgba(102,126,234,0.4);
+        }
+
+        .key-concept h4 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .key-concept p {
+            color: white;
+            font-size: 1.15em;
+            line-height: 1.7;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: var(--dark-bg);
+            color: #d4d4d4;
+            padding: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .code-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 15px 25px;
+            font-weight: 600;
+            font-size: 1em;
+        }
+
+        .code-content {
+            padding: 25px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.95em;
+            line-height: 1.8;
+        }
+
+        .code-content pre {
+            margin: 0;
+            white-space: pre;
+        }
+
+        /* Syntax Highlighting */
+        .code-comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+
+        .code-keyword {
+            color: #569cd6;
+            font-weight: 600;
+        }
+
+        .code-string {
+            color: #ce9178;
+        }
+
+        .code-function {
+            color: #dcdcaa;
+        }
+
+        .code-number {
+            color: #b5cea8;
+        }
+
+        .code-class {
+            color: #4ec9b0;
+        }
+
+        /* Benefits List */
+        .benefits-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .benefits-list li {
+            padding: 20px;
+            margin-bottom: 15px;
+            background: white;
+            border-left: 5px solid var(--primary-color);
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .benefits-list li:hover {
+            transform: translateX(10px);
+            box-shadow: 0 5px 15px rgba(102,126,234,0.3);
+        }
+
+        .benefits-list li strong {
+            color: var(--primary-color);
+            font-size: 1.15em;
+        }
+
+        /* Workflow Visual */
+        .workflow-visual {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 40px;
+            border-radius: 15px;
+            margin: 35px 0;
+        }
+
+        .workflow-step {
+            background: white;
+            padding: 30px;
+            margin: 20px 0;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            position: relative;
+            padding-left: 80px;
+        }
+
+        .step-number {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(102,126,234,0.3);
+        }
+
+        .step-title {
+            color: var(--primary-color);
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .step-desc {
+            color: #555;
+            font-size: 1.05em;
+            line-height: 1.6;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .comparison-table th {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 20px;
+            text-align: left;
+            font-size: 1.1em;
+        }
+
+        .comparison-table td {
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 1.05em;
+        }
+
+        .comparison-table tr:hover {
+            background: #f5f7fa;
+        }
+
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .grid-item {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .grid-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 30px rgba(102,126,234,0.3);
+            border-color: var(--primary-color);
+        }
+
+        .grid-item h4 {
+            color: var(--primary-color);
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .grid-item p {
+            font-size: 1.05em;
+            margin-bottom: 15px;
+        }
+
+        .grid-item ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .grid-item ul li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .grid-item ul li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        /* Analogy Box */
+        .analogy-box {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border-left: 5px solid #ff9800;
+        }
+
+        .analogy-box h5 {
+            color: #e65100;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+        }
+
+        .analogy-box p {
+            color: #bf360c;
+            font-size: 1.1em;
+            line-height: 1.7;
+        }
+
+        /* Table of Contents */
+        .toc {
+            background: var(--light-bg);
+            padding: 35px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .toc h3 {
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            font-size: 1.8em;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 10px;
+        }
+
+        .toc ul {
+            list-style: none;
+        }
+
+        .toc li {
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        .toc li:hover {
+            padding-left: 10px;
+            background: rgba(102,126,234,0.05);
+        }
+
+        .toc a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.05em;
+        }
+
+        .toc a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Cheat Sheet Cards */
+        .cheat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .cheat-card h4 {
+            color: var(--primary-color);
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cheat-card h4::before {
+            content: '📌';
+            font-size: 1.2em;
+        }
+
+        /* Process Diagram */
+        .process-diagram {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+
+        .process-box {
+            flex: 1;
+            min-width: 150px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(102,126,234,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .process-box:hover {
+            transform: scale(1.05);
+        }
+
+        .process-arrow {
+            font-size: 2em;
+            color: var(--primary-color);
+        }
+
+        /* Visual Workflow Components */
+        .visual-workflow {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 40px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+
+        .workflow-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .workflow-step-box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .workflow-step-box:hover {
+            transform: translateX(10px);
+            box-shadow: 0 6px 20px rgba(102,126,234,0.3);
+        }
+
+        .workflow-step-box::before {
+            content: '';
+            position: absolute;
+            left: -30px;
+            top: 50%;
+            width: 20px;
+            height: 20px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            transform: translateY(-50%);
+            box-shadow: 0 0 0 4px rgba(102,126,234,0.2);
+        }
+
+        .step-number {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            margin-right: 15px;
+            float: left;
+            box-shadow: 0 4px 10px rgba(102,126,234,0.3);
+        }
+
+        .step-content {
+            overflow: hidden;
+        }
+
+        .step-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 1.2em;
+            margin-bottom: 8px;
+        }
+
+        .step-desc {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .arrow-down {
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 2em;
+            margin: 10px 0;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Animation for page load */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card, .grid-item {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: white;
+                padding: 20px;
+                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-toggle {
+                display: flex;
+            }
+
+            .hero h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .workflow-step {
+                padding-left: 20px;
+            }
+            
+            .step-number {
+                position: static;
+                transform: none;
+                margin-bottom: 15px;
+            }
+
+            .process-diagram {
+                flex-direction: column;
+            }
+
+            .process-arrow {
+                transform: rotate(90deg);
+            }
+
+            .workflow-step-box::before {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">🚀 LangChain Guide</a>
+            <div class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#introduction">Introduction</a></li>
+                <li><a href="#core-components">Core Components</a></li>
+                <li><a href="#lcel">LCEL</a></li>
+                <li><a href="#advanced-features">Advanced Features</a></li>
+                <li><a href="#practical-examples">Practical Examples</a></li>
+                <li><a href="#best-practices">Best Practices</a></li>
+                <li><a href="#cheat-sheet">Cheat Sheet</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="hero">
+            <h1>🚀 LangChain: The Complete Guide</h1>
+            <p>Master the Framework for Building Production-Ready AI Applications with Large Language Models</p>
+        </div>
+
+        <div class="content">
+            <!-- Table of Contents -->
+            <div class="toc">
+                <h3>📚 Table of Contents</h3>
+                <ul>
+                    <li><a href="#introduction">1. Introduction to LangChain</a></li>
+                    <li><a href="#core-components">2. Core Components Deep Dive</a></li>
+                    <li><a href="#lcel">3. LangChain Expression Language (LCEL)</a></li>
+                    <li><a href="#advanced-features">4. Advanced Features</a></li>
+                    <li><a href="#practical-examples">5. Practical Examples & Use Cases</a></li>
+                    <li><a href="#best-practices">6. Best Practices & Tips</a></li>
+                    <li><a href="#cheat-sheet">7. Quick Reference Cheat Sheet</a></li>
+                    <li><a href="#advanced-concepts">8. Advanced Concepts</a></li>
+                    <li><a href="#troubleshooting">9. Troubleshooting & Common Issues</a></li>
+                    <li><a href="#real-world-scenarios">10. Real-World Scenarios</a></li>
+                    <li><a href="#next-steps">11. Next Steps & Learning Path</a></li>
+                </ul>
+            </div>
+
+            <!-- INTRODUCTION SECTION -->
+            <div id="introduction" class="section">
+                <div class="section-header">
+                    <h2>🌟 Chapter 1: Understanding LangChain</h2>
+                    <p>What it is, why it exists, and why you need it</p>
+                </div>
+
+                <div class="card">
+                    <h3>What is LangChain?</h3>
+                    <p>LangChain is a comprehensive framework designed to simplify the development of applications powered by Large Language Models (LLMs). Think of it as the infrastructure layer between your raw LLM (like GPT, Claude, or Gemini) and your actual application.</p>
+                    
+                    <div class="analogy-box">
+                        <h5>💡 The Restaurant Analogy</h5>
+                        <p>Imagine you have a brilliant chef (the LLM) who can cook anything. But to run a successful restaurant, you need more than just a chef. You need:</p>
+                        <ul style="margin-top: 15px; padding-left: 20px;">
+                            <li><strong>A menu system</strong> (prompts and templates)</li>
+                            <li><strong>Order processing</strong> (chains and workflows)</li>
+                            <li><strong>A waiter who makes decisions</strong> (agents)</li>
+                            <li><strong>Customer history</strong> (memory)</li>
+                            <li><strong>Ingredient storage</strong> (vector databases)</li>
+                        </ul>
+                        <p style="margin-top: 15px;">LangChain provides all of this infrastructure so your "chef" (LLM) can focus on what it does best: generating intelligent responses.</p>
+                    </div>
+
+                    <div class="key-concept">
+                        <h4>🎯 Core Definition</h4>
+                        <p>LangChain = A framework that transforms raw LLM capabilities into structured, predictable, scalable, and production-ready applications through modular components, workflows, and integrations.</p>
+                    </div>
+
+                    <h4>Why Does LangChain Exist?</h4>
+                    <p>Raw LLMs have limitations when building real applications:</p>
+                    
+                    <ul class="benefits-list">
+                        <li><strong>Context Length Limits:</strong> LLMs can only process a limited amount of text at once. LangChain helps you work around this with document splitting and retrieval systems.</li>
+                        <li><strong>No Memory:</strong> LLMs don't remember previous conversations. LangChain provides memory components to maintain context across interactions.</li>
+                        <li><strong>Static Knowledge:</strong> LLMs are trained on data up to a certain date. LangChain enables real-time information access through tool integration.</li>
+                        <li><strong>Complex Workflows:</strong> Multi-step reasoning requires orchestration. LangChain provides chains and agents to handle complex logic.</li>
+                        <li><strong>Integration Challenges:</strong> Connecting to databases, APIs, and external services is difficult. LangChain offers pre-built connectors and standardized interfaces.</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>Key Benefits of Using LangChain</h3>
+                    
+                    <div class="grid">
+                        <div class="grid-item">
+                            <h4>🧩 Modularity</h4>
+                            <p>Build applications using reusable, interchangeable components. Each piece (prompts, LLMs, parsers, retrievers) can be swapped or upgraded independently.</p>
+                            <p><strong>Example:</strong> Switch from OpenAI to Anthropic by changing just one line of code.</p>
+                        </div>
+
+                        <div class="grid-item">
+                            <h4>🔗 Chain of Thought</h4>
+                            <p>Break complex problems into sequential steps. Each step processes information and passes results to the next, enabling sophisticated reasoning.</p>
+                            <p><strong>Example:</strong> Analyze document → Extract key points → Generate summary → Translate to Spanish</p>
+                        </div>
+
+                        <div class="grid-item">
+                            <h4>💾 Vector Database Integration</h4>
+                            <p>Efficiently search and retrieve relevant information from large document collections using semantic similarity rather than keyword matching.</p>
+                            <p><strong>Example:</strong> Query "refund policy" and retrieve relevant sections even if they use different wording.</p>
+                        </div>
+
+                        <div class="grid-item">
+                            <h4>🔧 Extensibility</h4>
+                            <p>Easily add custom tools, data sources, and processing steps. The framework grows with your needs without requiring rewrites.</p>
+                            <p><strong>Example:</strong> Add a custom SQL database tool or integrate with your company's API.</p>
+                        </div>
+
+                        <div class="grid-item">
+                            <h4>🏭 Production-Ready</h4>
+                            <p>Built-in error handling, logging, monitoring hooks, and async support make it suitable for enterprise deployment.</p>
+                            <p><strong>Example:</strong> Handle API failures gracefully, track token usage, and scale with async operations.</p>
+                        </div>
+
+                        <div class="grid-item">
+                            <h4>🤝 Community & Ecosystem</h4>
+                            <p>Access hundreds of pre-built integrations, active community support, and continuous updates with new features.</p>
+                            <p><strong>Example:</strong> Use pre-built connectors for Pinecone, Chroma, Supabase, and dozens of other services.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CORE COMPONENTS SECTION -->
+            <div id="core-components" class="section">
+                <div class="section-header">
+                    <h2>🧱 Chapter 2: Core Components Deep Dive</h2>
+                    <p>Understanding the building blocks of LangChain applications</p>
+                </div>
+
+                <div class="card">
+                    <h3>1. Models: The Brain of Your Application</h3>
+                    
+                    <h4>🤖 Language Models (LLMs)</h4>
+                    <p>These are the core text-generation engines. They take a prompt and generate a completion.</p>
+                    
+                    <div class="explanation-box">
+                        <h5>How It Works</h5>
+                        <p>Language models predict the next token (word/character) based on context. They're trained on massive amounts of text and can generate human-like responses, write code, answer questions, and more.</p>
+                    </div>
+
+                    <div class="code-block">
+                        <div class="code-header">Basic LLM Usage</div>
+                        <div class="code-content">
+<pre><span class="code-keyword">from</span> langchain_openai <span class="code-keyword">import</span> OpenAI
+
+<span class="code-comment"># Initialize the LLM</span>
+llm = OpenAI(temperature=0.7)
+
+<span class="code-comment"># Simple prompt completion</span>
+response = llm.invoke(<span class="code-string">"Write a haiku about programming"</span>)
+<span class="code-function">print</span>(response)</pre>
+                        </div>
+                    </div>
+
+                    <h4>💬 Chat Models</h4>
+                    <p>Chat models are optimized for conversational interactions with structured message types.</p>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Message Type</th>
+                            <th>Purpose</th>
+                            <th>Example Use Case</th>
+                        </tr>
+                        <tr>
+                            <td><strong>SystemMessage</strong></td>
+                            <td>Sets the AI's behavior, role, and constraints</td>
+                            <td>"You are a Python expert who explains concepts simply"</td>
+                        </tr>
+                        <tr>
+                            <td><strong>HumanMessage</strong></td>
+                            <td>Represents user input/queries</td>
+                            <td>"How do I implement a binary search?"</td>
+                        </tr>
+                        <tr>
+                            <td><strong>AIMessage</strong></td>
+                            <td>Stores the model's previous responses</td>
+                            <td>"Binary search works by repeatedly dividing..."</td>
+                        </tr>
+                    </table>
+
+                    <div class="code-block">
+                        <div class="code-header">Chat Model with Message Types</div>
+                        <div class="code-content">
+<pre><span class="code-keyword">from</span> langchain_openai <span class="code-keyword">import</span> ChatOpenAI
+<span class="code-keyword">from</span> langchain_core.messages <span class="code-keyword">import</span> SystemMessage, HumanMessage
+
+<span class="code-comment"># Initialize chat model</span>
+chat = ChatOpenAI(model=<span class="code-string">"gpt-4"</span>, temperature=0)
+
+<span class="code-comment"># Structure conversation with message types</span>
+messages = [
+    SystemMessage(content=<span class="code-string">"You are a helpful coding assistant"</span>),
+    HumanMessage(content=<span class="code-string">"Explain list comprehension in Python"</span>)
+]
+
+response = chat.invoke(messages)
+<span class="code-function">print</span>(response.content)</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>2. Prompts: Communicating with Your LLM</h3>
+                    
+                    <p>Prompts are the instructions you give to the LLM. LangChain provides tools to make prompts dynamic, reusable, and maintainable.</p>
+
+                    <h4>📝 Prompt Templates</h4>
+                    <p>Instead of hardcoding prompts, templates allow you to inject variables dynamically.</p>
+
+                    <div class="code-block">
+                        <div class="code-header">Using Prompt Templates</div>
+                        <div class="code-content">
+<pre><span class="code-keyword">from</span> langchain_core.prompts <span class="code-keyword">import</span> PromptTemplate
+
+<span class="code-comment"># Define template with variables</span>
+template = <span class="code-string">"""
+You are a {role} assistant.
+User's expertise level: {level}
+
+Question: {question}
+
+Provide a {style} answer suitable for their level.
+"""</span>
+
+prompt = PromptTemplate(
+    input_variables=[<span class="code-string">"role"</span>, <span class="code-string">"level"</span>, <span class="code-string">"question"</span>, <span class="code-string">"style"</span>],
+    template=template
+)
+
+<span class="code-comment"># Generate specific prompt</span>
+formatted = prompt.format(
+    role=<span class="code-string">"Python programming"</span>,
+    level=<span class="code-string">"beginner"</span>,
+    question=<span class="code-string">"What is a decorator?"</span>,
+    style=<span class="code-string">"simple, example-driven"</span>
+)
+
+response = llm.invoke(formatted)</pre>
+                        </div>
+                    </div>
+
+                    <div class="explanation-box">
+                        <h5>Why Use Templates?</h5>
+                        <p><strong>Reusability:</strong> Write once, use with different inputs<br>
+                        <strong>Consistency:</strong> Ensure uniform prompt structure<br>
+                        <strong>Maintainability:</strong> Update prompts in one place<br>
+                        <strong>Testing:</strong> Easily test different prompt variations</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>3. Chains: Orchestrating Workflows</h3>
+                    
+                    <p>Chains connect multiple components in sequence to accomplish complex tasks. Each step's output becomes the next step's input.</p>
+
+                    <div class="workflow-visual">
+                        <h4 style="text-align: center; color: var(--primary-color); margin-bottom: 25px;">Simple Chain Flow</h4>
+                        <div class="workflow-step">
+                            <div class="step-number">1</div>
+                            <div class="step-title">Input Data</div>
+                            <div class="step-desc">User provides raw input (text, variables, context)</div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="step-number">2</div>
+                            <div class="step-title">Prompt Template</div>
+                            <div class="step-desc">Template formats input into a structured prompt</div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="step-number">3</div>
+                            <div class="step-title">LLM Processing</div>
+                            <div class="step-desc">Model generates response based on formatted prompt</div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="step-number">4</div>
+                            <div class="step-title">Output Parser</div>
+                            <div class="step-desc">Structures the raw LLM output into usable format</div>
+                        </div>
+                    </div>
+
+                    <div class="code-block">
+                        <div class="code-header">Basic Chain Example</div>
+                        <div class="code-content">
+<pre><span class="code-keyword">from</span> langchain_core.prompts <span class="code-keyword">import</span> PromptTemplate
+<span class="code-keyword">from</span> langchain_core.output_parsers <span class="code-keyword">import</span> StrOutputParser
+<span class="code-keyword">from</span> langchain_openai <span class="code-keyword">import</span> OpenAI
+
+<span class="code-comment"># Define components</span>
+llm = OpenAI()
+prompt = PromptTemplate.from_template(<span class="code-string">"Translate {text} to {language}"</span>)
+parser = StrOutputParser()
+
+<span class="code-comment"># Create chain using LCEL (pipe operator)</span>
+chain = prompt | llm | parser
+
+<span class="code-comment"># Execute chain</span>
+result = chain.invoke({
+    <span class="code-string">"text"</span>: <span class="code-string">"Hello, how are you?"</span>,
+    <span class="code-string">"language"</span>: <span class="code-string">"Spanish"</span>
+})
+<span class="code-function">print</span>(result)  <span class="code-comment"># "Hola, ¿cómo estás?"</span></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>4. Memory: Maintaining Context</h3>
+                    
+                    <p>LLMs are stateless—they don't remember previous interactions. Memory components store conversation history so the AI can maintain context.</p>
+
+                    <div class="grid">
+                        <div class="grid-item">
+                            <h4>💾 ConversationBufferMemory</h4>
+                            <p>Stores all messages in a simple buffer. Good for short conversations.</p>
+                            <p><strong>Use When:</strong> Conversations are brief and you need complete history.</p>
+                        </div>
+
+                        <div class="grid-item">
+                            <h4>📊 ConversationSummaryMemory</h4>
+                            <p>Summarizes old messages to save tokens. Good for long conversations.</p>
+                            <p><strong>Use When:</strong> Conversations are lengthy and you need to manage token limits.</p>
+                        </div>
+
+                        <div class="grid-item">
+                            <h4>🪟 ConversationBufferWindowMemory</h4>
+                            <p>Keeps only the last N messages. Balances context and token usage.</p>
+                            <p><strong>Use When:</strong> You want recent context without unlimited growth.</p>
+                        </div>
+
+                        <div class="grid-item">
+                            <h4>🧠 ConversationKGMemory</h4>
+                            <p>Builds a knowledge graph of entities and relationships.</p>
+                            <p><strong>Use When:</strong> You need to track complex relationships and facts.</p>
+                        </div>
+                    </div>
+
+                    <div class="code-block">
+                        <div class="code-header">Using Memory in Chains</div>
+                        <div class="code-content">
+<pre><span class="code-keyword">from</span> langchain.memory <span class="code-keyword">import</span> ConversationBufferMemory
+<span class="code-keyword">from</span> langchain.chains <span class="code-keyword">import</span> ConversationChain
+
+<span class="code-comment"># Initialize memory</span>
+memory = ConversationBufferMemory()
+
+<span class="code-comment"># Create conversation chain with memory</span>
+conversation = ConversationChain(
+    llm=llm,
+    memory=memory,
+    verbose=<span class="code-number">True</span>
+)
+
+<span class="code-comment"># First interaction</span>
+conversation.invoke(<span class="code-string">"My name is Alice"</span>)
+<span class="code-comment"># Output: "Nice to meet you, Alice!"</span>
+
+<span class="code-comment"># Second interaction - remembers context</span>
+conversation.invoke(<span class="code-string">"What's my name?"</span>)
+<span class="code-comment"># Output: "Your name is Alice!"</span></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>5. Document Loaders & Text Splitters</h3>
+                    
+                    <h4>📄 Document Loaders</h4>
+                    <p>Load data from various sources into a standardized format.</p>
+
+                    <ul class="benefits-list">
+                        <li><strong>PyPDFLoader:</strong> Extract text from PDF files</li>
+                        <li><strong>TextLoader:</strong> Load plain text files</li>
+                        <li><strong>WebBaseLoader:</strong> Scrape content from web pages</li>
+                        <li><strong>CSVLoader:</strong> Import data from CSV files</li>
+                        <li><strong>DirectoryLoader:</strong> Load all files from a directory</li>
+                    </ul>
+
+                    <h4>✂️ Text Splitters</h4>
+                    <p>Break large documents into smaller chunks that fit within LLM context windows while preserving semantic meaning.</p>
+
+                    <div class="code-block">
+                        <div class="code-header">Loading and Splitting Documents</div>
+                        <div class="code-content">
+<pre><span class="code-keyword">from</span> langchain_community.document_loaders <span class="code-keyword">import</span> PyPDFLoader
+<span class="code-keyword">from</span> langchain.text_splitter <span class="code-keyword">import</span> RecursiveCharacterTextSplitter
+
+<span class="code-comment"># Load PDF</span>
+loader = PyPDFLoader(<span class="code-string">"research_paper.pdf"</span>)
+documents = loader.load()
+
+<span class="code-comment"># Split into chunks</span>
+splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1000,        <span class="code-comment"># Max characters per chunk</span>
+    chunk_overlap=200,      <span class="code-comment"># Overlap to preserve context</span>
+    separators=[<span class="code-string">"\n\n"</span>, <span class="code-string">"\n"</span>, <span class="code-string">". "</span>, <span class="code-string">" "</span>, <span class="code-string">""</span>]  <span class="code-comment"># Split hierarchy</span>
+)
+
+chunks = splitter.split_documents(documents)
+<span class="code-function">print</span>(<span class="code-string">f"Split into {len(chunks)} chunks"</span>)</pre>
+                        </div>
+                    </div>
+
+                    <div class="explanation-box">
+                        <h5>Why Chunk Size and Overlap Matter</h5>
+                        <p><strong>Chunk Size:</strong> Smaller chunks = more precise retrieval but less context. Larger chunks = more context but less precision.</p>
+                        <p><strong>Overlap:</strong> Ensures important information at chunk boundaries isn't lost. Helps maintain continuity between chunks.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>6. Vector Stores & Embeddings</h3>
+                    
+                    <h4>🧲 What are Embeddings?</h4>
+                    <p>Embeddings convert text into numerical vectors (arrays of numbers) that capture semantic meaning. Similar meanings produce similar vectors.</p>
+
+                    <div class="analogy-box">
+                        <h5>💡 The Map Analogy</h5>
+                        <p>Think of embeddings as GPS coordinates for words and sentences. Just as Paris and London are closer on a map than Paris and Tokyo, the embeddings for "dog" and "puppy" are closer in vector space than "dog" and "airplane."</p>
+                        <p style="margin-top: 10px;"><strong>Example:</strong><br>
+                        "The cat sat on the mat" → [0.2, 0.8, 0.3, ...]<br>
+                        "A feline rested on the rug" → [0.19, 0.82, 0.29, ...] (very similar!)<br>
+                        "I love pizza" → [0.9, 0.1, 0.7, ...] (very different!)</p>
+                    </div>
+
+                    <h4>💾 Vector Stores</h4>
+                    <p>Vector stores are specialized databases optimized for storing and searching embeddings using similarity metrics.</p>
+
+                    <div class="grid">
+                        <div class="grid-item">
+                            <h4>Chroma</h4>
+                            <p>Lightweight, easy to set up. Perfect for development and prototyping.</p>
+                            <p><strong>Best for:</strong> Local development, small to medium datasets</p>
+                        </div>
+
+                        <div class="grid-item">
+                            <h4>Pinecone</h4>
+                            <p>Managed cloud service with excellent performance and scalability.</p>
+                            <p><strong>Best for:</strong> Production systems, large-scale applications</p>
+                        </div>
+
+                        <div class="grid-item">
+                            <h4>Weaviate</h4>
+                            <p>Open-source with advanced features like hybrid search.</p>
+                            <p><strong>Best for:</strong> Complex search requirements, self-hosted solutions</p>
+                        </div>
+
+                        <div class="grid-item">
+                            <h4>FAISS</h4>
+                            <p>Facebook's library for efficient similarity search, extremely fast.</p>
+                            <p><strong>Best for:</strong> High-performance local search, research</p>
+                        </div>
+                    </div>
+
+                    <div class="code-block">
+                        <div class="code-header">Creating a Vector Store</div>
+                        <div class="code-content">
+<pre><span class="code-keyword">from</span> langchain_community.vectorstores <span class="code-keyword">import</span> Chroma
+<span class="code-keyword">from</span> langchain_openai <span class="code-keyword">import</span> OpenAIEmbeddings
+
+<span class="code-comment"># Initialize embeddings model</span>
+embeddings = OpenAIEmbeddings()
+
+<span class="code-comment"># Create vector store from documents</span>
+vectorstore = Chroma.from_documents(
+    documents=chunks,
+    embedding=embeddings,
+    collection_name=<span class="code-string">"my_knowledge_base"</span>
+)
+
+<span class="code-comment"># Perform similarity search</span>
+results = vectorstore.similarity_search(
+    query=<span class="code-string">"What is machine learning?"</span>,
+    k=3  <span class="code-comment"># Return top 3 most similar chunks</span>
+)
+
+<span class="code-keyword">for</span> result <span class="code-keyword">in</span> results:
+    <span class="code-function">print</span>(result.page_content)</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>7. Retrievers: Smart Document Search</h3>
+                    
+                    <p>Retrievers are interfaces that return relevant documents based on a query. They abstract away the complexity of vector search.</p>
+
+                    <div class="code-block">
+                        <div class="code-header">Using Retrievers</div>
+                        <div class="code-content">
+<pre><span class="code-keyword">from</span> langchain.chains <span class="code-keyword">import</span> RetrievalQA
+
+<span class="code-comment"># Convert vector store to retriever</span>
+retriever = vectorstore.as_retriever(
+    search_type=<span class="code-string">"similarity"</span>,
+    search_kwargs={<span class="code-string">"k"</span>: 5}  <span class="code-comment"># Return top 5 results</span>
+)
+
+<span class="code-comment"># Create QA chain with retriever</span>
+qa_chain = RetrievalQA.from_chain_type(
+    llm=llm,
+    chain_type=<span class="code-string">"stuff"</span>,  <span class="code-comment"># How to combine retrieved docs</span>
+    retriever=retriever,
+    return_source_documents=<span class="code-number">True</span>
+)
+
+<span class="code-comment"># Ask questions about your documents</span>
+response = qa_chain.invoke(<span class="code-string">"What are the main findings?"</span>)
+<span class="code-function">print</span>(response[<span class="code-string">'result'</span>])
+<span class="code-function">print</span>(<span class="code-string">f"Sources: {len(response['source_documents'])} documents"</span>)</pre>
+                        </div>
+                    </div>
+
+                    <div class="explanation-box">
+                        <h5>Chain Types Explained</h5>
+                        <p><strong>stuff:</strong> Put all retrieved docs into one prompt (best for small docs)<br>
+                        <strong>map_reduce:</strong> Process each doc separately, then combine results (good for many docs)<br>
+                        <strong>refine:</strong> Iteratively refine answer by processing docs one by one<br>
+                        <strong>map_rerank:</strong> Score each doc's relevance and use the highest-scoring one</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>8. Agents: Decision-Making AI</h3>
+                    
+                    <p>Agents are LLMs that can use tools and make decisions about which actions to take. They follow a reasoning loop: Think → Act → Observe → Repeat.</p>
+
+                    <div class="workflow-visual">
+                        <h4 style="text-align: center; color: var(--primary-color); margin-bottom: 25px;">ReAct Agent Loop</h4>
+                        <div class="workflow-step">
+                            <div class="step-number">💭</div>
+                            <div class="step-title">Thought</div>
+                            <div class="step-desc">Agent analyzes the question: "I need to calculate the square root of 144 and then multiply by 2"</div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="step-number">⚡</div>
+                            <div class="step-title">Action</div>
+                            <div class="step-desc">Agent selects a tool: "I'll use the Calculator tool"</div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="step-number">🔧</div>
+                            <div class="step-title">Action Input</div>
+                            <div class="step-desc">Agent provides input to the tool: "sqrt(144)"</div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="step-number">👀</div>
+                            <div class="step-title">Observation</div>
+                            <div class="step-desc">Agent receives result: "12"</div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="step-number">💭</div>
+                            <div class="step-title">Thought (Continue)</div>
+                            <div class="step-desc">Agent decides: "Now I need to multiply 12 by 2"</div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="step-number">✅</div>
+                            <div class="step-title">Final Answer</div>
+                            <div class="step-desc">After completing all steps: "The answer is 24"</div>
+                        </div>
+                    </div>
+
+                    <div class="code-block">
+                        <div class="code-header">Creating an Agent with Tools</div>
+                        <div class="code-content">
+<pre><span class="code-keyword">from</span> langchain.agents <span class="code-keyword">import</span> create_react_agent, AgentExecutor
+<span class="code-keyword">from</span> langchain_core.tools <span class="code-keyword">import</span> Tool
+<span class="code-keyword">from</span> langchain <span class="code-keyword">import</span> hub
+
+<span class="code-comment"># Define custom tools</span>
+<span class="code-keyword">def</span> <span class="code-function">search_wikipedia</span>(query: <span class="code-class">str</span>) -> <span class="code-class">str</span>:
+    <span class="code-string">"""Search Wikipedia for information"""</span>
+    <span class="code-comment"># Implementation here</span>
+    <span class="code-keyword">return</span> <span class="code-string">f"Wikipedia results for: {query}"</span>
+
+<span class="code-keyword">def</span> <span class="code-function">calculate</span>(expression: <span class="code-class">str</span>) -> <span class="code-class">str</span>:
+    <span class="code-string">"""Evaluate mathematical expressions"""</span>
+    <span class="code-keyword">try</span>:
+        <span class="code-keyword">return</span> <span class="code-class">str</span>(<span class="code-function">eval</span>(expression))
+    <span class="code-keyword">except</span>:
+        <span class="code-keyword">return</span> <span class="code-string">"Error in calculation"</span>
+
+<span class="code-comment"># Create tool list</span>
+tools = [
+    Tool(
+        name=<span class="code-string">"Wikipedia"</span>,
+        func=search_wikipedia,
+        description=<span class="code-string">"Useful for looking up factual information"</span>
+    ),
+    Tool(
+        name=<span class="code-string">"Calculator"</span>,
+        func=calculate,
+        description=<span class="code-string">"Useful for mathematical calculations"</span>
+    )
+]
+
+<span class="code-comment"># Get ReAct prompt from hub</span>
+prompt = hub.pull(<span class="code-string">"hwchase17/react"</span>)
+
+<span class="code-comment"># Create agent</span>
+agent = create_react_agent(llm, tools, prompt)
+
+<span class="code-comment"># Create executor</span>
+agent_executor = AgentExecutor(
+    agent=agent,
+    tools=tools,
+    verbose=<span class="code-number">True</span>,
+    max_iterations=10
+)
+
+<span class="code-comment"># Use the agent</span>
+result = agent_executor.invoke({
+    <span class="code-string">"input"</span>: <span class="code-string">"Who won the Nobel Prize in Physics in 2020 and what is 15 squared?"</span>
+})
+<span class="code-function">print</span>(result[<span class="code-string">'output'</span>])</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LCEL SECTION -->
+            <div id="lcel" class="section">
+                <div class="section-header">
+                    <h2>⚡ Chapter 3: LangChain Expression Language (LCEL)</h2>
+                    <p>The modern way to build LangChain applications</p>
+                </div>
+
+                <div class="card">
+                    <h3>What is LCEL?</h3>
+                    
+                    <p>LangChain Expression Language (LCEL) is a declarative way to compose chains using the pipe operator (|). It's the recommended approach for building new applications because it's more intuitive, composable, and supports advanced features out of the box.</p>
+
+                    <div class="key-concept">
+                        <h4>🎯 Core Philosophy</h4>
+                        <p>LCEL treats components as data transformation steps. Each component takes input, transforms it, and passes output to the next component—just like UNIX pipes in the command line.</p>
+                    </div>
+
+                    <h4>Why Use LCEL?</h4>
+                    
+                    <ul class="benefits-list">
+                        <li><strong>Composability:</strong> Build complex workflows from simple, reusable pieces like LEGO blocks</li>
+                        <li><strong>Streaming Support:</strong> Get partial results as they're generated, improving UX</li>
+                        <li><strong>Async by Default:</strong> Built-in support for concurrent operations and async execution</li>
+                        <li><strong>Parallel Execution:</strong> Run multiple independent steps simultaneously for better performance</li>
+                        <li><strong>Automatic Retries:</strong> Configure retry logic without writing boilerplate code</li>
+                        <li><strong>Tracing & Debugging:</strong> Better visibility into what's happening at each step</li>
+                    </ul>
+
+                    <div class="code-block">
+                        <div class="code-header">Simple LCEL Chain</div>
+                        <div class="code-content">
+<pre><span class="code-keyword">from</span> langchain_core.prompts <span class="code-keyword">import</span> ChatPromptTemplate
+<span class="code-keyword">from</span> langchain_openai <span class="code-keyword">import</span> ChatOpenAI
+<span class="code-keyword">from</span> langchain_core.output_parsers <span class="code-keyword">import</span> StrOutputParser
+
+<span class="code-comment"># Define components</span>
+prompt = ChatPromptTemplate.from_template(
+    <span class="code-string">"Tell me a {adjective} joke about {topic}"</span>
+)
+model = ChatOpenAI()
+output_parser = StrOutputParser()
+
+<span class="code-comment"># Compose chain with pipe operator</span>
+chain = prompt | model | output_parser
+
+<span class="code-comment"># Invoke the chain</span>
+result = chain.invoke({
+    <span class="code-string">"adjective"</span>: <span class="code-string">"funny"</span>,
+    <span class="code-string">"topic"</span>: <span class="code-string">"programming"</span>
+})
+<span class="code-function">print</span>(result)</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Sequential Chains with LCEL</h3>
+                    
+                    <p>Build multi-step workflows where each step depends on the previous one's output.</p>
+
+                    <div class="workflow-visual">
+                        <h4 style="text-align: center; color: var(--primary-color); margin-bottom: 25px;">Recipe Generation Pipeline</h4>
+                        <div class="workflow-step">
+                            <div class="step-number">1</div>
+                            <div class="step-title">Location → Dish</div>
+                            <div class="step-desc">Input: "Italy" → Process: LLM suggests dish → Output: "Pasta Carbonara"</div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="step-number">2</div>
+                            <div class="step-title">Dish → Recipe</div>
+                            <div class="step-desc">Input: "Pasta Carbonara" → Process: LLM generates recipe → Output: Full recipe with ingredients</div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="step-number">3</div>
+                            <div class="step-title">Recipe → Time Estimate</div>
+                            <div class="step-desc">Input: Recipe → Process: LLM estimates time → Output: "30 minutes"</div>
+                        </div>
+                    </div>
+
+                    <div class="code-block">
+                        <div class="code-header">Sequential Chain Implementation</div>
+                        <div class="code-content">
+<pre><span class="code-keyword">from</span> langchain_core.runnables <span class="code-keyword">import</span> RunnablePassthrough
+
+<span class="code-comment"># Define individual chains</span>
+dish_chain = (
+    ChatPromptTemplate.from_template(
+        <span class="code-string">"Suggest one famous dish from {location}. Reply with just the dish name."</span>
+    )
+    | model
+    | StrOutputParser()
+)
+
+recipe_chain = (
+    ChatPromptTemplate.from_template(
+        <span class="code-string">"Provide a detailed recipe for {dish}."</span>
+    )
+    | model
+    | StrOutputParser()
+)
+
+time_chain = (
+    ChatPromptTemplate.from_template(
+        <span class="code-string">"Based on this recipe: {recipe}\nEstimate total cooking time."</span>
+    )
+    | model
+    | StrOutputParser()
+)
+
+<span class="code-comment"># Combine chains with RunnablePassthrough</span>
+complete_chain = (
+    RunnablePassthrough.assign(dish=<span class="code-keyword">lambda</span> x: dish_chain.invoke(x))
+    | RunnablePassthrough.assign(recipe=<span class="code-keyword">lambda</span> x: recipe_chain.invoke({<span class="code-string">"dish"</span>: x[<span class="code-string">"dish"</span>]}))
+    | RunnablePassthrough.assign(time=<span class="code-keyword">lambda</span> x: time_chain.invoke({<span class="code-string">"recipe"</span>: x[<span class="code-string">"recipe"</span>]}))
+)
+
+<span class="code-comment"># Execute</span>
+result = complete_chain.invoke({<span class="code-string">"location"</span>: <span class="code-string">"Japan"</span>})
+<span class="code-function">print</span>(<span class="code-string">f"Dish: {result['dish']}"</span>)
+<span class="code-function">print</span>(<span class="code-string">f"Recipe: {result['recipe']}"</span>)
+<span class="code-function">print</span>(<span class="code-string">f"Time: {result['time']}"</span>)</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Parallel Execution with LCEL</h3>
+                    
+                    <p>Run independent operations simultaneously to improve performance.</p>
+
+                    <div class="code-block">
+                        <div class="code-header">Parallel Chain Example</div>
+                        <div class="code-content">
+<pre><span class="code-keyword">from</span> langchain_core.runnables <span class="code-keyword">import</span> RunnableParallel
+
+<span class="code-comment"># Define parallel operations</span>
+pros_chain = (
+    ChatPromptTemplate.from_template(<span class="code-string">"List 3 pros of {topic}"</span>)
+    | model
+    | StrOutputParser()
+)
+
+cons_chain = (
+    ChatPromptTemplate.from_template(<span class="code-string">"List 3 cons of {topic}"</span>)
+    | model
+    | StrOutputParser()
+)
+
+<span class="code-comment"># Run in parallel</span>
+parallel_chain = RunnableParallel(
+    pros=pros_chain,
+    cons=cons_chain
+)
+
+<span class="code-comment"># Execute both chains simultaneously</span>
+result = parallel_chain.invoke({<span class="code-string">"topic"</span>: <span class="code-string">"remote work"</span>})
+<span class="code-function">print</span>(<span class="code-string">"Pros:"</span>, result[<span class="code-string">'pros'</span>])
+<span class="code-function">print</span>(<span class="code-string">"Cons:"</span>, result[<span class="code-string">'cons'</span>])</pre>
+                        </div>
+                    </div>
+
+                    <div class="explanation-box">
+                        <h5>Performance Benefit</h5>
+                        <p>Instead of waiting for the pros chain to complete before starting the cons chain (sequential = 2x time), both run at the same time, nearly halving the total execution time.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Streaming with LCEL</h3>
+                    
+                    <p>Get results as they're generated rather than waiting for completion—crucial for good UX with LLMs.</p>
+
+                    <div class="code-block">
+                        <div class="code-header">Streaming Responses</div>
+                        <div class="code-content">
+<pre><span class="code-comment"># Use stream() instead of invoke()</span>
+<span class="code-keyword">for</span> chunk <span class="code-keyword">in</span> chain.stream({<span class="code-string">"adjective"</span>: <span class="code-string">"clever"</span>, <span class="code-string">"topic"</span>: <span class="code-string">"AI"</span>}):
+    <span class="code-function">print</span>(chunk, end=<span class="code-string">""</span>, flush=<span class="code-number">True</span>)
+
+<span class="code-comment"># Output appears word by word:</span>
+<span class="code-comment"># Why did the AI go to therapy?</span>
+<span class="code-comment"># Because it had too many...</span>
+<span class="code-comment"># unresolved issues!</span></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADVANCED FEATURES SECTION -->
+            <div id="advanced-features" class="section">
+                <div class="section-header">
+                    <h2>🚀 Chapter 4: Advanced Features</h2>
+                    <p>Powerful capabilities for sophisticated applications</p>
+                </div>
+
+                <div class="card">
+                    <h3>📚 Document Processing Pipeline</h3>
+                    
+                    <h4>1. Document Loaders</h4>
+                    <p>Load documents from various sources:</p>
+                    
+                    <div class="code-block">
+                        <div class="code-header">Document Loading Examples</div>
+                        <div class="code-content">
+<pre><span class="code-comment"># PDF Loader</span>
+<span class="code-keyword">from</span> langchain_community.document_loaders <span class="code-keyword">import</span> PyPDFLoader
+loader = PyPDFLoader(<span class="code-string">"document.pdf"</span>)
+documents = loader.load()
+
+<span class="code-comment"># Web Loader</span>
+<span class="code-keyword">from</span> langchain_community.document_loaders <span class="code-keyword">import</span> WebBaseLoader
+loader = WebBaseLoader(<span class="code-string">"https://example.com"</span>)
+web_data = loader.load()</pre>
+                        </div>
+                    </div>
+
+                    <h4>2. Text Splitters</h4>
+                    <p>Break documents into manageable chunks:</p>
+                    
+                    <div class="code-block">
+                        <div class="code-header">Text Splitting Examples</div>
+                        <div class="code-content">
+<pre><span class="code-comment"># Character Text Splitter</span>
+<span class="code-keyword">from</span> langchain.text_splitter <span class="code-keyword">import</span> CharacterTextSplitter
+splitter = CharacterTextSplitter(
+    chunk_size=200,
+    chunk_overlap=20,
+    separator=<span class="code-string">"\n"</span>
+)
+
+<span class="code-comment"># Recursive Character Text Splitter</span>
+<span class="code-keyword">from</span> langchain.text_splitter <span class="code-keyword">import</span> RecursiveCharacterTextSplitter
+splitter = RecursiveCharacterTextSplitter(
+    chunk_size=500,
+    chunk_overlap=50,
+    separators=[<span class="code-string">"\n\n"</span>, <span class="code-string">"\n"</span>, <span class="code-string">". "</span>, <span class="code-string">" "</span>, <span class="code-string">""</span>]
+)</pre>
+                        </div>
+                    </div>
+
+                    <h4>3. Embeddings & Vector Stores</h4>
+                    <p>Create semantic representations for intelligent search:</p>
+                    
+                    <div class="code-block">
+                        <div class="code-header">Embeddings and Vector Stores</div>
+                        <div class="code-content">
+<pre><span class="code-comment"># Create embeddings</span>
+<span class="code-keyword">from</span> langchain_ibm <span class="code-keyword">import</span> WatsonxEmbeddings
+embeddings = WatsonxEmbeddings(
+    model_id=<span class="code-string">"ibm/slate-125m-english-rtrvr"</span>,
+    url=<span class="code-string">"https://us-south.ml.cloud.ibm.com"</span>,
+    project_id=<span class="code-string">"skills-network"</span>
+)
+
+<span class="code-comment"># Store in vector database</span>
+<span class="code-keyword">from</span> langchain.vectorstores <span class="code-keyword">import</span> Chroma
+vectorstore = Chroma.from_documents(chunks, embeddings)
+
+<span class="code-comment"># Retrieve similar documents</span>
+docs = vectorstore.similarity_search(<span class="code-string">"query"</span>)</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🔍 Retrievers</h3>
+                    <p>Intelligent document retrieval systems:</p>
+
+                    <h4>Vector Store-Backed Retriever</h4>
+                    <div class="code-block">
+                        <div class="code-header">Vector Store Retriever</div>
+                        <div class="code-content">
+<pre>retriever = vectorstore.as_retriever()
+docs = retriever.invoke(<span class="code-string">"Langchain"</span>)</pre>
+                        </div>
+                    </div>
+
+                    <h4>Parent Document Retriever</h4>
+                    <p>Balances accuracy with context preservation:</p>
+                    
+                    <div class="code-block">
+                        <div class="code-header">Parent Document Retriever</div>
+                        <div class="code-content">
+<pre><span class="code-keyword">from</span> langchain.retrievers <span class="code-keyword">import</span> ParentDocumentRetriever
+<span class="code-keyword">from</span> langchain.storage <span class="code-keyword">import</span> InMemoryStore
+
+retriever = ParentDocumentRetriever(
+    vectorstore=vectorstore,
+    docstore=InMemoryStore(),
+    child_splitter=small_splitter,
+    parent_splitter=large_splitter
+)</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>💾 Memory Management</h3>
+                    <p>Maintain context across conversations:</p>
+
+                    <h4>Chat Message History</h4>
+                    <div class="code-block">
+                        <div class="code-header">Chat Message History</div>
+                        <div class="code-content">
+<pre><span class="code-keyword">from</span> langchain.memory <span class="code-keyword">import</span> ChatMessageHistory
+
+history = ChatMessageHistory()
+history.add_ai_message(<span class="code-string">"Hi!"</span>)
+history.add_user_message(<span class="code-string">"What is the capital of France?"</span>)
+
+<span class="code-comment"># Use history in conversation</span>
+ai_response = llm.invoke(history.messages)</pre>
+                        </div>
+                    </div>
+
+                    <h4>Conversation Buffer Memory</h4>
+                    <div class="code-block">
+                        <div class="code-header">Conversation Buffer Memory</div>
+                        <div class="code-content">
+<pre><span class="code-keyword">from</span> langchain.memory <span class="code-keyword">import</span> ConversationBufferMemory
+<span class="code-keyword">from</span> langchain.chains <span class="code-keyword">import</span> ConversationChain
+
+conversation = ConversationChain(
+    llm=llm,
+    memory=ConversationBufferMemory()
+)
+
+response = conversation.invoke(<span class="code-string">"Hello, I am a little cat"</span>)</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🛠️ Tools & Agents</h3>
+                    <p>Extend LLM capabilities with external actions:</p>
+
+                    <h4>Creating Tools</h4>
+                    <div class="code-block">
+                        <div class="code-header">Creating Tools</div>
+                        <div class="code-content">
+<pre><span class="code-comment"># Using Tool class</span>
+<span class="code-keyword">from</span> langchain_core.tools <span class="code-keyword">import</span> Tool
+<span class="code-keyword">from</span> langchain_experimental.utilities <span class="code-keyword">import</span> PythonREPL
+
+python_repl = PythonREPL()
+calculator = Tool(
+    name=<span class="code-string">"Python Calculator"</span>,
+    func=python_repl.run,
+    description=<span class="code-string">"Performs calculations"</span>
+)
+
+<span class="code-comment"># Using @tool decorator</span>
+<span class="code-keyword">from</span> langchain.tools <span class="code-keyword">import</span> tool
+
+<span class="code-keyword">@tool</span>
+<span class="code-keyword">def</span> <span class="code-function">search_weather</span>(location: <span class="code-class">str</span>):
+    <span class="code-string">"""Search current weather"""</span>
+    <span class="code-keyword">return</span> <span class="code-string">f"Weather in {location}: sunny, 72°F"</span></pre>
+                        </div>
+                    </div>
+
+                    <h4>Creating Agents</h4>
+                    <div class="code-block">
+                        <div class="code-header">Creating Agents</div>
+                        <div class="code-content">
+<pre><span class="code-keyword">from</span> langchain.agents <span class="code-keyword">import</span> create_react_agent, AgentExecutor
+
+agent = create_react_agent(
+    llm=llm,
+    tools=tools,
+    prompt=prompt
+)
+
+agent_executor = AgentExecutor(
+    agent=agent,
+    tools=tools,
+    verbose=<span class="code-number">True</span>
+)
+
+result = agent_executor.invoke({<span class="code-string">"input"</span>: <span class="code-string">"What is the square root of 256?"</span>})</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRACTICAL EXAMPLES SECTION -->
+            <div id="practical-examples" class="section">
+                <div class="section-header">
+                    <h2>💼 Chapter 5: Practical Examples & Use Cases</h2>
+                    <p>Complete examples of production-ready systems</p>
+                </div>
+
+                <div class="card">
+                    <h3>Application 1: Document Q&A System</h3>
+                    
+                    <p>Build a system that answers questions about your documents using Retrieval-Augmented Generation (RAG).</p>
+
+                    <div class="workflow-visual">
+                        <h4 style="text-align: center; color: var(--primary-color); margin-bottom: 25px;">RAG Pipeline</h4>
+                        <div class="workflow-step">
+                            <div class="step-number">1</div>
+                            <div class="step-title">Document Ingestion</div>
+                            <div class="step-desc">Load PDFs, split into chunks, create embeddings, store in vector database</div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="step-number">2</div>
+                            <div class="step-title">Query Processing</div>
+                            <div class="step-desc">User asks question: "What was Q4 revenue?"</div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="step-number">3</div>
+                            <div class="step-title">Retrieval</div>
+                            <div class="step-desc">Search vector DB for most relevant chunks (semantic similarity)</div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="step-number">4</div>
+                            <div class="step-title">Augmentation</div>
+                            <div class="step-desc">Combine retrieved chunks with user question in prompt</div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="step-number">5</div>
+                            <div class="step-title">Generation</div>
+                            <div class="step-desc">LLM generates answer based on retrieved context</div>
+                        </div>
+                    </div>
+
+                    <div class="code-block">
+                        <div class="code-header">Complete RAG Implementation</div>
+                        <div class="code-content">
+<pre><span class="code-keyword">from</span> langchain_community.document_loaders <span class="code-keyword">import</span> PyPDFLoader
+<span class="code-keyword">from</span> langchain.text_splitter <span class="code-keyword">import</span> RecursiveCharacterTextSplitter
+<span class="code-keyword">from</span> langchain_community.vectorstores <span class="code-keyword">import</span> Chroma
+<span class="code-keyword">from</span> langchain_openai <span class="code-keyword">import</span> OpenAIEmbeddings, ChatOpenAI
+<span class="code-keyword">from</span> langchain.chains <span class="code-keyword">import</span> RetrievalQA
+
+<span class="code-comment"># STEP 1: Load and process documents</span>
+loader = PyPDFLoader(<span class="code-string">"company_report.pdf"</span>)
+documents = loader.load()
+
+splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1000,
+    chunk_overlap=200
+)
+chunks = splitter.split_documents(documents)
+
+<span class="code-comment"># STEP 2: Create vector store</span>
+embeddings = OpenAIEmbeddings()
+vectorstore = Chroma.from_documents(
+    documents=chunks,
+    embedding=embeddings,
+    persist_directory=<span class="code-string">"./chroma_db"</span>
+)
+
+<span class="code-comment"># STEP 3: Create retrieval chain</span>
+llm = ChatOpenAI(model=<span class="code-string">"gpt-4"</span>, temperature=0)
+qa_chain = RetrievalQA.from_chain_type(
+    llm=llm,
+    chain_type=<span class="code-string">"stuff"</span>,
+    retriever=vectorstore.as_retriever(search_kwargs={<span class="code-string">"k"</span>: 4}),
+    return_source_documents=<span class="code-number">True</span>
+)
+
+<span class="code-comment"># STEP 4: Query the system</span>
+query = <span class="code-string">"What were the main financial highlights in Q4?"</span>
+result = qa_chain.invoke(query)
+
+<span class="code-function">print</span>(<span class="code-string">"Answer:"</span>, result[<span class="code-string">'result'</span>])
+<span class="code-function">print</span>(<span class="code-string">f"\nBased on {len(result['source_documents'])} source chunks"</span>)</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Application 2: Customer Support Bot</h3>
+                    
+                    <p>An intelligent chatbot that remembers context, searches a knowledge base, and provides helpful responses.</p>
+
+                    <div class="code-block">
+                        <div class="code-header">Support Bot with Memory</div>
+                        <div class="code-content">
+<pre><span class="code-keyword">from</span> langchain.memory <span class="code-keyword">import</span> ConversationBufferMemory
+<span class="code-keyword">from</span> langchain.chains <span class="code-keyword">import</span> ConversationalRetrievalChain
+
+<span class="code-comment"># Setup memory</span>
+memory = ConversationBufferMemory(
+    memory_key=<span class="code-string">"chat_history"</span>,
+    return_messages=<span class="code-number">True</span>,
+    output_key=<span class="code-string">'answer'</span>
+)
+
+<span class="code-comment"># Create conversational chain</span>
+support_bot = ConversationalRetrievalChain.from_llm(
+    llm=ChatOpenAI(temperature=0),
+    retriever=vectorstore.as_retriever(),
+    memory=memory,
+    return_source_documents=<span class="code-number">True</span>
+)
+
+<span class="code-comment"># Conversation</span>
+<span class="code-function">print</span>(support_bot.invoke(<span class="code-string">"How do I reset my password?"</span>)[<span class="code-string">'answer'</span>])
+<span class="code-function">print</span>(support_bot.invoke(<span class="code-string">"Does that work on mobile too?"</span>)[<span class="code-string">'answer'</span>])
+<span class="code-comment"># Bot remembers the context of "that" referring to password reset</span></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Application 3: Research Assistant Agent</h3>
+                    
+                    <p>An autonomous agent that can search the web, perform calculations, and synthesize information.</p>
+
+                    <div class="code-block">
+                        <div class="code-header">Multi-Tool Research Agent</div>
+                        <div class="code-content">
+<pre><span class="code-keyword">from</span> langchain.agents <span class="code-keyword">import</span> create_react_agent, AgentExecutor, load_tools
+<span class="code-keyword">from</span> langchain <span class="code-keyword">import</span> hub
+
+<span class="code-comment"># Load pre-built tools</span>
+tools = load_tools(
+    [<span class="code-string">"serpapi"</span>, <span class="code-string">"llm-math"</span>],  <span class="code-comment"># Web search + calculator</span>
+    llm=llm
+)
+
+<span class="code-comment"># Get ReAct prompt</span>
+prompt = hub.pull(<span class="code-string">"hwchase17/react"</span>)
+
+<span class="code-comment"># Create agent</span>
+agent = create_react_agent(llm, tools, prompt)
+agent_executor = AgentExecutor(
+    agent=agent,
+    tools=tools,
+    verbose=<span class="code-number">True</span>,
+    handle_parsing_errors=<span class="code-number">True</span>
+)
+
+<span class="code-comment"># Complex multi-step query</span>
+query = <span class="code-string">"""
+Find the current population of Tokyo.
+Then calculate what 5% of that population would be.
+Finally, tell me if that number is greater than the population of Los Angeles.
+"""</span>
+
+result = agent_executor.invoke({<span class="code-string">"input"</span>: query})
+<span class="code-function">print</span>(result[<span class="code-string">'output'</span>])</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BEST PRACTICES SECTION -->
+            <div id="best-practices" class="section">
+                <div class="section-header">
+                    <h2>🎯 Chapter 6: Best Practices & Tips</h2>
+                    <p>Professional techniques for production systems</p>
+                </div>
+
+                <div class="card">
+                    <h3>Design Patterns</h3>
+                    
+                    <div class="grid">
+                        <div class="grid-item" style="background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);">
+                            <h4>✅ DO: Use LCEL for New Projects</h4>
+                            <p>LCEL is the modern standard with better features, streaming support, and async capabilities.</p>
+                        </div>
+
+                        <div class="grid-item" style="background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);">
+                            <h4>✅ DO: Implement Error Handling</h4>
+                            <p>LLM calls can fail. Always wrap in try-catch and provide fallback behaviors.</p>
+                        </div>
+
+                        <div class="grid-item" style="background: linear-gradient(135deg, #fdcbf1 0%, #e6dee9 100%);">
+                            <h4>✅ DO: Use Prompt Templates</h4>
+                            <p>Never hardcode prompts. Templates make your code maintainable and testable.</p>
+                        </div>
+
+                        <div class="grid-item" style="background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);">
+                            <h4>✅ DO: Monitor Token Usage</h4>
+                            <p>Track costs by monitoring tokens. LangChain provides callbacks for this.</p>
+                        </div>
+
+                        <div class="grid-item" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);">
+                            <h4>❌ DON'T: Send Entire Documents</h4>
+                            <p>Always chunk and retrieve relevant sections. Full documents exceed context limits.</p>
+                        </div>
+
+                        <div class="grid-item" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);">
+                            <h4>❌ DON'T: Ignore Rate Limits</h4>
+                            <p>Implement exponential backoff and respect API rate limits to avoid errors.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Performance Optimization</h3>
+                    
+                    <ul class="benefits-list">
+                        <li><strong>Cache Embeddings:</strong> Store embeddings to avoid recomputing for the same text</li>
+                        <li><strong>Use Streaming:</strong> Improve perceived performance by showing results as they generate</li>
+                        <li><strong>Batch Requests:</strong> When possible, batch multiple requests to reduce overhead</li>
+                        <li><strong>Choose Right Chunk Size:</strong> Balance between context (larger) and precision (smaller)</li>
+                        <li><strong>Async Operations:</strong> Use async for I/O-bound operations like API calls</li>
+                        <li><strong>Select Appropriate Model:</strong> Use faster/cheaper models for simple tasks, powerful ones for complex reasoning</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>Security Considerations</h3>
+                    
+                    <ul class="benefits-list">
+                        <li><strong>Input Validation:</strong> Sanitize user inputs to prevent prompt injection attacks</li>
+                        <li><strong>Output Filtering:</strong> Check LLM outputs for inappropriate or dangerous content</li>
+                        <li><strong>API Key Management:</strong> Never hardcode API keys. Use environment variables</li>
+                        <li><strong>Rate Limiting:</strong> Implement rate limits to prevent abuse</li>
+                        <li><strong>Data Privacy:</strong> Be careful about sending sensitive data to external APIs</li>
+                        <li><strong>Access Control:</strong> Implement proper authentication for your applications</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- CHEAT SHEET SECTION -->
+            <div id="cheat-sheet" class="section">
+                <div class="section-header">
+                    <h2>📋 Chapter 7: Quick Reference Cheat Sheet</h2>
+                    <p>Essential code snippets and patterns</p>
+                </div>
+
+                <div class="card">
+                    <h3>Common Patterns Cheat Sheet</h3>
+                    
+                    <div class="comparison-table">
+                        <tr>
+                            <th>Pattern</th>
+                            <th>Code</th>
+                            <th>Use Case</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Simple Chain</strong></td>
+                            <td><code>chain = prompt | llm | parser</code></td>
+                            <td>Basic text generation</td>
+                        </tr>
+                        <tr>
+                            <td><strong>With Memory</strong></td>
+                            <td><code>ConversationChain(llm, memory)</code></td>
+                            <td>Chatbots, assistants</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Document QA</strong></td>
+                            <td><code>RetrievalQA.from_chain_type()</code></td>
+                            <td>Search and answer questions</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Agent</strong></td>
+                            <td><code>create_react_agent(llm, tools)</code></td>
+                            <td>Multi-step reasoning with tools</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Streaming</strong></td>
+                            <td><code>chain.stream(input)</code></td>
+                            <td>Real-time output display</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="card">
+                    <h3>Component Quick Reference</h3>
+                    
+                    <div class="comparison-table">
+                        <tr>
+                            <th>Component</th>
+                            <th>Purpose</th>
+                            <th>Key Classes</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Models</strong></td>
+                            <td>Generate text</td>
+                            <td>ChatOpenAI, OpenAI, HuggingFaceHub</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Prompts</strong></td>
+                            <td>Format inputs</td>
+                            <td>PromptTemplate, ChatPromptTemplate</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Memory</strong></td>
+                            <td>Store context</td>
+                            <td>ConversationBufferMemory, ConversationSummaryMemory</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Loaders</strong></td>
+                            <td>Import documents</td>
+                            <td>PyPDFLoader, TextLoader, WebBaseLoader</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Splitters</strong></td>
+                            <td>Chunk text</td>
+                            <td>RecursiveCharacterTextSplitter, CharacterTextSplitter</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Embeddings</strong></td>
+                            <td>Create vectors</td>
+                            <td>OpenAIEmbeddings, HuggingFaceEmbeddings</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Vector Stores</strong></td>
+                            <td>Store/search vectors</td>
+                            <td>Chroma, Pinecone, FAISS, Weaviate</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Retrievers</strong></td>
+                            <td>Fetch relevant docs</td>
+                            <td>VectorStoreRetriever, MultiQueryRetriever</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Chains</strong></td>
+                            <td>Orchestrate workflows</td>
+                            <td>LLMChain, RetrievalQA, ConversationalRetrievalChain</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Agents</strong></td>
+                            <td>Make decisions</td>
+                            <td>create_react_agent, AgentExecutor</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tools</strong></td>
+                            <td>Agent capabilities</td>
+                            <td>Tool, SerpAPIWrapper, PythonREPL</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Output Parsers</strong></td>
+                            <td>Structure outputs</td>
+                            <td>StrOutputParser, JsonOutputParser, PydanticOutputParser</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="card">
+                    <h3>Essential Code Snippets</h3>
+                    
+                    <h4>1. Basic Setup</h4>
+                    <div class="code-block">
+                        <div class="code-content">
+<pre><span class="code-comment"># Install LangChain</span>
+pip install langchain langchain-openai langchain-community
+
+<span class="code-comment"># Set API key</span>
+<span class="code-keyword">import</span> os
+os.environ[<span class="code-string">"OPENAI_API_KEY"</span>] = <span class="code-string">"your-key-here"</span>
+
+<span class="code-comment"># Initialize model</span>
+<span class="code-keyword">from</span> langchain_openai <span class="code-keyword">import</span> ChatOpenAI
+llm = ChatOpenAI(model=<span class="code-string">"gpt-4"</span>, temperature=0.7)</pre>
+                        </div>
+                    </div>
+
+                    <h4>2. Document Processing Template</h4>
+                    <div class="code-block">
+                        <div class="code-content">
+<pre><span class="code-keyword">from</span> langchain_community.document_loaders <span class="code-keyword">import</span> PyPDFLoader
+<span class="code-keyword">from</span> langchain.text_splitter <span class="code-keyword">import</span> RecursiveCharacterTextSplitter
+<span class="code-keyword">from</span> langchain_community.vectorstores <span class="code-keyword">import</span> Chroma
+<span class="code-keyword">from</span> langchain_openai <span class="code-keyword">import</span> OpenAIEmbeddings
+
+<span class="code-comment"># Load → Split → Embed → Store</span>
+loader = PyPDFLoader(<span class="code-string">"document.pdf"</span>)
+docs = loader.load()
+splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+chunks = splitter.split_documents(docs)
+vectorstore = Chroma.from_documents(chunks, OpenAIEmbeddings())</pre>
+                        </div>
+                    </div>
+
+                    <h4>3. Q&A Chain Template</h4>
+                    <div class="code-block">
+                        <div class="code-content">
+<pre><span class="code-keyword">from</span> langchain.chains <span class="code-keyword">import</span> RetrievalQA
+
+qa = RetrievalQA.from_chain_type(
+    llm=llm,
+    chain_type=<span class="code-string">"stuff"</span>,
+    retriever=vectorstore.as_retriever(search_kwargs={<span class="code-string">"k"</span>: 3})
+)
+answer = qa.invoke(<span class="code-string">"Your question here"</span>)</pre>
+                        </div>
+                    </div>
+
+                    <h4>4. Conversational Chain Template</h4>
+                    <div class="code-block">
+                        <div class="code-content">
+<pre><span class="code-keyword">from</span> langchain.memory <span class="code-keyword">import</span> ConversationBufferMemory
+<span class="code-keyword">from</span> langchain.chains <span class="code-keyword">import</span> ConversationalRetrievalChain
+
+memory = ConversationBufferMemory(
+    memory_key=<span class="code-string">"chat_history"</span>,
+    return_messages=<span class="code-number">True</span>
+)
+
+conversation = ConversationalRetrievalChain.from_llm(
+    llm=llm,
+    retriever=vectorstore.as_retriever(),
+    memory=memory
+)</pre>
+                        </div>
+                    </div>
+
+                    <h4>5. Agent Template</h4>
+                    <div class="code-block">
+                        <div class="code-content">
+<pre><span class="code-keyword">from</span> langchain.agents <span class="code-keyword">import</span> create_react_agent, AgentExecutor, load_tools
+<span class="code-keyword">from</span> langchain <span class="code-keyword">import</span> hub
+
+tools = load_tools([<span class="code-string">"serpapi"</span>, <span class="code-string">"llm-math"</span>], llm=llm)
+prompt = hub.pull(<span class="code-string">"hwchase17/react"</span>)
+agent = create_react_agent(llm, tools, prompt)
+executor = AgentExecutor(agent=agent, tools=tools, verbose=<span class="code-number">True</span>)</pre>
+                        </div>
+                    </div>
+
+                    <h4>6. LCEL Chain Template</h4>
+                    <div class="code-block">
+                        <div class="code-content">
+<pre><span class="code-keyword">from</span> langchain_core.prompts <span class="code-keyword">import</span> ChatPromptTemplate
+<span class="code-keyword">from</span> langchain_core.output_parsers <span class="code-keyword">import</span> StrOutputParser
+
+prompt = ChatPromptTemplate.from_template(<span class="code-string">"Question: {question}"</span>)
+chain = prompt | llm | StrOutputParser()
+result = chain.invoke({<span class="code-string">"question"</span>: <span class="code-string">"What is AI?"</span>})</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADVANCED CONCEPTS SECTION -->
+            <div id="advanced-concepts" class="section">
+                <div class="section-header">
+                    <h2>🚀 Chapter 8: Advanced Concepts</h2>
+                    <p>Taking your LangChain skills to the next level</p>
+                </div>
+
+                <div class="card">
+                    <h3>Custom Output Parsers</h3>
+                    
+                    <p>Control exactly how LLM outputs are structured and validated.</p>
+
+                    <div class="code-block">
+                        <div class="code-header">Pydantic Output Parser</div>
+                        <div class="code-content">
+<pre><span class="code-keyword">from</span> langchain.output_parsers <span class="code-keyword">import</span> PydanticOutputParser
+<span class="code-keyword">from</span> pydantic <span class="code-keyword">import</span> BaseModel, Field
+
+<span class="code-comment"># Define desired structure</span>
+<span class="code-keyword">class</span> <span class="code-class">Recipe</span>(BaseModel):
+    name: <span class="code-class">str</span> = Field(description=<span class="code-string">"Name of the dish"</span>)
+    ingredients: <span class="code-class">list</span>[<span class="code-class">str</span>] = Field(description=<span class="code-string">"List of ingredients"</span>)
+    steps: <span class="code-class">list</span>[<span class="code-class">str</span>] = Field(description=<span class="code-string">"Cooking steps"</span>)
+    prep_time: <span class="code-class">int</span> = Field(description=<span class="code-string">"Preparation time in minutes"</span>)
+
+<span class="code-comment"># Create parser</span>
+parser = PydanticOutputParser(pydantic_object=Recipe)
+
+<span class="code-comment"># Use in prompt</span>
+prompt = ChatPromptTemplate.from_template(
+    <span class="code-string">"""Generate a recipe for {dish}.
+    
+    {format_instructions}
+    """</span>
+)
+
+chain = prompt | llm | parser
+
+<span class="code-comment"># Get structured output</span>
+recipe = chain.invoke({
+    <span class="code-string">"dish"</span>: <span class="code-string">"chocolate cake"</span>,
+    <span class="code-string">"format_instructions"</span>: parser.get_format_instructions()
+})
+
+<span class="code-function">print</span>(recipe.name)  <span class="code-comment"># Structured object!</span>
+<span class="code-function">print</span>(recipe.ingredients)
+<span class="code-function">print</span>(recipe.prep_time)</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Custom Tools for Agents</h3>
+                    
+                    <p>Extend agent capabilities with your own functions.</p>
+
+                    <div class="code-block">
+                        <div class="code-header">Creating Custom Tools</div>
+                        <div class="code-content">
+<pre><span class="code-keyword">from</span> langchain.tools <span class="code-keyword">import</span> tool
+<span class="code-keyword">from</span> datetime <span class="code-keyword">import</span> datetime
+<span class="code-keyword">import</span> requests
+
+<span class="code-keyword">@tool</span>
+<span class="code-keyword">def</span> <span class="code-function">get_weather</span>(location: <span class="code-class">str</span>) -> <span class="code-class">str</span>:
+    <span class="code-string">"""Get current weather for a location. Use this when users ask about weather."""</span>
+    <span class="code-comment"># In real implementation, call weather API</span>
+    <span class="code-keyword">return</span> <span class="code-string">f"Weather in {location}: Sunny, 72°F"</span>
+
+<span class="code-keyword">@tool</span>
+<span class="code-keyword">def</span> <span class="code-function">get_current_time</span>() -> <span class="code-class">str</span>:
+    <span class="code-string">"""Get the current time. Use when users ask what time it is."""</span>
+    <span class="code-keyword">return</span> datetime.now().strftime(<span class="code-string">"%I:%M %p"</span>)
+
+<span class="code-keyword">@tool</span>
+<span class="code-keyword">def</span> <span class="code-function">search_database</span>(query: <span class="code-class">str</span>) -> <span class="code-class">str</span>:
+    <span class="code-string">"""Search company database. Use for internal information queries."""</span>
+    <span class="code-comment"># Query your database</span>
+    <span class="code-keyword">return</span> <span class="code-string">f"Database results for: {query}"</span>
+
+<span class="code-comment"># Use custom tools with agent</span>
+tools = [get_weather, get_current_time, search_database]
+agent = create_react_agent(llm, tools, prompt)
+executor = AgentExecutor(agent=agent, tools=tools)</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Callbacks for Monitoring</h3>
+                    
+                    <p>Track what's happening inside your chains for debugging and analytics.</p>
+
+                    <div class="code-block">
+                        <div class="code-header">Using Callbacks</div>
+                        <div class="code-content">
+<pre><span class="code-keyword">from</span> langchain.callbacks <span class="code-keyword">import</span> StdOutCallbackHandler
+<span class="code-keyword">from</span> langchain.callbacks.base <span class="code-keyword">import</span> BaseCallbackHandler
+
+<span class="code-keyword">class</span> <span class="code-class">CustomCallback</span>(BaseCallbackHandler):
+    <span class="code-keyword">def</span> <span class="code-function">on_llm_start</span>(<span class="code-keyword">self</span>, serialized, prompts, **kwargs):
+        <span class="code-function">print</span>(<span class="code-string">f"LLM started with prompts: {prompts}"</span>)
+    
+    <span class="code-keyword">def</span> <span class="code-function">on_llm_end</span>(<span class="code-keyword">self</span>, response, **kwargs):
+        <span class="code-function">print</span>(<span class="code-string">f"LLM ended with response length: {len(str(response))}"</span>)
+    
+    <span class="code-keyword">def</span> <span class="code-function">on_chain_start</span>(<span class="code-keyword">self</span>, serialized, inputs, **kwargs):
+        <span class="code-function">print</span>(<span class="code-string">f"Chain started with inputs: {inputs}"</span>)
+    
+    <span class="code-keyword">def</span> <span class="code-function">on_tool_start</span>(<span class="code-keyword">self</span>, serialized, input_str, **kwargs):
+        <span class="code-function">print</span>(<span class="code-string">f"Tool {serialized.get('name')} started"</span>)
+
+<span class="code-comment"># Use callback</span>
+callback = CustomCallback()
+result = chain.invoke(
+    {<span class="code-string">"question"</span>: <span class="code-string">"What is quantum computing?"</span>},
+    config={<span class="code-string">"callbacks"</span>: [callback]}
+)</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Caching for Performance</h3>
+                    
+                    <p>Avoid redundant LLM calls by caching responses.</p>
+
+                    <div class="code-block">
+                        <div class="code-header">Implementing Cache</div>
+                        <div class="code-content">
+<pre><span class="code-keyword">from</span> langchain.cache <span class="code-keyword">import</span> InMemoryCache, SQLiteCache
+<span class="code-keyword">from</span> langchain.globals <span class="code-keyword">import</span> set_llm_cache
+
+<span class="code-comment"># In-memory cache (fast, volatile)</span>
+set_llm_cache(InMemoryCache())
+
+<span class="code-comment"># Persistent cache (survives restarts)</span>
+set_llm_cache(SQLiteCache(database_path=<span class="code-string">".langchain.db"</span>))
+
+<span class="code-comment"># Now identical queries are cached</span>
+llm.invoke(<span class="code-string">"What is Python?"</span>)  <span class="code-comment"># Makes API call</span>
+llm.invoke(<span class="code-string">"What is Python?"</span>)  <span class="code-comment"># Uses cache, instant!</span></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Fallback Chains</h3>
+                    
+                    <p>Handle errors gracefully with fallback options.</p>
+
+                    <div class="code-block">
+                        <div class="code-header">Fallback Pattern</div>
+                        <div class="code-content">
+<pre><span class="code-keyword">from</span> langchain_core.runnables <span class="code-keyword">import</span> RunnableWithFallbacks
+
+<span class="code-comment"># Primary chain (expensive but good)</span>
+primary_chain = prompt | ChatOpenAI(model=<span class="code-string">"gpt-4"</span>)
+
+<span class="code-comment"># Fallback chain (cheaper, runs if primary fails)</span>
+fallback_chain = prompt | ChatOpenAI(model=<span class="code-string">"gpt-3.5-turbo"</span>)
+
+<span class="code-comment"># Combine with fallback</span>
+chain_with_fallback = primary_chain.with_fallbacks(
+    [fallback_chain]
+)
+
+<span class="code-comment"># If GPT-4 fails (rate limit, error), automatically uses GPT-3.5</span>
+result = chain_with_fallback.invoke({<span class="code-string">"question"</span>: <span class="code-string">"Explain AI"</span>})</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TROUBLESHOOTING SECTION -->
+            <div id="troubleshooting" class="section">
+                <div class="section-header">
+                    <h2>🔧 Chapter 9: Troubleshooting & Common Issues</h2>
+                    <p>Solutions to frequent problems</p>
+                </div>
+
+                <div class="card">
+                    <h3>Common Errors & Solutions</h3>
+                    
+                    <div class="explanation-box">
+                        <h5>❌ Error: "Context length exceeded"</h5>
+                        <p><strong>Cause:</strong> Your input + output exceeds the model's token limit.</p>
+                        <p><strong>Solutions:</strong></p>
+                        <ul style="margin-top: 10px; padding-left: 20px;">
+                            <li>Reduce chunk_size when splitting documents</li>
+                            <li>Retrieve fewer documents (lower k value)</li>
+                            <li>Use map_reduce chain type instead of stuff</li>
+                            <li>Implement summarization before processing</li>
+                        </ul>
+                    </div>
+
+                    <div class="explanation-box">
+                        <h5>❌ Error: "Rate limit exceeded"</h5>
+                        <p><strong>Cause:</strong> Too many API requests in a short time.</p>
+                        <p><strong>Solutions:</strong></p>
+                        <ul style="margin-top: 10px; padding-left: 20px;">
+                            <li>Implement exponential backoff retry logic</li>
+                            <li>Use caching to reduce duplicate calls</li>
+                            <li>Batch requests when possible</li>
+                            <li>Upgrade your API tier for higher limits</li>
+                        </ul>
+                    </div>
+
+                    <div class="explanation-box">
+                        <h5>❌ Error: "No relevant documents found"</h5>
+                        <p><strong>Cause:</strong> Vector search isn't finding similar content.</p>
+                        <p><strong>Solutions:</strong></p>
+                        <ul style="margin-top: 10px; padding-left: 20px;">
+                            <li>Adjust chunk_size (try larger chunks)</li>
+                            <li>Increase k (number of retrieved documents)</li>
+                            <li>Improve document quality and formatting</li>
+                            <li>Use better embedding models</li>
+                            <li>Implement query expansion or rewriting</li>
+                        </ul>
+                    </div>
+
+                    <div class="explanation-box">
+                        <h5>❌ Error: "Agent max iterations exceeded"</h5>
+                        <p><strong>Cause:</strong> Agent is stuck in a loop or can't complete task.</p>
+                        <p><strong>Solutions:</strong></p>
+                        <ul style="margin-top: 10px; padding-left: 20px;">
+                            <li>Increase max_iterations parameter</li>
+                            <li>Improve tool descriptions for clarity</li>
+                            <li>Use a more capable model (GPT-4 vs GPT-3.5)</li>
+                            <li>Simplify the task or break it into steps</li>
+                        </ul>
+                    </div>
+
+                    <div class="explanation-box">
+                        <h5>❌ Error: "Memory keeps growing"</h5>
+                        <p><strong>Cause:</strong> ConversationBufferMemory stores everything indefinitely.</p>
+                        <p><strong>Solutions:</strong></p>
+                        <ul style="margin-top: 10px; padding-left: 20px;">
+                            <li>Use ConversationBufferWindowMemory (keeps last N messages)</li>
+                            <li>Use ConversationSummaryMemory (summarizes old content)</li>
+                            <li>Periodically clear memory in long sessions</li>
+                            <li>Implement custom memory with size limits</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Performance Optimization Tips</h3>
+                    
+                    <ul class="benefits-list">
+                        <li><strong>Slow Response Times:</strong> Use streaming for better UX, cache frequently asked questions, use faster models for simple tasks</li>
+                        <li><strong>High API Costs:</strong> Cache responses, use cheaper models when appropriate, optimize prompts to be concise, batch similar requests</li>
+                        <li><strong>Poor Answer Quality:</strong> Improve prompt engineering, use better retrieval (increase k, adjust chunk size), try few-shot examples, upgrade to more capable model</li>
+                        <li><strong>Inconsistent Results:</strong> Set temperature=0 for deterministic outputs, use better prompt templates, add validation steps</li>
+                        <li><strong>Memory Issues:</strong> Process documents in batches, use efficient vector stores (FAISS), clear caches periodically</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- REAL-WORLD SCENARIOS SECTION -->
+            <div id="real-world-scenarios" class="section">
+                <div class="section-header">
+                    <h2>🌍 Chapter 10: Real-World Scenarios</h2>
+                    <p>How to approach common business problems</p>
+                </div>
+
+                <div class="card">
+                    <h3>Scenario 1: Legal Document Analysis</h3>
+                    
+                    <div class="analogy-box">
+                        <h5>The Challenge</h5>
+                        <p>A law firm needs to analyze thousands of contracts to find specific clauses, identify risks, and extract key terms. Manual review takes too long.</p>
+                    </div>
+
+                    <h4>LangChain Solution</h4>
+                    
+                    <div class="workflow-visual">
+                        <div class="workflow-step">
+                            <div class="step-number">1</div>
+                            <div class="step-title">Document Ingestion</div>
+                            <div class="step-desc">Load PDFs, clean and preprocess text, handle legal formatting</div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="step-number">2</div>
+                            <div class="step-title">Intelligent Chunking</div>
+                            <div class="step-desc">Split by sections/clauses rather than arbitrary length to preserve legal context</div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="step-number">3</div>
+                            <div class="step-title">Specialized Embeddings</div>
+                            <div class="step-desc">Use legal-domain embeddings for better understanding of terminology</div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="step-number">4</div>
+                            <div class="step-title">Query Interface</div>
+                            <div class="step-desc">Lawyers ask: "Find all force majeure clauses" or "Identify liability limitations"</div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="step-number">5</div>
+                            <div class="step-title">Risk Analysis</div>
+                            <div class="step-desc">Agent identifies unusual terms, missing standard clauses, potential risks</div>
+                        </div>
+                    </div>
+
+                    <p><strong>Key Components:</strong> RetrievalQA for searching, Custom output parsers for structured extraction, Memory for multi-turn analysis conversations</p>
+                </div>
+
+                <div class="card">
+                    <h3>Scenario 2: E-commerce Customer Support</h3>
+                    
+                    <div class="analogy-box">
+                        <h5>The Challenge</h5>
+                        <p>An online store receives thousands of support tickets daily. Customers ask about orders, returns, products, and shipping. Support team is overwhelmed.</p>
+                    </div>
+
+                    <h4>LangChain Solution</h4>
+                    
+                    <div class="workflow-visual">
+                        <div class="workflow-step">
+                            <div class="step-number">1</div>
+                            <div class="step-title">Knowledge Base</div>
+                            <div class="step-desc">Load FAQs, policies, product info into vector store for instant retrieval</div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="step-number">2</div>
+                            <div class="step-title">Customer Context</div>
+                            <div class="step-desc">Memory maintains conversation history, tracks customer sentiment</div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="step-number">3</div>
+                            <div class="step-title">Tool Integration</div>
+                            <div class="step-desc">Agent can check order status, initiate returns, look up shipping info</div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="step-number">4</div>
+                            <div class="step-title">Smart Routing</div>
+                            <div class="step-desc">Simple questions answered immediately, complex issues escalated to humans</div>
+                        </div>
+                    </div>
+
+                    <p><strong>Key Components:</strong> ConversationalRetrievalChain with memory, Custom tools for database queries, Sentiment analysis for escalation</p>
+                </div>
+
+                <div class="card">
+                    <h3>Scenario 3: Research Paper Summarizer</h3>
+                    
+                    <div class="analogy-box">
+                        <h5>The Challenge</h5>
+                        <p>Researchers need to stay current with hundreds of papers published weekly. Reading everything is impossible.</p>
+                    </div>
+
+                    <h4>LangChain Solution</h4>
+                    
+                    <div class="workflow-visual">
+                        <div class="workflow-step">
+                            <div class="step-number">1</div>
+                            <div class="step-title">Paper Collection</div>
+                            <div class="step-desc">Agent searches arXiv, downloads relevant papers in researcher's field</div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="step-number">2</div>
+                            <div class="step-title">Section Extraction</div>
+                            <div class="step-desc">Smart splitting identifies Abstract, Methods, Results, Conclusion</div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="step-number">3</div>
+                            <div class="step-title">Multi-Stage Summary</div>
+                            <div class="step-desc">Map-reduce chain: summarize each section, then create final summary</div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="step-number">4</div>
+                            <div class="step-title">Key Insights</div>
+                            <div class="step-desc">Extract methodology, findings, novelty, limitations</div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="step-number">5</div>
+                            <div class="step-title">Comparison</div>
+                            <div class="step-desc">Compare with previous papers in vector store, identify connections</div>
+                        </div>
+                    </div>
+
+                    <p><strong>Key Components:</strong> Map-reduce chains for long documents, Custom tools for paper search, Structured output parsers for consistent format</p>
+                </div>
+            </div>
+
+            <!-- NEXT STEPS SECTION -->
+            <div id="next-steps" class="section">
+                <div class="section-header">
+                    <h2>🎓 Chapter 11: Next Steps & Learning Path</h2>
+                    <p>Your journey continues</p>
+                </div>
+
+                <div class="card">
+                    <h3>Learning Path</h3>
+                    
+                    <div class="grid">
+                        <div class="grid-item">
+                            <h4>📚 Beginner (Week 1-2)</h4>
+                            <ul>
+                                <li>Master basic chains</li>
+                                <li>Understand prompts and templates</li>
+                                <li>Build simple Q&A system</li>
+                                <li>Learn LCEL syntax</li>
+                            </ul>
+                        </div>
+
+                        <div class="grid-item">
+                            <h4>🔨 Intermediate (Week 3-4)</h4>
+                            <ul>
+                                <li>Implement RAG systems</li>
+                                <li>Work with different vector stores</li>
+                                <li>Add memory to conversations</li>
+                                <li>Create custom tools</li>
+                            </ul>
+                        </div>
+
+                        <div class="grid-item">
+                            <h4>🚀 Advanced (Week 5-6)</h4>
+                            <ul>
+                                <li>Build autonomous agents</li>
+                                <li>Implement custom parsers</li>
+                                <li>Optimize for production</li>
+                                <li>Handle edge cases</li>
+                            </ul>
+                        </div>
+
+                        <div class="grid-item">
+                            <h4>⚡ Expert (Week 7+)</h4>
+                            <ul>
+                                <li>Design complex workflows</li>
+                                <li>Scale to production</li>
+                                <li>Contribute to community</li>
+                                <li>Create custom components</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Practice Projects</h3>
+                    
+                    <ul class="benefits-list">
+                        <li><strong>Personal Knowledge Base:</strong> Upload your notes, papers, bookmarks and chat with them</li>
+                        <li><strong>Code Documentation Helper:</strong> Generate documentation from codebases automatically</li>
+                        <li><strong>Meeting Summarizer:</strong> Process transcripts and extract action items, decisions, topics</li>
+                        <li><strong>Research Assistant:</strong> Agent that can search, read papers, and synthesize findings</li>
+                        <li><strong>SQL Query Generator:</strong> Natural language to SQL using agents with database tools</li>
+                        <li><strong>Content Moderator:</strong> Analyze user-generated content for policy violations</li>
+                        <li><strong>Recipe Recommender:</strong> Based on ingredients, dietary restrictions, and preferences</li>
+                        <li><strong>Financial Analyst Bot:</strong> Query earnings reports, compare companies, generate insights</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>Resources for Continued Learning</h3>
+                    
+                    <div class="grid">
+                        <div class="grid-item">
+                            <h4>📖 Official Documentation</h4>
+                            <p>python.langchain.com</p>
+                            <p>Comprehensive guides, API reference, and examples</p>
+                        </div>
+
+                        <div class="grid-item">
+                            <h4>💬 Community</h4>
+                            <p>Discord, GitHub Discussions</p>
+                            <p>Ask questions, share projects, get help</p>
+                        </div>
+
+                        <div class="grid-item">
+                            <h4>🎥 Tutorials</h4>
+                            <p>YouTube, Courses</p>
+                            <p>Video walkthroughs and hands-on projects</p>
+                        </div>
+
+                        <div class="grid-item">
+                            <h4>📝 Blog Posts</h4>
+                            <p>Medium, Dev.to</p>
+                            <p>Real-world implementations and patterns</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FINAL SECTION -->
+            <div class="section" style="text-align: center; padding: 60px 40px; background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); color: white; border-radius: 20px; margin-top: 60px;">
+                <h2 style="color: white; margin-bottom: 30px; font-size: 3em;">🎉 Congratulations!</h2>
+                <p style="font-size: 1.4em; margin-bottom: 25px; line-height: 1.6;">You now have a comprehensive understanding of LangChain, from core concepts to advanced techniques.</p>
+                
+                <div style="margin-top: 50px; padding: 35px; background: rgba(255,255,255,0.15); border-radius: 15px; backdrop-filter: blur(10px);">
+                    <p style="font-size: 1.5em; margin-bottom: 20px; font-weight: 600;">🚀 What You've Learned</p>
+                    <div style="text-align: left; max-width: 800px; margin: 0 auto; font-size: 1.1em;">
+                        <p>✅ Core components: Models, Prompts, Chains, Memory, Agents</p>
+                        <p>✅ Document processing: Loaders, Splitters, Embeddings, Vector Stores</p>
+                        <p>✅ LCEL: Modern chain composition with pipes</p>
+                        <p>✅ RAG: Building intelligent document Q&A systems</p>
+                        <p>✅ Agents: Autonomous decision-making with tools</p>
+                        <p>✅ Best practices: Performance, security, production deployment</p>
+                        <p>✅ Real-world applications: From concept to implementation</p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 50px;">
+                    <p style="font-size: 1.3em; margin-bottom: 15px;">💡 Remember</p>
+                    <p style="font-size: 1.15em; line-height: 1.7; max-width: 900px; margin: 0 auto;">
+                        The best way to master LangChain is through practice. Start with simple projects, experiment with different components, and gradually build more complex systems. The AI landscape evolves rapidly—stay curious, keep learning, and don't be afraid to try new approaches.
+                    </p>
+                </div>
+
+                <div style="margin-top: 50px; padding: 30px; background: rgba(255,255,255,0.1); border-radius: 12px;">
+                    <p style="font-size: 1.4em; font-weight: 600; margin-bottom: 15px;">🌟 Your Next Step</p>
+                    <p style="font-size: 1.15em;">Choose one of the practice projects above and start building today. The future of AI development is here, and you're now equipped to be part of it!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mobile navigation toggle
+        document.getElementById('navToggle').addEventListener('click', function() {
+            document.getElementById('navLinks').classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', function() {
+                document.getElementById('navLinks').classList.remove('active');
+            });
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
