@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gradio - Complete Study Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 50px;
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-size: 2.2em;
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .icon {
+            font-size: 1.2em;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .feature-card:hover {
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .workflow-diagram {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .workflow-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .workflow-step {
+            flex: 1;
+            min-width: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .workflow-step::after {
+            content: '→';
+            position: absolute;
+            right: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2em;
+            color: #667eea;
+        }
+
+        .workflow-step:last-child::after {
+            content: '';
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .code-block code {
+            font-size: 0.9em;
+            line-height: 1.6;
+            display: block;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        .keyword { color: #ff79c6; }
+        .string { color: #50fa7b; }
+        .function { color: #8be9fd; }
+        .comment { color: #6272a4; }
+
+        .component-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .component-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .component-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            background: white;
+        }
+
+        .component-table tr:hover td {
+            background: #f5f7fa;
+        }
+
+        .architecture-diagram {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .architecture-box {
+            border: 3px solid #667eea;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            position: relative;
+        }
+
+        .architecture-box h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .arrow-down {
+            text-align: center;
+            font-size: 2em;
+            color: #667eea;
+            margin: 10px 0;
+        }
+
+        .example-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .example-box h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .tip-box {
+            background: #d1ecf1;
+            border-left: 5px solid #17a2b8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .tip-box h4 {
+            color: #0c5460;
+            margin-bottom: 10px;
+        }
+
+        .use-case-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .use-case {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-top: 5px solid #667eea;
+        }
+
+        .use-case h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .interactive-demo {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .btn {
+            background: white;
+            color: #667eea;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .comparison-table {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .comparison-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .comparison-card h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        ul {
+            list-style-position: inside;
+            padding-left: 20px;
+        }
+
+        li {
+            margin: 10px 0;
+            padding-left: 10px;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .workflow-steps {
+                flex-direction: column;
+            }
+
+            .workflow-step::after {
+                content: '↓';
+                right: 50%;
+                bottom: -30px;
+                top: auto;
+                transform: translateX(50%);
+            }
+
+            .comparison-table {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Gradio - Complete Study Guide</h1>
+            <p>Master Interactive ML Model Deployment with Python</p>
+        </header>
+
+        <div class="content">
+            <!-- Introduction Section -->
+            <div class="section">
+                <h2 class="section-title"><span class="icon">🎯</span>What is Gradio?</h2>
+                <div class="card">
+                    <p><strong>Gradio</strong> is an open-source Python library that enables developers to quickly build and share interactive web interfaces for machine learning models, APIs, or any Python function. No JavaScript, CSS, or web hosting experience required!</p>
+                </div>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🚀</div>
+                        <h3>Easy to Use</h3>
+                        <p>Create interfaces with just a few lines of Python code</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🎨</div>
+                        <h3>Flexible</h3>
+                        <p>Supports various inputs: text, images, audio, files, and more</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🌐</div>
+                        <h3>Shareable</h3>
+                        <p>Generate unique URLs to share your demos instantly</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🤖</div>
+                        <h3>ML Ready</h3>
+                        <p>Perfect for machine learning models and computational tools</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- How Gradio Works -->
+            <div class="section">
+                <h2 class="section-title"><span class="icon">⚙️</span>How Gradio Works</h2>
+                <div class="workflow-diagram">
+                    <div class="workflow-steps">
+                        <div class="workflow-step">
+                            <h3>1. Write Python</h3>
+                            <p>Define your function with application logic</p>
+                        </div>
+                        <div class="workflow-step">
+                            <h3>2. Create Interface</h3>
+                            <p>Use Gradio's Interface class to specify inputs/outputs</p>
+                        </div>
+                        <div class="workflow-step">
+                            <h3>3. Launch Server</h3>
+                            <p>Start local server and create web interface</p>
+                        </div>
+                        <div class="workflow-step">
+                            <h3>4. Access & Share</h3>
+                            <p>Use via local or public URL</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interface Class -->
+            <div class="section">
+                <h2 class="section-title"><span class="icon">🔧</span>The Interface Class</h2>
+                <div class="card">
+                    <p>The <span class="highlight">gr.Interface</span> class is the core of Gradio. It wraps any Python function with a user interface.</p>
+                </div>
+
+                <table class="component-table">
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Description</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>fn</strong></td>
+                            <td>The Python function to wrap with UI</td>
+                            <td>predict, classify, generate_text</td>
+                        </tr>
+                        <tr>
+                            <td><strong>inputs</strong></td>
+                            <td>Gradio component(s) for input. Must match function parameters</td>
+                            <td>gr.Textbox(), gr.Image(), gr.Slider()</td>
+                        </tr>
+                        <tr>
+                            <td><strong>outputs</strong></td>
+                            <td>Gradio component(s) for output. Must match return values</td>
+                            <td>gr.Label(), gr.Textbox(), gr.Image()</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="example-box">
+                    <h4>💡 Simple Example</h4>
+                    <div class="code-block">
+<code><span class="keyword">import</span> gradio <span class="keyword">as</span> gr
+
+<span class="keyword">def</span> <span class="function">greet</span>(name, intensity):
+    <span class="keyword">return</span> <span class="string">"Hello, "</span> + name + <span class="string">"!"</span> * <span class="function">int</span>(intensity)
+
+demo = gr.<span class="function">Interface</span>(
+    fn=greet,
+    inputs=[<span class="string">"text"</span>, <span class="string">"slider"</span>],
+    outputs=[<span class="string">"text"</span>]
+)
+
+demo.<span class="function">launch</span>(server_name=<span class="string">"127.0.0.1"</span>, server_port=<span class="string">7860</span>)</code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Components -->
+            <div class="section">
+                <h2 class="section-title"><span class="icon">📥</span>Common Input Types</h2>
+                
+                <table class="component-table">
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>Description</th>
+                            <th>Use Case</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>gr.Textbox()</strong></td>
+                            <td>Expandable text input field</td>
+                            <td>Text generation, Q&A bots, text analysis</td>
+                        </tr>
+                        <tr>
+                            <td><strong>gr.Image()</strong></td>
+                            <td>Image upload/select component</td>
+                            <td>Image classification, object detection</td>
+                        </tr>
+                        <tr>
+                            <td><strong>gr.Slider()</strong></td>
+                            <td>Slider for numeric range selection</td>
+                            <td>Parameter tuning, intensity control</td>
+                        </tr>
+                        <tr>
+                            <td><strong>gr.Checkbox()</strong></td>
+                            <td>Boolean True/False selection</td>
+                            <td>Feature toggles, binary options</td>
+                        </tr>
+                        <tr>
+                            <td><strong>gr.Dropdown()</strong></td>
+                            <td>Dropdown selection menu</td>
+                            <td>Category selection, model choice</td>
+                        </tr>
+                        <tr>
+                            <td><strong>gr.Radio()</strong></td>
+                            <td>Radio button selection (one choice)</td>
+                            <td>Exclusive options, single selection</td>
+                        </tr>
+                        <tr>
+                            <td><strong>gr.CheckboxGroup()</strong></td>
+                            <td>Multiple checkbox selections</td>
+                            <td>Multi-label classification</td>
+                        </tr>
+                        <tr>
+                            <td><strong>gr.File()</strong></td>
+                            <td>File upload component</td>
+                            <td>Document processing, CSV analysis</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Output Components -->
+            <div class="section">
+                <h2 class="section-title"><span class="icon">📤</span>Common Output Types</h2>
+                
+                <div class="comparison-table">
+                    <div class="comparison-card">
+                        <h4>gr.Textbox()</h4>
+                        <ul>
+                            <li>Displays text output</li>
+                            <li>Perfect for generated text, responses</li>
+                            <li>Can be expandable</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>gr.Label()</h4>
+                        <ul>
+                            <li>Displays classification results</li>
+                            <li>Shows confidence probabilities</li>
+                            <li>Use <code>num_top_classes</code> to limit results</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>gr.Image()</h4>
+                        <ul>
+                            <li>Displays generated images</li>
+                            <li>Image manipulation results</li>
+                            <li>Supports various formats</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>gr.Number()</h4>
+                        <ul>
+                            <li>Displays numeric output</li>
+                            <li>Calculation results</li>
+                            <li>Metrics and scores</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image Classification Example -->
+            <div class="section">
+                <h2 class="section-title"><span class="icon">🖼️</span>Complete Example: Image Classification</h2>
+                
+                <div class="architecture-diagram">
+                    <h3>Architecture Flow</h3>
+                    <div class="architecture-box">
+                        <h4>1. Model Loading</h4>
+                        <p>Load pretrained ResNet-18 from PyTorch Hub</p>
+                        <div class="code-block">
+<code><span class="keyword">import</span> torch
+model = torch.hub.<span class="function">load</span>(<span class="string">'pytorch/vision:v0.6.0'</span>, <span class="string">'resnet18'</span>, pretrained=<span class="keyword">True</span>).<span class="function">eval</span>()</code>
+                        </div>
+                    </div>
+                    
+                    <div class="arrow-down">↓</div>
+                    
+                    <div class="architecture-box">
+                        <h4>2. Prediction Function</h4>
+                        <p>Process image and return predictions</p>
+                        <div class="code-block">
+<code><span class="keyword">def</span> <span class="function">predict</span>(inp):
+    inp = transforms.<span class="function">ToTensor</span>()(inp).<span class="function">unsqueeze</span>(<span class="string">0</span>)
+    <span class="keyword">with</span> torch.<span class="function">no_grad</span>():
+        prediction = torch.nn.functional.<span class="function">softmax</span>(model(inp)[<span class="string">0</span>], dim=<span class="string">0</span>)
+        confidences = {labels[i]: <span class="function">float</span>(prediction[i]) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(<span class="string">1000</span>)}
+    <span class="keyword">return</span> confidences</code>
+                        </div>
+                    </div>
+                    
+                    <div class="arrow-down">↓</div>
+                    
+                    <div class="architecture-box">
+                        <h4>3. Gradio Interface</h4>
+                        <p>Create user interface with inputs and outputs</p>
+                        <div class="code-block">
+<code>gr.<span class="function">Interface</span>(
+    fn=predict,
+    inputs=gr.<span class="function">Image</span>(type=<span class="string">"pil"</span>),
+    outputs=gr.<span class="function">Label</span>(num_top_classes=<span class="string">3</span>),
+    examples=[<span class="string">"/content/lion.jpg"</span>, <span class="string">"/content/cheetah.jpg"</span>]
+).<span class="function">launch</span>()</code>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tip-box">
+                    <h4>💡 Key Concepts</h4>
+                    <ul>
+                        <li><strong>Softmax Function:</strong> Converts raw model outputs (logits) into probabilities that sum to 1</li>
+                        <li><strong>PIL Image:</strong> Python Imaging Library format for image handling</li>
+                        <li><strong>Examples Parameter:</strong> Pre-populate interface with sample inputs</li>
+                        <li><strong>num_top_classes:</strong> Limit displayed classifications to top N classes</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- RAG Architecture -->
+            <div class="section">
+                <h2 class="section-title"><span class="icon">🤖</span>Building a RAG QA Bot</h2>
+                
+                <div class="card">
+                    <p><strong>RAG (Retrieval-Augmented Generation)</strong> combines document retrieval with LLM generation to answer questions based on specific documents.</p>
+                </div>
+
+                <div class="architecture-diagram">
+                    <h3>Complete RAG Pipeline</h3>
+                    
+                    <div class="architecture-box">
+                        <h4>📄 Document Loading</h4>
+                        <p>Load PDF documents using PyPDFLoader</p>
+                        <div class="code-block">
+<code><span class="keyword">from</span> langchain_community.document_loaders <span class="keyword">import</span> PyPDFLoader
+loader = PyPDFLoader(file.name)
+documents = loader.<span class="function">load</span>()</code>
+                        </div>
+                    </div>
+                    
+                    <div class="arrow-down">↓</div>
+                    
+                    <div class="architecture-box">
+                        <h4>✂️ Text Splitting</h4>
+                        <p>Break documents into manageable chunks</p>
+                        <div class="code-block">
+<code><span class="keyword">from</span> langchain.text_splitter <span class="keyword">import</span> RecursiveCharacterTextSplitter
+splitter = RecursiveCharacterTextSplitter(
+    chunk_size=<span class="string">1000</span>,
+    chunk_overlap=<span class="string">200</span>
+)
+chunks = splitter.<span class="function">split_documents</span>(documents)</code>
+                        </div>
+                    </div>
+                    
+                    <div class="arrow-down">↓</div>
+                    
+                    <div class="architecture-box">
+                        <h4>🧮 Embedding Generation</h4>
+                        <p>Convert text chunks to vector embeddings</p>
+                        <div class="code-block">
+<code><span class="keyword">from</span> langchain_ibm <span class="keyword">import</span> WatsonxEmbeddings
+embeddings = WatsonxEmbeddings(
+    model_id=<span class="string">"ibm/slate-125m-english-rtrvr"</span>,
+    url=<span class="string">"https://us-south.ml.cloud.ibm.com"</span>,
+    project_id=<span class="string">"skills-network"</span>
+)</code>
+                        </div>
+                    </div>
+                    
+                    <div class="arrow-down">↓</div>
+                    
+                    <div class="architecture-box">
+                        <h4>💾 Vector Storage</h4>
+                        <p>Store embeddings in ChromaDB vector database</p>
+                        <div class="code-block">
+<code><span class="keyword">from</span> langchain_community.vectorstores <span class="keyword">import</span> Chroma
+vectordb = Chroma.<span class="function">from_documents</span>(chunks, embeddings)</code>
+                        </div>
+                    </div>
+                    
+                    <div class="arrow-down">↓</div>
+                    
+                    <div class="architecture-box">
+                        <h4>🔍 Retrieval</h4>
+                        <p>Search for relevant document chunks</p>
+                        <div class="code-block">
+<code>retriever = vectordb.<span class="function">as_retriever</span>()</code>
+                        </div>
+                    </div>
+                    
+                    <div class="arrow-down">↓</div>
+                    
+                    <div class="architecture-box">
+                        <h4>🎯 QA Chain</h4>
+                        <p>Combine retriever with LLM for question answering</p>
+                        <div class="code-block">
+<code><span class="keyword">from</span> langchain.chains <span class="keyword">import</span> RetrievalQA
+qa = RetrievalQA.<span class="function">from_chain_type</span>(
+    llm=watsonx_llm,
+    chain_type=<span class="string">"stuff"</span>,
+    retriever=retriever,
+    return_source_documents=<span class="keyword">True</span>
+)</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Use Cases -->
+            <div class="section">
+                <h2 class="section-title"><span class="icon">💼</span>Real-World Use Cases</h2>
+                
+                <div class="use-case-grid">
+                    <div class="use-case">
+                        <h4>🎨 Image Captioning</h4>
+                        <p>Generate descriptive captions for images using models like BLIP. Useful for accessibility, photo organization, and content generation.</p>
+                    </div>
+                    
+                    <div class="use-case">
+                        <h4>📊 Image Classification</h4>
+                        <p>Classify images into categories. Applications in medical imaging, quality control, and autonomous systems.</p>
+                    </div>
+                    
+                    <div class="use-case">
+                        <h4>💬 Chatbots & Q&A</h4>
+                        <p>Build conversational AI for customer support, virtual assistants, and information retrieval.</p>
+                    </div>
+                    
+                    <div class="use-case">
+                        <h4>📝 Document Analysis</h4>
+                        <p>Extract information from PDFs, contracts, and technical manuals using RAG systems.</p>
+                    </div>
+                    
+                    <div class="use-case">
+                        <h4>🎵 Audio Processing</h4>
+                        <p>Speech-to-text, music generation, and audio classification applications.</p>
+                    </div>
+                    
+                    <div class="use-case">
+                        <h4>🔬 Data Science Tools</h4>
+                        <p>Create interactive data analysis dashboards and visualization tools.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Installation & Launch -->
+            <div class="section">
+                <h2 class="section-title"><span class="icon">⚡</span>Quick Start Guide</h2>
+                
+                <div class="card">
+                    <h3>Installation</h3>
+                    <div class="code-block">
+<code><span class="comment"># Install Gradio</span>
+pip install gradio
+
+<span class="comment"># For image processing</span>
+pip install torch torchvision transformers pillow
+
+<span class="comment"># For RAG applications</span>
+pip install langchain langchain-ibm chromadb pypdf</code>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Launch Methods</h3>
+                    <div class="code-block">
+<code><span class="comment"># Local launch (default)</span>
+demo.<span class="function">launch</span>()
+
+<span class="comment"># Specify server details</span>
+demo.<span class="function">launch</span>(server_name=<span class="string">"127.0.0.1"</span>, server_port=<span class="string">7860</span>)
+
+<span class="comment"># Create public shareable link</span>
+demo.<span class="function">launch</span>(share=<span class="keyword">True</span>)</code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MORE CODING EXAMPLES SECTION -->
+            <div class="section">
+                <h2 class="section-title"><span class="icon">💻</span>Additional Coding Examples</h2>
+                
+                <!-- Example 1: Text Summarization -->
+                <div class="card">
+                    <h3>Example 1: Text Summarization Bot</h3>
+                    <p>Build a simple text summarization application using Gradio:</p>
+                    <div class="code-block">
+<code><span class="keyword">import</span> gradio <span class="keyword">as</span> gr
+
+<span class="keyword">def</span> <span class="function">summarize_text</span>(text, max_length):
+    <span class="comment"># Simple word-based summarization (in practice, use a model)</span>
+    words = text.split()
+    <span class="keyword">if</span> <span class="function">len</span>(words) &lt;= max_length:
+        <span class="keyword">return</span> text
+    <span class="keyword">return</span> <span class="string">" "</span>.join(words[:max_length]) + <span class="string">"..."</span>
+
+demo = gr.<span class="function">Interface</span>(
+    fn=summarize_text,
+    inputs=[
+        gr.<span class="function">Textbox</span>(
+            label=<span class="string">"Input Text"</span>, 
+            lines=<span class="string">10</span>, 
+            placeholder=<span class="string">"Enter text to summarize..."</span>
+        ),
+        gr.<span class="function">Slider</span>(
+            minimum=<span class="string">10</span>, 
+            maximum=<span class="string">100</span>, 
+            value=<span class="string">50</span>, 
+            label=<span class="string">"Max Words"</span>
+        )
+    ],
+    outputs=gr.<span class="function">Textbox</span>(label=<span class="string">"Summary"</span>),
+    title=<span class="string">"Text Summarization Tool"</span>,
+    description=<span class="string">"Enter text and adjust the maximum word count for your summary."</span>
+)
+
+demo.<span class="function">launch</span>()</code>
+                    </div>
+                </div>
+
+                <!-- Example 2: Multiple Inputs/Outputs -->
+                <div class="card">
+                    <h3>Example 2: Calculator with Multiple Operations</h3>
+                    <p>Demonstrate multiple outputs from a single function:</p>
+                    <div class="code-block">
+<code><span class="keyword">import</span> gradio <span class="keyword">as</span> gr
+
+<span class="keyword">def</span> <span class="function">calculator</span>(num1, num2, operation):
+    <span class="keyword">if</span> operation == <span class="string">"Add"</span>:
+        result = num1 + num2
+    <span class="keyword">elif</span> operation == <span class="string">"Subtract"</span>:
+        result = num1 - num2
+    <span class="keyword">elif</span> operation == <span class="string">"Multiply"</span>:
+        result = num1 * num2
+    <span class="keyword">elif</span> operation == <span class="string">"Divide"</span>:
+        result = num1 / num2 <span class="keyword">if</span> num2 != <span class="string">0</span> <span class="keyword">else</span> <span class="string">"Error: Division by zero"</span>
+    
+    <span class="comment"># Return multiple outputs</span>
+    equation = <span class="function">f</span><span class="string">"{num1} {operation} {num2} = {result}"</span>
+    <span class="keyword">return</span> result, equation
+
+demo = gr.<span class="function">Interface</span>(
+    fn=calculator,
+    inputs=[
+        gr.<span class="function">Number</span>(label=<span class="string">"First Number"</span>),
+        gr.<span class="function">Number</span>(label=<span class="string">"Second Number"</span>),
+        gr.<span class="function">Radio</span>(
+            [<span class="string">"Add"</span>, <span class="string">"Subtract"</span>, <span class="string">"Multiply"</span>, <span class="string">"Divide"</span>], 
+            label=<span class="string">"Operation"</span>
+        )
+    ],
+    outputs=[
+        gr.<span class="function">Number</span>(label=<span class="string">"Result"</span>),
+        gr.<span class="function">Textbox</span>(label=<span class="string">"Equation"</span>)
+    ],
+    title=<span class="string">"Multi-Operation Calculator"</span>
+)
+
+demo.<span class="function">launch</span>()</code>
+                    </div>
+                </div>
+
+                <!-- Example 3: Image Filter -->
+                <div class="card">
+                    <h3>Example 3: Image Filter Application</h3>
+                    <p>Apply filters to uploaded images:</p>
+                    <div class="code-block">
+<code><span class="keyword">import</span> gradio <span class="keyword">as</span> gr
+<span class="keyword">from</span> PIL <span class="keyword">import</span> Image, ImageEnhance, ImageFilter
+
+<span class="keyword">def</span> <span class="function">apply_filter</span>(image, filter_type, intensity):
+    <span class="keyword">if</span> image <span class="keyword">is</span> <span class="keyword">None</span>:
+        <span class="keyword">return</span> <span class="keyword">None</span>
+    
+    <span class="keyword">if</span> filter_type == <span class="string">"Blur"</span>:
+        <span class="keyword">return</span> image.<span class="function">filter</span>(
+            ImageFilter.<span class="function">GaussianBlur</span>(radius=intensity)
+        )
+    <span class="keyword">elif</span> filter_type == <span class="string">"Brightness"</span>:
+        enhancer = ImageEnhance.<span class="function">Brightness</span>(image)
+        <span class="keyword">return</span> enhancer.<span class="function">enhance</span>(intensity)
+    <span class="keyword">elif</span> filter_type == <span class="string">"Contrast"</span>:
+        enhancer = ImageEnhance.<span class="function">Contrast</span>(image)
+        <span class="keyword">return</span> enhancer.<span class="function">enhance</span>(intensity)
+    <span class="keyword">elif</span> filter_type == <span class="string">"Sharpen"</span>:
+        <span class="keyword">return</span> image.<span class="function">filter</span>(ImageFilter.<span class="function">SHARPEN</span>)
+    <span class="keyword">return</span> image
+
+demo = gr.<span class="function">Interface</span>(
+    fn=apply_filter,
+    inputs=[
+        gr.<span class="function">Image</span>(type=<span class="string">"pil"</span>, label=<span class="string">"Upload Image"</span>),
+        gr.<span class="function">Dropdown</span>(
+            [<span class="string">"Blur"</span>, <span class="string">"Brightness"</span>, <span class="string">"Contrast"</span>, <span class="string">"Sharpen"</span>],
+            label=<span class="string">"Filter Type"</span>,
+            value=<span class="string">"Blur"</span>
+        ),
+        gr.<span class="function">Slider</span>(
+            minimum=<span class="string">0.1</span>, 
+            maximum=<span class="string">5.0</span>, 
+            value=<span class="string">1.0</span>, 
+            label=<span class="string">"Intensity"</span>
+        )
+    ],
+    outputs=gr.<span class="function">Image</span>(type=<span class="string">"pil"</span>, label=<span class="string">"Filtered Image"</span>),
+    title=<span class="string">"Image Filter Tool"</span>,
+    description=<span class="string">"Upload an image and apply various filters."</span>
+)
+
+demo.<span class="function">launch</span>()</code>
+                    </div>
+                </div>
+
+                <!-- Example 4: Sentiment Analysis -->
+                <div class="card">
+                    <h3>Example 4: Sentiment Analysis with Multiple Inputs</h3>
+                    <p>Analyze text sentiment with category selection:</p>
+                    <div class="code-block">
+<code><span class="keyword">import</span> gradio <span class="keyword">as</span> gr
+
+<span class="keyword">def</span> <span class="function">analyze_sentiment</span>(text, categories):
+    <span class="comment"># Simple keyword-based sentiment (in practice, use ML model)</span>
+    positive_words = [
+        <span class="string">'good'</span>, <span class="string">'great'</span>, <span class="string">'excellent'</span>, 
+        <span class="string">'amazing'</span>, <span class="string">'wonderful'</span>
+    ]
+    negative_words = [
+        <span class="string">'bad'</span>, <span class="string">'poor'</span>, <span class="string">'terrible'</span>, 
+        <span class="string">'awful'</span>, <span class="string">'horrible'</span>
+    ]
+    
+    text_lower = text.lower()
+    pos_count = <span class="function">sum</span>(
+        <span class="string">1</span> <span class="keyword">for</span> word <span class="keyword">in</span> positive_words <span class="keyword">if</span> word <span class="keyword">in</span> text_lower
+    )
+    neg_count = <span class="function">sum</span>(
+        <span class="string">1</span> <span class="keyword">for</span> word <span class="keyword">in</span> negative_words <span class="keyword">if</span> word <span class="keyword">in</span> text_lower
+    )
+    
+    <span class="keyword">if</span> pos_count &gt; neg_count:
+        sentiment = <span class="string">"Positive"</span>
+        score = <span class="function">min</span>(pos_count * <span class="string">0.3</span>, <span class="string">1.0</span>)
+    <span class="keyword">elif</span> neg_count &gt; pos_count:
+        sentiment = <span class="string">"Negative"</span>
+        score = <span class="function">min</span>(neg_count * <span class="string">0.3</span>, <span class="string">1.0</span>)
+    <span class="keyword">else</span>:
+        sentiment = <span class="string">"Neutral"</span>
+        score = <span class="string">0.5</span>
+    
+    category_info = <span class="function">f</span><span class="string">"Analyzing as: {', '.join(categories)}"</span>
+    
+    <span class="keyword">return</span> {
+        <span class="string">"Positive"</span>: score <span class="keyword">if</span> sentiment == <span class="string">"Positive"</span> <span class="keyword">else</span> <span class="string">0.0</span>,
+        <span class="string">"Negative"</span>: score <span class="keyword">if</span> sentiment == <span class="string">"Negative"</span> <span class="keyword">else</span> <span class="string">0.0</span>,
+        <span class="string">"Neutral"</span>: score <span class="keyword">if</span> sentiment == <span class="string">"Neutral"</span> <span class="keyword">else</span> <span class="string">0.0</span>
+    }, category_info
+
+demo = gr.<span class="function">Interface</span>(
+    fn=analyze_sentiment,
+    inputs=[
+        gr.<span class="function">Textbox</span>(
+            lines=<span class="string">5</span>, 
+            placeholder=<span class="string">"Enter text to analyze..."</span>, 
+            label=<span class="string">"Text"</span>
+        ),
+        gr.<span class="function">CheckboxGroup</span>(
+            [<span class="string">"Product Review"</span>, <span class="string">"Customer Feedback"</span>, <span class="string">"Social Media"</span>],
+            label=<span class="string">"Analysis Categories"</span>
+        )
+    ],
+    outputs=[
+        gr.<span class="function">Label</span>(label=<span class="string">"Sentiment Scores"</span>),
+        gr.<span class="function">Textbox</span>(label=<span class="string">"Category Info"</span>)
+    ],
+    title=<span class="string">"Sentiment Analyzer"</span>,
+    examples=[
+        [<span class="string">"This product is amazing! I love it!"</span>, [<span class="string">"Product Review"</span>]],
+        [<span class="string">"Terrible service, very disappointed."</span>, [<span class="string">"Customer Feedback"</span>]]
+    ]
+)
+
+demo.<span class="function">launch</span>()</code>
+                    </div>
+                </div>
+
+                <!-- Example 5: File Upload and Processing -->
+                <div class="card">
+                    <h3>Example 5: CSV Data Analyzer</h3>
+                    <p>Upload and analyze CSV files:</p>
+                    <div class="code-block">
+<code><span class="keyword">import</span> gradio <span class="keyword">as</span> gr
+<span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+
+<span class="keyword">def</span> <span class="function">analyze_csv</span>(file):
+    <span class="keyword">if</span> file <span class="keyword">is</span> <span class="keyword">None</span>:
+        <span class="keyword">return</span> <span class="string">"No file uploaded"</span>, <span class="keyword">None</span>
+    
+    <span class="keyword">try</span>:
+        df = pd.<span class="function">read_csv</span>(file.name)
+        
+        <span class="comment"># Generate summary statistics</span>
+        summary = <span class="function">f</span><span class="string">"""
+Dataset Summary:
+- Rows: {<span class="function">len</span>(df)}
+- Columns: {<span class="function">len</span>(df.columns)}
+- Column Names: {<span class="function">', '</span>.join(df.columns)}
+
+First few rows:
+        """</span>
+        
+        <span class="keyword">return</span> summary, df.<span class="function">head</span>().<span class="function">to_html</span>()
+    
+    <span class="keyword">except</span> <span class="function">Exception</span> <span class="keyword">as</span> e:
+        <span class="keyword">return</span> <span class="function">f</span><span class="string">"Error: {str(e)}"</span>, <span class="keyword">None</span>
+
+demo = gr.<span class="function">Interface</span>(
+    fn=analyze_csv,
+    inputs=gr.<span class="function">File</span>(
+        label=<span class="string">"Upload CSV File"</span>, 
+        file_types=[<span class="string">".csv"</span>]
+    ),
+    outputs=[
+        gr.<span class="function">Textbox</span>(label=<span class="string">"Summary"</span>, lines=<span class="string">10</span>),
+        gr.<span class="function">HTML</span>(label=<span class="string">"Data Preview"</span>)
+    ],
+    title=<span class="string">"CSV Data Analyzer"</span>,
+    description=<span class="string">"Upload a CSV file to see summary statistics and preview."</span>
+)
+
+demo.<span class="function">launch</span>()</code>
+                    </div>
+                </div>
+
+                <!-- Example 6: Chatbot Interface -->
+                <div class="card">
+                    <h3>Example 6: Simple Chatbot with History</h3>
+                    <p>Create a conversational interface with chat history:</p>
+                    <div class="code-block">
+<code><span class="keyword">import</span> gradio <span class="keyword">as</span> gr
+
+<span class="keyword">def</span> <span class="function">chatbot_response</span>(message, history):
+    <span class="comment"># Simple echo bot with modifications</span>
+    history = history <span class="keyword">or</span> []
+    
+    <span class="comment"># Generate a simple response</span>
+    <span class="keyword">if</span> <span class="string">"hello"</span> <span class="keyword">in</span> message.lower():
+        response = <span class="string">"Hello! How can I help you today?"</span>
+    <span class="keyword">elif</span> <span class="string">"bye"</span> <span class="keyword">in</span> message.lower():
+        response = <span class="string">"Goodbye! Have a great day!"</span>
+    <span class="keyword">elif</span> <span class="string">"help"</span> <span class="keyword">in</span> message.lower():
+        response = <span class="string">"I'm here to assist you. Ask me anything!"</span>
+    <span class="keyword">else</span>:
+        response = <span class="function">f</span><span class="string">"You said: {message}. How can I help with that?"</span>
+    
+    history.append((message, response))
+    <span class="keyword">return</span> history, history
+
+<span class="keyword">with</span> gr.<span class="function">Blocks</span>() <span class="keyword">as</span> demo:
+    gr.<span class="function">Markdown</span>(<span class="string">"# Simple Chatbot"</span>)
+    
+    chatbot = gr.<span class="function">Chatbot</span>()
+    state = gr.<span class="function">State</span>([])
+    
+    <span class="keyword">with</span> gr.<span class="function">Row</span>():
+        msg = gr.<span class="function">Textbox</span>(
+            label=<span class="string">"Your Message"</span>,
+            placeholder=<span class="string">"Type a message..."</span>,
+            show_label=<span class="keyword">False</span>
+        )
+        send = gr.<span class="function">Button</span>(<span class="string">"Send"</span>)
+    
+    send.<span class="function">click</span>(
+        chatbot_response, 
+        [msg, state], 
+        [chatbot, state]
+    )
+    msg.<span class="function">submit</span>(
+        chatbot_response, 
+        [msg, state], 
+        [chatbot, state]
+    )
+
+demo.<span class="function">launch</span>()</code>
+                    </div>
+                </div>
+
+                <!-- Example 7: Real-time Image Classification -->
+                <div class="card">
+                    <h3>Example 7: Image Classification with Examples</h3>
+                    <p>Complete image classification with pre-loaded examples:</p>
+                    <div class="code-block">
+<code><span class="keyword">import</span> gradio <span class="keyword">as</span> gr
+<span class="keyword">import</span> torch
+<span class="keyword">from</span> torchvision <span class="keyword">import</span> transforms
+<span class="keyword">from</span> PIL <span class="keyword">import</span> Image
+<span class="keyword">import</span> requests
+
+<span class="comment"># Load pretrained model</span>
+model = torch.hub.<span class="function">load</span>(<span class="string">'pytorch/vision:v0.6.0'</span>, <span class="string">'resnet18'</span>, pretrained=<span class="keyword">True</span>).<span class="function">eval</span>()
+
+<span class="comment"># Download labels</span>
+response = requests.<span class="function">get</span>(<span class="string">"https://git.io/JJkYN"</span>)
+labels = response.text.<span class="function">split</span>(<span class="string">"\n"</span>)
+
+<span class="keyword">def</span> <span class="function">classify_image</span>(image):
+    <span class="comment"># Preprocess image</span>
+    transform = transforms.<span class="function">Compose</span>([
+        transforms.<span class="function">Resize</span>(<span class="string">256</span>),
+        transforms.<span class="function">CenterCrop</span>(<span class="string">224</span>),
+        transforms.<span class="function">ToTensor</span>(),
+        transforms.<span class="function">Normalize</span>(
+            mean=[<span class="string">0.485</span>, <span class="string">0.456</span>, <span class="string">0.406</span>],
+            std=[<span class="string">0.229</span>, <span class="string">0.224</span>, <span class="string">0.225</span>]
+        )
+    ])
+    
+    img_tensor = transform(image).<span class="function">unsqueeze</span>(<span class="string">0</span>)
+    
+    <span class="comment"># Make prediction</span>
+    <span class="keyword">with</span> torch.<span class="function">no_grad</span>():
+        outputs = model(img_tensor)
+        probabilities = torch.nn.functional.<span class="function">softmax</span>(outputs[<span class="string">0</span>], dim=<span class="string">0</span>)
+    
+    <span class="comment"># Get top 5 predictions</span>
+    top5_prob, top5_indices = torch.<span class="function">topk</span>(probabilities, <span class="string">5</span>)
+    
+    results = {}
+    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(<span class="string">5</span>):
+        results[labels[top5_indices[i]]] = <span class="function">float</span>(top5_prob[i])
+    
+    <span class="keyword">return</span> results
+
+<span class="comment"># Create interface</span>
+demo = gr.<span class="function">Interface</span>(
+    fn=classify_image,
+    inputs=gr.<span class="function">Image</span>(type=<span class="string">"pil"</span>, label=<span class="string">"Upload or drag an image"</span>),
+    outputs=gr.<span class="function">Label</span>(num_top_classes=<span class="string">5</span>, label=<span class="string">"Top 5 Predictions"</span>),
+    title=<span class="string">"🖼️ Image Classification with ResNet-18"</span>,
+    description=<span class="string">"Upload an image to classify it into one of 1000 ImageNet categories."</span>,
+    article=<span class="string">"Model: ResNet-18 pretrained on ImageNet dataset."</span>,
+    examples=[
+        [<span class="string">"path/to/example1.jpg"</span>],
+        [<span class="string">"path/to/example2.jpg"</span>]
+    ],
+    allow_flagging=<span class="string">"never"</span>
+)
+
+demo.<span class="function">launch</span>()</code>
+                    </div>
+                </div>
+
+                <!-- Example 8: Text Generation -->
+                <div class="card">
+                    <h3>Example 8: Text Generation with Temperature Control</h3>
+                    <p>Build a text generator with adjustable parameters:</p>
+                    <div class="code-block">
+<code><span class="keyword">import</span> gradio <span class="keyword">as</span> gr
+<span class="keyword">from</span> langchain_ibm <span class="keyword">import</span> WatsonxLLM
+
+<span class="comment"># Initialize LLM</span>
+<span class="keyword">def</span> <span class="function">initialize_llm</span>(temperature, max_tokens):
+    parameters = {
+        <span class="string">"max_new_tokens"</span>: max_tokens,
+        <span class="string">"temperature"</span>: temperature
+    }
+    
+    llm = WatsonxLLM(
+        model_id=<span class="string">"ibm/granite-3-3-8b-instruct"</span>,
+        url=<span class="string">"https://us-south.ml.cloud.ibm.com"</span>,
+        project_id=<span class="string">"skills-network"</span>,
+        params=parameters
+    )
+    <span class="keyword">return</span> llm
+
+<span class="keyword">def</span> <span class="function">generate_text</span>(prompt, temperature, max_tokens):
+    <span class="keyword">try</span>:
+        llm = initialize_llm(temperature, max_tokens)
+        response = llm.<span class="function">invoke</span>(prompt)
+        <span class="keyword">return</span> response
+    <span class="keyword">except</span> <span class="function">Exception</span> <span class="keyword">as</span> e:
+        <span class="keyword">return</span> <span class="function">f</span><span class="string">"Error: {str(e)}"</span>
+
+demo = gr.<span class="function">Interface</span>(
+    fn=generate_text,
+    inputs=[
+        gr.<span class="function">Textbox</span>(
+            lines=<span class="string">5</span>,
+            placeholder=<span class="string">"Enter your prompt here..."</span>,
+            label=<span class="string">"Prompt"</span>
+        ),
+        gr.<span class="function">Slider</span>(
+            minimum=<span class="string">0.1</span>,
+            maximum=<span class="string">1.0</span>,
+            value=<span class="string">0.7</span>,
+            step=<span class="string">0.1</span>,
+            label=<span class="string">"Temperature (creativity)"</span>
+        ),
+        gr.<span class="function">Slider</span>(
+            minimum=<span class="string">50</span>,
+            maximum=<span class="string">500</span>,
+            value=<span class="string">150</span>,
+            step=<span class="string">50</span>,
+            label=<span class="string">"Max Tokens"</span>
+        )
+    ],
+    outputs=gr.<span class="function">Textbox</span>(
+        label=<span class="string">"Generated Text"</span>, 
+        lines=<span class="string">10</span>
+    ),
+    title=<span class="string">"🤖 AI Text Generator"</span>,
+    description=<span class="string">"Generate text using IBM Granite model with adjustable parameters."</span>,
+    examples=[
+        [
+            <span class="string">"Write a short story about a robot learning to paint"</span>, 
+            <span class="string">0.8</span>, 
+            <span class="string">200</span>
+        ],
+        [
+            <span class="string">"Explain quantum computing in simple terms"</span>, 
+            <span class="string">0.5</span>, 
+            <span class="string">150</span>
+        ]
+    ]
+)
+
+demo.<span class="function">launch</span>()</code>
+                    </div>
+                </div>
+
+                <!-- Example 9: Advanced Blocks Layout -->
+                <div class="card">
+                    <h3>Example 9: Multi-Tab Interface with Blocks</h3>
+                    <p>Create complex layouts with tabs and custom components:</p>
+                    <div class="code-block">
+<code><span class="keyword">import</span> gradio <span class="keyword">as</span> gr
+
+<span class="keyword">def</span> <span class="function">text_analysis</span>(text):
+    word_count = <span class="function">len</span>(text.split())
+    char_count = <span class="function">len</span>(text)
+    <span class="keyword">return</span> <span class="function">f</span><span class="string">"Words: {word_count}, Characters: {char_count}"</span>
+
+<span class="keyword">def</span> <span class="function">image_info</span>(image):
+    <span class="keyword">if</span> image <span class="keyword">is</span> <span class="keyword">None</span>:
+        <span class="keyword">return</span> <span class="string">"No image uploaded"</span>
+    <span class="keyword">return</span> <span class="function">f</span><span class="string">"Image size: {image.size}"</span>
+
+<span class="keyword">with</span> gr.<span class="function">Blocks</span>(theme=gr.themes.<span class="function">Soft</span>()) <span class="keyword">as</span> demo:
+    gr.<span class="function">Markdown</span>(<span class="string">"# Multi-Purpose Analysis Tool"</span>)
+    
+    <span class="keyword">with</span> gr.<span class="function">Tabs</span>():
+        <span class="keyword">with</span> gr.<span class="function">TabItem</span>(<span class="string">"Text Analysis"</span>):
+            <span class="keyword">with</span> gr.<span class="function">Row</span>():
+                <span class="keyword">with</span> gr.<span class="function">Column</span>():
+                    text_input = gr.<span class="function">Textbox</span>(
+                        label=<span class="string">"Enter Text"</span>,
+                        lines=<span class="string">5</span>,
+                        placeholder=<span class="string">"Type something..."</span>
+                    )
+                    text_button = gr.<span class="function">Button</span>(<span class="string">"Analyze"</span>)
+                <span class="keyword">with</span> gr.<span class="function">Column</span>():
+                    text_output = gr.<span class="function">Textbox</span>(label=<span class="string">"Results"</span>)
+            
+            text_button.<span class="function">click</span>(
+                text_analysis, 
+                inputs=text_input, 
+                outputs=text_output
+            )
+        
+        <span class="keyword">with</span> gr.<span class="function">TabItem</span>(<span class="string">"Image Analysis"</span>):
+            <span class="keyword">with</span> gr.<span class="function">Row</span>():
+                <span class="keyword">with</span> gr.<span class="function">Column</span>():
+                    image_input = gr.<span class="function">Image</span>(type=<span class="string">"pil"</span>)
+                    image_button = gr.<span class="function">Button</span>(<span class="string">"Analyze"</span>)
+                <span class="keyword">with</span> gr.<span class="function">Column</span>():
+                    image_output = gr.<span class="function">Textbox</span>(label=<span class="string">"Results"</span>)
+            
+            image_button.<span class="function">click</span>(
+                image_info, 
+                inputs=image_input, 
+                outputs=image_output
+            )
+
+demo.<span class="function">launch</span>()</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
