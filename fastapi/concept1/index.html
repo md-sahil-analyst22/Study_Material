@@ -1,0 +1,1743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Asyncio - Complete Interactive Study Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --success: #00b894;
+            --warning: #fdcb6e;
+            --danger: #d63031;
+            --info: #0984e3;
+            --dark: #2d3748;
+            --light: #f7fafc;
+            --max-width: 1400px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.7;
+            color: #333;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 15px;
+            min-height: 100vh;
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            width: 100%;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: clamp(40px, 5vw, 60px) clamp(20px, 3vw, 40px);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            animation: rotate 30s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        header h1 {
+            font-size: clamp(2.2rem, 5vw, 4rem);
+            margin-bottom: clamp(10px, 2vw, 15px);
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+            letter-spacing: -1px;
+            line-height: 1.2;
+            word-wrap: break-word;
+        }
+
+        header p {
+            font-size: clamp(1.1rem, 2vw, 1.4rem);
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+            font-weight: 300;
+            line-height: 1.4;
+        }
+
+        nav {
+            background: var(--dark);
+            padding: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: flex-start;
+            gap: 8px;
+            min-width: min-content;
+            padding: 5px 0;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        nav a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .content {
+            padding: clamp(25px, 4vw, 50px) clamp(20px, 3vw, 40px);
+            max-width: var(--max-width);
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        section {
+            margin-bottom: clamp(40px, 6vw, 80px);
+            padding: clamp(25px, 4vw, 50px);
+            background: var(--light);
+            border-radius: 20px;
+            border-left: 8px solid var(--primary);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        h2 {
+            color: var(--primary);
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 4px solid #e2e8f0;
+            line-height: 1.3;
+            word-wrap: break-word;
+        }
+
+        h3 {
+            color: var(--secondary);
+            font-size: clamp(1.4rem, 3vw, 1.9rem);
+            margin: 30px 0 20px 0;
+            line-height: 1.3;
+        }
+
+        h4 {
+            color: #4a5568;
+            font-size: clamp(1.1rem, 2vw, 1.5rem);
+            margin: 20px 0 12px 0;
+            line-height: 1.3;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: clamp(1rem, 2vw, 1.08rem);
+            color: #4a5568;
+            line-height: 1.7;
+        }
+
+        .highlight-box,
+        .info-box,
+        .warning-box,
+        .success-box {
+            padding: clamp(20px, 3vw, 30px);
+            border-radius: 15px;
+            margin: 25px 0;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            word-wrap: break-word;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            border-left: 6px solid #f39c12;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: white;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #ff7675 0%, #d63031 100%);
+            color: white;
+        }
+
+        .success-box {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+        }
+
+        code {
+            background: var(--dark);
+            color: #68d391;
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+            word-break: break-word;
+            display: inline-block;
+            max-width: 100%;
+            overflow-x: auto;
+        }
+
+        pre {
+            background: var(--dark);
+            color: #e2e8f0;
+            padding: clamp(20px, 3vw, 30px);
+            border-radius: 15px;
+            overflow-x: auto;
+            margin: 20px 0;
+            border-left: 5px solid #68d391;
+            position: relative;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            line-height: 1.5;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+            white-space: pre;
+            font-size: 0.9rem;
+        }
+
+        .diagram-box {
+            background: white;
+            padding: clamp(20px, 3vw, 40px);
+            border-radius: 20px;
+            margin: 25px 0;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+            text-align: center;
+            border: 3px solid #e2e8f0;
+            overflow-x: auto;
+        }
+
+        .diagram-box svg {
+            max-width: 100%;
+            height: auto;
+            min-width: 300px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            display: block;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        th {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 1rem;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 2px solid #e2e8f0;
+            background: white;
+            min-width: 120px;
+        }
+
+        tr:hover td {
+            background: #f9fafb;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        ul, ol {
+            margin-left: 25px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            color: #4a5568;
+            line-height: 1.7;
+            font-size: clamp(1rem, 2vw, 1.08rem);
+        }
+
+        .demo-section {
+            background: white;
+            padding: clamp(25px, 3vw, 35px);
+            border-radius: 20px;
+            margin: 25px 0;
+            border: 3px solid var(--primary);
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.2);
+            overflow: hidden;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            margin: 10px 5px 10px 0;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+            display: inline-block;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .output {
+            background: var(--dark);
+            color: #68d391;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-family: 'Consolas', monospace;
+            min-height: 100px;
+            max-height: 500px;
+            overflow-y: auto;
+            line-height: 1.6;
+            border-left: 4px solid #68d391;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
+            word-wrap: break-word;
+            font-size: 0.9rem;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+            margin: 30px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            word-wrap: break-word;
+        }
+
+        .timeline-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -35px;
+            top: 25px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 4px solid white;
+            box-shadow: 0 0 0 4px var(--primary);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-top: 5px solid var(--primary);
+            transition: all 0.3s ease;
+            word-wrap: break-word;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .card h4 {
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+        }
+
+        .footer {
+            background: var(--dark);
+            color: white;
+            padding: clamp(30px, 4vw, 50px) clamp(20px, 3vw, 40px);
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .footer h3 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .footer p {
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .footer a {
+            color: #74b9ff;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+                font-size: 15px;
+            }
+            
+            nav ul {
+                gap: 5px;
+            }
+            
+            nav a {
+                padding: 8px 12px;
+                font-size: 0.85rem;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .timeline {
+                padding-left: 30px;
+            }
+            
+            .timeline-item::before {
+                left: -28px;
+                width: 16px;
+                height: 16px;
+            }
+            
+            table {
+                font-size: 0.9rem;
+            }
+            
+            th, td {
+                padding: 10px 12px;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.95rem;
+                min-width: 110px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+            
+            header p {
+                font-size: 1rem;
+            }
+            
+            section {
+                padding: 20px;
+                border-left-width: 6px;
+            }
+            
+            h2 {
+                font-size: 1.6rem;
+                padding-bottom: 12px;
+            }
+            
+            h3 {
+                font-size: 1.3rem;
+            }
+            
+            h4 {
+                font-size: 1.1rem;
+            }
+            
+            nav {
+                padding: 10px;
+            }
+            
+            nav a {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+            
+            pre {
+                padding: 15px;
+                font-size: 0.85rem;
+            }
+            
+            .btn {
+                width: 100%;
+                margin: 5px 0;
+                display: block;
+            }
+            
+            .timeline {
+                padding-left: 25px;
+            }
+            
+            .timeline-item::before {
+                left: -23px;
+                width: 14px;
+                height: 14px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+            
+            nav ul {
+                justify-content: space-between;
+            }
+            
+            nav a {
+                padding: 5px 8px;
+                font-size: 0.75rem;
+            }
+            
+            .content {
+                padding: 15px;
+            }
+            
+            section {
+                padding: 15px;
+            }
+        }
+
+        /* Touch device optimizations */
+        @media (hover: none) {
+            .btn:hover,
+            .card:hover,
+            .timeline-item:hover,
+            nav a:hover {
+                transform: none;
+            }
+            
+            .btn:active,
+            .card:active {
+                transform: scale(0.98);
+            }
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+            
+            nav, .btn, .demo-section {
+                display: none;
+            }
+            
+            .output {
+                border: 1px solid #ddd;
+                background: white;
+                color: black;
+            }
+            
+            pre {
+                page-break-inside: avoid;
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        section {
+            animation: slideInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Python Asyncio Mastery</h1>
+            <p>Complete Interactive Guide to Asynchronous Programming</p>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="#intro">📚 Introduction</a></li>
+                <li><a href="#basics">🎯 Basics</a></li>
+                <li><a href="#core">🔧 Core Concepts</a></li>
+                <li><a href="#event-loop">⚙️ Event Loop</a></li>
+                <li><a href="#tasks">📋 Tasks</a></li>
+                <li><a href="#patterns">🎨 Patterns</a></li>
+                <li><a href="#advanced">🚀 Advanced</a></li>
+                <li><a href="#realworld">💼 Real World</a></li>
+                <li><a href="#best">✅ Best Practices</a></li>
+            </ul>
+        </nav>
+
+        <div class="content">
+            <!-- All sections remain exactly the same -->
+            <!-- INTRODUCTION SECTION -->
+            <section id="intro">
+                <h2>📚 Introduction to Asyncio</h2>
+                <p>Asyncio is Python's powerful library for writing concurrent code using <code>async/await</code> syntax. It handles thousands of I/O operations concurrently without threads, perfect for modern applications.</p>
+
+                <div class="grid">
+                    <div class="card">
+                        <h4>🚄 High Performance</h4>
+                        <p>Handle thousands of concurrent operations with minimal memory overhead.</p>
+                    </div>
+                    <div class="card">
+                        <h4>📈 Scalability</h4>
+                        <p>Build applications that scale efficiently without complex threading.</p>
+                    </div>
+                    <div class="card">
+                        <h4>🎯 Simplicity</h4>
+                        <p>Clean, readable code with async/await instead of callbacks.</p>
+                    </div>
+                    <div class="card">
+                        <h4>🔌 Modern APIs</h4>
+                        <p>Perfect for web APIs, websockets, and microservices.</p>
+                    </div>
+                </div>
+
+                <h3>🔄 Synchronous vs Asynchronous</h3>
+                <div class="diagram-box">
+                    <svg viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                                <polygon points="0 0, 10 3, 0 6" fill="#667eea"/>
+                            </marker>
+                        </defs>
+
+                        <!-- Left: Synchronous -->
+                        <text x="200" y="35" font-size="24" font-weight="bold" fill="#667eea" text-anchor="middle">SYNCHRONOUS (Sequential)</text>
+                        <text x="200" y="65" font-size="14" fill="#666" text-anchor="middle">⏱️ Total Time: 7 seconds</text>
+
+                        <rect x="80" y="100" width="240" height="70" fill="#74b9ff" rx="10" stroke="#0984e3" stroke-width="2"/>
+                        <text x="200" y="145" font-weight="bold" fill="white" text-anchor="middle" font-size="16">Task 1: Download (3s)</text>
+
+                        <rect x="80" y="200" width="240" height="70" fill="#fd79a8" rx="10" stroke="#e84393" stroke-width="2"/>
+                        <text x="200" y="245" font-weight="bold" fill="white" text-anchor="middle" font-size="16">Task 2: Process (2s)</text>
+
+                        <rect x="80" y="300" width="240" height="70" fill="#fdcb6e" rx="10" stroke="#f39c12" stroke-width="2"/>
+                        <text x="200" y="345" font-weight="bold" fill="white" text-anchor="middle" font-size="16">Task 3: Upload (2s)</text>
+
+                        <text x="200" y="410" font-size="18" fill="#d63031" font-weight="bold" text-anchor="middle">❌ 3+2+2 = 7 seconds</text>
+
+                        <!-- Arrows -->
+                        <path d="M 200 170 L 200 200" stroke="#2d3748" stroke-width="3" marker-end="url(#arrowhead)"/>
+                        <path d="M 200 270 L 200 300" stroke="#2d3748" stroke-width="3" marker-end="url(#arrowhead)"/>
+
+                        <!-- Right: Asynchronous -->
+                        <text x="800" y="35" font-size="24" font-weight="bold" fill="#764ba2" text-anchor="middle">ASYNCHRONOUS (Concurrent)</text>
+                        <text x="800" y="65" font-size="14" fill="#666" text-anchor="middle">⚡ Total Time: ~3 seconds</text>
+
+                        <g opacity="0.85">
+                            <rect x="630" y="100" width="240" height="70" fill="#74b9ff" rx="10" stroke="#0984e3" stroke-width="2"/>
+                            <text x="750" y="145" font-weight="bold" fill="white" text-anchor="middle" font-size="16">Task 1: Download (3s)</text>
+                        </g>
+
+                        <g opacity="0.85">
+                            <rect x="630" y="125" width="240" height="70" fill="#fd79a8" rx="10" stroke="#e84393" stroke-width="2"/>
+                            <text x="750" y="170" font-weight="bold" fill="white" text-anchor="middle" font-size="16">Task 2: Process (2s)</text>
+                        </g>
+
+                        <g opacity="0.85">
+                            <rect x="630" y="150" width="240" height="70" fill="#fdcb6e" rx="10" stroke="#f39c12" stroke-width="2"/>
+                            <text x="750" y="195" font-weight="bold" fill="white" text-anchor="middle" font-size="16">Task 3: Upload (2s)</text>
+                        </g>
+
+                        <text x="800" y="280" font-size="18" fill="#00b894" font-weight="bold" text-anchor="middle">✅ Max(3,2,2) = ~3 seconds</text>
+
+                        <!-- Timeline comparison -->
+                        <line x1="80" y1="450" x2="920" y2="450" stroke="#e2e8f0" stroke-width="3"/>
+                        <text x="500" y="490" font-size="14" fill="#4a5568" text-anchor="middle" font-weight="bold">
+                            🎯 Asyncio: ~2.3x faster! All tasks run together, not sequentially.
+                        </text>
+                    </svg>
+                </div>
+
+                <h3>📊 Use Cases</h3>
+                <table>
+                    <tr>
+                        <th>Scenario</th>
+                        <th>Why Asyncio</th>
+                        <th>Examples</th>
+                        <th>Speedup</th>
+                    </tr>
+                    <tr>
+                        <td><strong>🌐 Web Requests</strong></td>
+                        <td>Time waiting for responses</td>
+                        <td>API calls, web scraping</td>
+                        <td>5-10x</td>
+                    </tr>
+                    <tr>
+                        <td><strong>🗄️ Database Queries</strong></td>
+                        <td>Query execution time</td>
+                        <td>Multiple queries, aggregation</td>
+                        <td>4-8x</td>
+                    </tr>
+                    <tr>
+                        <td><strong>🔌 Network Servers</strong></td>
+                        <td>Many concurrent clients</td>
+                        <td>Chat, websockets, games</td>
+                        <td>10-100x</td>
+                    </tr>
+                    <tr>
+                        <td><strong>📁 File I/O</strong></td>
+                        <td>Disk operations</td>
+                        <td>Batch processing, logs</td>
+                        <td>3-5x</td>
+                    </tr>
+                </table>
+
+                <div class="warning-box">
+                    <h4>⚠️ When NOT to Use Asyncio</h4>
+                    <p><strong>CPU-Bound Work:</strong> Heavy computations, ML training, image processing</p>
+                    <p><strong>Why?</strong> Asyncio handles I/O waits, not computation. Use <code>multiprocessing</code> for CPU work.</p>
+                </div>
+            </section>
+
+            <!-- BASICS SECTION -->
+            <section id="basics">
+                <h2>🎯 Asyncio Basics</h2>
+
+                <h3>1️⃣ Coroutines: The Building Blocks</h3>
+                <p>A coroutine is defined with <code>async def</code>. Unlike regular functions, coroutines can pause and resume, allowing other code to execute.</p>
+
+                <pre><code>import asyncio
+
+# Define a coroutine with async def
+async def greet(name):
+    print(f"Hello, {name}!")
+    return f"Greeted {name}"
+
+# Calling returns a coroutine object (NOT executed!)
+coro = greet("Alice")
+print(coro)  # &lt;coroutine object greet at 0x...&gt;
+
+# Execute it with asyncio.run()
+result = asyncio.run(greet("Alice"))
+print(result)  # Greeted Alice</code></pre>
+
+                <div class="info-box">
+                    <h4>🔑 Key Point</h4>
+                    <p>Calling <code>async def</code> doesn't execute it! It returns a coroutine object that must be awaited or scheduled with the event loop.</p>
+                </div>
+
+                <h3>2️⃣ The await Keyword</h3>
+                <p>Use <code>await</code> to call another coroutine and wait for its result. Your coroutine pauses, allowing other coroutines to run.</p>
+
+                <pre><code>import asyncio
+import time
+
+async def fetch_user(user_id):
+    print(f"📥 Fetching user {user_id}...")
+    await asyncio.sleep(1)  # Simulates I/O
+    print(f"✅ User {user_id} fetched!")
+    return f"User_{user_id}"
+
+async def main():
+    print("🚀 Starting...")
+    start = time.time()
+
+    user = await fetch_user(1)
+
+    elapsed = time.time() - start
+    print(f"Done in {elapsed:.2f}s: {user}")
+
+asyncio.run(main())</code></pre>
+
+                <div class="diagram-box">
+                    <svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg">
+                        <text x="450" y="35" font-size="24" font-weight="bold" fill="#667eea" text-anchor="middle">
+                            How "await" Suspends Execution
+                        </text>
+
+                        <!-- Timeline with steps -->
+                        <line x1="50" y1="100" x2="850" y2="100" stroke="#e2e8f0" stroke-width="3"/>
+
+                        <!-- Step 1: Start -->
+                        <circle cx="80" cy="100" r="15" fill="#74b9ff" stroke="#0984e3" stroke-width="3"/>
+                        <text x="80" y="160" text-anchor="middle" font-size="14" font-weight="bold">Start</text>
+                        <text x="80" y="180" text-anchor="middle" font-size="12" fill="#666">Code runs</text>
+
+                        <!-- Step 2: Await -->
+                        <circle cx="250" cy="100" r="15" fill="#fdcb6e" stroke="#f39c12" stroke-width="3"/>
+                        <text x="250" y="160" text-anchor="middle" font-size="14" font-weight="bold">await</text>
+                        <text x="250" y="180" text-anchor="middle" font-size="12" fill="#666">Pause execution</text>
+
+                        <!-- Step 3: Waiting -->
+                        <circle cx="450" cy="100" r="15" fill="#a29bfe" stroke="#6c5ce7" stroke-width="3"/>
+                        <text x="450" y="160" text-anchor="middle" font-size="14" font-weight="bold">Waiting</text>
+                        <text x="450" y="180" text-anchor="middle" font-size="12" fill="#666">I/O happens</text>
+                        <text x="450" y="197" text-anchor="middle" font-size="12" fill="#666">Other tasks run</text>
+
+                        <!-- Step 4: Resume -->
+                        <circle cx="650" cy="100" r="15" fill="#fd79a8" stroke="#e84393" stroke-width="3"/>
+                        <text x="650" y="160" text-anchor="middle" font-size="14" font-weight="bold">Resume</text>
+                        <text x="650" y="180" text-anchor="middle" font-size="12" fill="#666">I/O complete</text>
+
+                        <!-- Step 5: Done -->
+                        <circle cx="820" cy="100" r="15" fill="#00b894" stroke="#00cec9" stroke-width="3"/>
+                        <text x="820" y="160" text-anchor="middle" font-size="14" font-weight="bold">Done</text>
+                        <text x="820" y="180" text-anchor="middle" font-size="12" fill="#666">Return result</text>
+
+                        <!-- Connecting arrows -->
+                        <path d="M 95 100 L 235 100" stroke="#667eea" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <path d="M 265 100 L 435 100" stroke="#667eea" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <path d="M 465 100 L 635 100" stroke="#667eea" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <path d="M 665 100 L 805 100" stroke="#667eea" stroke-width="2" marker-end="url(#arrowhead)"/>
+                    </svg>
+                </div>
+
+                <h3>3️⃣ Running Programs with asyncio.run()</h3>
+                <p><code>asyncio.run()</code> is the main entry point for async programs. It creates an event loop, runs your coroutine, and cleans up.</p>
+
+                <pre><code>import asyncio
+
+async def main():
+    print("Hello from async!")
+    await asyncio.sleep(1)
+    return "Done"
+
+# Best practice: Use asyncio.run()
+result = asyncio.run(main())
+print(result)</code></pre>
+
+                <h3>4️⃣ Your First Concurrent Example</h3>
+                <p>Let's run multiple tasks concurrently and see the speed difference!</p>
+
+                <pre><code>import asyncio
+import time
+
+async def task(name, duration):
+    print(f"🚀 {name} started ({duration}s)")
+    await asyncio.sleep(duration)
+    print(f"✅ {name} done!")
+    return name
+
+async def sequential():
+    """Run tasks one at a time (SLOW)"""
+    print("\n📊 SEQUENTIAL MODE\n")
+    start = time.time()
+
+    await task("Task A", 2)
+    await task("Task B", 2)
+    await task("Task C", 2)
+
+    elapsed = time.time() - start
+    print(f"⏱️ Total: {elapsed:.1f}s (2+2+2=6s)\n")
+
+async def concurrent():
+    """Run tasks together (FAST)"""
+    print("\n📊 CONCURRENT MODE\n")
+    start = time.time()
+
+    # Run all tasks at once!
+    results = await asyncio.gather(
+        task("Task A", 2),
+        task("Task B", 2),
+        task("Task C", 2)
+    )
+
+    elapsed = time.time() - start
+    print(f"⚡ Total: {elapsed:.1f}s (~2s!)\n")
+    print(f"Speedup: {6/elapsed:.1f}x faster! 🚀")
+
+asyncio.run(sequential())
+asyncio.run(concurrent())</code></pre>
+
+                <div class="success-box">
+                    <h4>🎉 Expected Output</h4>
+                    <p><strong>Sequential:</strong> ~6 seconds (2+2+2)</p>
+                    <p><strong>Concurrent:</strong> ~2 seconds (all run together)</p>
+                    <p><strong>Result:</strong> 3x faster! This demonstrates asyncio's power! 🚀</p>
+                </div>
+            </section>
+
+            <!-- CORE CONCEPTS SECTION -->
+            <section id="core">
+                <h2>🔧 Core Concepts</h2>
+
+                <h3>Coroutines vs Tasks vs Futures</h3>
+                <div class="diagram-box">
+                    <svg viewBox="0 0 900 400" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Three boxes explaining the relationship -->
+                        <rect x="50" y="50" width="200" height="100" fill="#74b9ff" rx="10" stroke="#0984e3" stroke-width="2"/>
+                        <text x="150" y="85" text-anchor="middle" font-weight="bold" font-size="16" fill="white">Coroutine</text>
+                        <text x="150" y="110" text-anchor="middle" font-size="13" fill="white">async def function</text>
+                        <text x="150" y="130" text-anchor="middle" font-size="13" fill="white">Contains await</text>
+
+                        <rect x="350" y="50" width="200" height="100" fill="#fdcb6e" rx="10" stroke="#f39c12" stroke-width="2"/>
+                        <text x="450" y="85" text-anchor="middle" font-weight="bold" font-size="16" fill="white">Task</text>
+                        <text x="450" y="110" text-anchor="middle" font-size="13" fill="white">Scheduled coroutine</text>
+                        <text x="450" y="130" text-anchor="middle" font-size="13" fill="white">Runs concurrently</text>
+
+                        <rect x="650" y="50" width="200" height="100" fill="#fd79a8" rx="10" stroke="#e84393" stroke-width="2"/>
+                        <text x="750" y="85" text-anchor="middle" font-weight="bold" font-size="16" fill="white">Future</text>
+                        <text x="750" y="110" text-anchor="middle" font-size="13" fill="white">Promise of result</text>
+                        <text x="750" y="130" text-anchor="middle" font-size="13" fill="white">Low-level object</text>
+
+                        <!-- Arrows showing progression -->
+                        <path d="M 250 100 L 350 100" stroke="#2d3748" stroke-width="3" marker-end="url(#arrowhead)"/>
+                        <text x="300" y="90" text-anchor="middle" font-size="12" fill="#667eea" font-weight="bold">wrap</text>
+
+                        <path d="M 550 100 L 650 100" stroke="#2d3748" stroke-width="3" marker-end="url(#arrowhead)"/>
+                        <text x="600" y="90" text-anchor="middle" font-size="12" fill="#667eea" font-weight="bold">is a</text>
+
+                        <!-- Description box -->
+                        <rect x="50" y="180" width="800" height="200" fill="#f7fafc" rx="10" stroke="#e2e8f0" stroke-width="2"/>
+
+                        <text x="70" y="210" font-weight="bold" font-size="14" fill="#667eea">Coroutine:</text>
+                        <text x="70" y="235" font-size="12" fill="#4a5568">• Defined with async def</text>
+                        <text x="70" y="255" font-size="12" fill="#4a5568">• Doesn't execute until awaited</text>
+                        <text x="70" y="275" font-size="12" fill="#4a5568">• Example: async def fetch(): await something()</text>
+
+                        <text x="380" y="210" font-weight="bold" font-size="14" fill="#667eea">Task:</text>
+                        <text x="380" y="235" font-size="12" fill="#4a5568">• Created with create_task()</text>
+                        <text x="380" y="255" font-size="12" fill="#4a5568">• Runs immediately in background</text>
+                        <text x="380" y="275" font-size="12" fill="#4a5568">• Example: task = create_task(coro)</text>
+
+                        <text x="600" y="210" font-weight="bold" font-size="14" fill="#667eea">Future:</text>
+                        <text x="600" y="235" font-size="12" fill="#4a5568">• Lower-level implementation</text>
+                        <text x="600" y="255" font-size="12" fill="#4a5568">• Usually created internally</text>
+                        <text x="600" y="275" font-size="12" fill="#4a5568">• Tasks are subclass of Future</text>
+                    </svg>
+                </div>
+
+                <h3>asyncio.gather() - Run Multiple Coroutines</h3>
+                <p>The most common way to run multiple coroutines concurrently is with <code>asyncio.gather()</code>.</p>
+
+                <pre><code>import asyncio
+
+async def fetch_user(user_id):
+    await asyncio.sleep(1)
+    return f"User {user_id}"
+
+async def main():
+    # Run 3 coroutines concurrently
+    users = await asyncio.gather(
+        fetch_user(1),
+        fetch_user(2),
+        fetch_user(3)
+    )
+    print(users)  # Takes ~1s, not 3s!
+
+asyncio.run(main())</code></pre>
+
+                <h3>asyncio.create_task() - Schedule Tasks</h3>
+                <p>Create a task to schedule a coroutine to run immediately in the background.</p>
+
+                <pre><code>async def main():
+    # Create tasks - they start immediately!
+    task1 = asyncio.create_task(fetch_user(1))
+    task2 = asyncio.create_task(fetch_user(2))
+
+    # Do other work while they run
+    print("Tasks are running in background...")
+
+    # Wait for results when needed
+    result1 = await task1
+    result2 = await task2
+
+    print(f"{result1}, {result2}")
+
+asyncio.run(main())</code></pre>
+            </section>
+
+            <!-- EVENT LOOP SECTION -->
+            <section id="event-loop">
+                <h2>⚙️ The Event Loop</h2>
+                <p>The event loop is the heart of asyncio. It manages and runs all your coroutines, handling I/O events and switching between tasks efficiently.</p>
+
+                <h3>How the Event Loop Works</h3>
+                <div class="diagram-box">
+                    <svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Central Event Loop -->
+                        <circle cx="450" cy="250" r="100" fill="#667eea" stroke="#764ba2" stroke-width="4"/>
+                        <text x="450" y="245" text-anchor="middle" font-size="20" font-weight="bold" fill="white">Event</text>
+                        <text x="450" y="275" text-anchor="middle" font-size="20" font-weight="bold" fill="white">Loop</text>
+
+                        <!-- Task Queue -->
+                        <rect x="50" y="50" width="150" height="90" fill="#74b9ff" rx="8" stroke="#0984e3" stroke-width="2"/>
+                        <text x="125" y="85" text-anchor="middle" font-weight="bold" font-size="14" fill="white">Task Queue</text>
+                        <text x="125" y="110" text-anchor="middle" font-size="12" fill="white">Waiting tasks</text>
+
+                        <!-- Ready Queue -->
+                        <rect x="700" y="50" width="150" height="90" fill="#00b894" rx="8" stroke="#00cec9" stroke-width="2"/>
+                        <text x="775" y="85" text-anchor="middle" font-weight="bold" font-size="14" fill="white">Ready Queue</text>
+                        <text x="775" y="110" text-anchor="middle" font-size="12" fill="white">Ready tasks</text>
+
+                        <!-- I/O Operations -->
+                        <rect x="50" y="360" width="150" height="90" fill="#fdcb6e" rx="8" stroke="#f39c12" stroke-width="2"/>
+                        <text x="125" y="395" text-anchor="middle" font-weight="bold" font-size="14" fill="white">I/O Events</text>
+                        <text x="125" y="420" text-anchor="middle" font-size="12" fill="white">Network, File</text>
+
+                        <!-- Callbacks -->
+                        <rect x="700" y="360" width="150" height="90" fill="#fd79a8" rx="8" stroke="#e84393" stroke-width="2"/>
+                        <text x="775" y="395" text-anchor="middle" font-weight="bold" font-size="14" fill="white">Callbacks</text>
+                        <text x="775" y="420" text-anchor="middle" font-size="12" fill="white">Scheduled</text>
+
+                        <!-- Arrows with labels -->
+                        <path d="M 200 95 Q 325 175 380 220" stroke="#2d3748" stroke-width="2" marker-end="url(#arrowhead)" fill="none"/>
+                        <text x="270" y="140" font-size="11" fill="#667eea" font-weight="bold">1. Fetch</text>
+
+                        <path d="M 520 220 Q 615 115 700 95" stroke="#2d3748" stroke-width="2" marker-end="url(#arrowhead)" fill="none"/>
+                        <text x="600" y="140" font-size="11" fill="#667eea" font-weight="bold">2. Execute</text>
+
+                        <path d="M 700 115 Q 615 185 520 240" stroke="#2d3748" stroke-width="2" marker-end="url(#arrowhead)" fill="none"/>
+                        <text x="620" y="180" font-size="11" fill="#667eea" font-weight="bold">3. Resume</text>
+
+                        <path d="M 380 280 Q 275 320 200 390" stroke="#2d3748" stroke-width="2" marker-end="url(#arrowhead)" fill="none"/>
+                        <text x="270" y="345" font-size="11" fill="#667eea" font-weight="bold">4. I/O wait</text>
+
+                        <path d="M 200 410 Q 325 340 380 280" stroke="#2d3748" stroke-width="2" marker-end="url(#arrowhead)" fill="none"/>
+                        <text x="270" y="360" font-size="11" fill="#667eea" font-weight="bold">5. Done</text>
+
+                        <!-- Central description -->
+                        <text x="450" y="460" text-anchor="middle" font-size="13" fill="#4a5568" font-weight="bold">
+                            The event loop continuously cycles through tasks, executing them until they await,
+                        </text>
+                        <text x="450" y="480" text-anchor="middle" font-size="13" fill="#4a5568" font-weight="bold">
+                            then resuming them when their I/O operations complete.
+                        </text>
+                    </svg>
+                </div>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <h4>1️⃣ Pick a Task</h4>
+                        <p>Event loop selects a waiting task from the queue.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>2️⃣ Run Until Pause</h4>
+                        <p>Task runs until it hits an <code>await</code> statement.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>3️⃣ Suspend</h4>
+                        <p>Task pauses, control returns to event loop.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>4️⃣ Switch Tasks</h4>
+                        <p>Event loop picks another ready task to run.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>5️⃣ I/O Completion</h4>
+                        <p>When I/O finishes, task becomes ready again.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>6️⃣ Repeat</h4>
+                        <p>Cycle continues until all tasks complete.</p>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h4>⚠️ Never Block the Event Loop</h4>
+                    <p>Using blocking operations like <code>time.sleep()</code> or CPU-intensive work prevents other tasks from running!</p>
+                    <pre><code># ❌ BAD - Blocks everything!
+time.sleep(5)
+
+# ✅ GOOD - Non-blocking!
+await asyncio.sleep(5)</code></pre>
+                </div>
+            </section>
+
+            <!-- TASKS SECTION -->
+            <section id="tasks">
+                <h2>📋 Working with Tasks</h2>
+
+                <h3>Task Lifecycle</h3>
+                <div class="diagram-box">
+                    <svg viewBox="0 0 800 350" xmlns="http://www.w3.org/2000/svg">
+                        <!-- States -->
+                        <rect x="50" y="50" width="130" height="80" fill="#74b9ff" rx="8" stroke="#0984e3" stroke-width="2"/>
+                        <text x="115" y="95" text-anchor="middle" font-weight="bold" font-size="14" fill="white">Pending</text>
+
+                        <rect x="250" y="50" width="130" height="80" fill="#fdcb6e" rx="8" stroke="#f39c12" stroke-width="2"/>
+                        <text x="315" y="95" text-anchor="middle" font-weight="bold" font-size="14" fill="white">Running</text>
+
+                        <rect x="450" y="20" width="130" height="80" fill="#00b894" rx="8" stroke="#00cec9" stroke-width="2"/>
+                        <text x="515" y="65" text-anchor="middle" font-weight="bold" font-size="14" fill="white">Done</text>
+
+                        <rect x="600" y="50" width="130" height="80" fill="#d63031" rx="8" stroke="#a82a2a" stroke-width="2"/>
+                        <text x="665" y="95" text-anchor="middle" font-weight="bold" font-size="14" fill="white">Cancelled</text>
+
+                        <!-- Transitions -->
+                        <path d="M 180 90 L 250 90" stroke="#667eea" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <text x="215" y="80" font-size="11" fill="#667eea">create</text>
+
+                        <path d="M 380 70 L 450 55" stroke="#667eea" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+                        <path d="M 380 110 L 600 110" stroke="#667eea" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <text x="490" y="100" font-size="11" fill="#667eea">cancel()</text>
+
+                        <!-- Methods -->
+                        <rect x="50" y="170" width="700" height="150" fill="#f7fafc" rx="10" stroke="#e2e8f0" stroke-width="2"/>
+
+                        <text x="70" y="200" font-weight="bold" font-size="13" fill="#667eea">Create a task:</text>
+                        <text x="70" y="222" font-size="12" fill="#4a5568">task = asyncio.create_task(coro())</text>
+
+                        <text x="70" y="255" font-weight="bold" font-size="13" fill="#667eea">Check status:</text>
+                        <text x="70" y="277" font-size="12" fill="#4a5568">task.done(), task.cancelled(), task.exception()</text>
+
+                        <text x="400" y="200" font-weight="bold" font-size="13" fill="#667eea">Get result:</text>
+                        <text x="400" y="222" font-size="12" fill="#4a5568">result = await task  or  task.result()</text>
+
+                        <text x="400" y="255" font-weight="bold" font-size="13" fill="#667eea">Cancel:</text>
+                        <text x="400" y="277" font-size="12" fill="#4a5568">task.cancel()</text>
+                    </svg>
+                </div>
+
+                <h3>Handling Task Results</h3>
+                <pre><code>import asyncio
+
+async def fetch_data():
+    await asyncio.sleep(1)
+    return "Data!"
+
+async def main():
+    task = asyncio.create_task(fetch_data())
+
+    # Wait for it to complete
+    result = await task
+    print(f"Result: {result}")
+
+    # Check status
+    print(f"Done: {task.done()}")
+    print(f"Cancelled: {task.cancelled()}")
+
+    # Get result without awaiting
+    print(f"Result: {task.result()}")
+
+asyncio.run(main())</code></pre>
+
+                <h3>Task Timeouts</h3>
+                <p>Use <code>asyncio.wait_for()</code> to add a timeout to any coroutine.</p>
+
+                <pre><code>import asyncio
+
+async def slow_operation():
+    await asyncio.sleep(10)
+    return "Done"
+
+async def main():
+    try:
+        # Times out after 3 seconds
+        result = await asyncio.wait_for(slow_operation(), timeout=3.0)
+    except asyncio.TimeoutError:
+        print("Operation timed out!")
+
+asyncio.run(main())</code></pre>
+
+                <h3>Task Cancellation</h3>
+                <pre><code>import asyncio
+
+async def long_task():
+    try:
+        print("Starting...")
+        await asyncio.sleep(10)
+        return "Done"
+    except asyncio.CancelledError:
+        print("Task was cancelled!")
+        raise  # Re-raise to mark as cancelled
+
+async def main():
+    task = asyncio.create_task(long_task())
+
+    await asyncio.sleep(2)
+    task.cancel()  # Cancel the task
+
+    try:
+        await task
+    except asyncio.CancelledError:
+        print("Main: Task was cancelled")
+
+asyncio.run(main())</code></pre>
+            </section>
+
+            <!-- PATTERNS SECTION -->
+            <section id="patterns">
+                <h2>🎨 Common Asyncio Patterns</h2>
+
+                <h3>1️⃣ Producer-Consumer Pattern</h3>
+                <p>One task produces items, another consumes them via a queue.</p>
+
+                <pre><code>import asyncio
+
+async def producer(queue):
+    for i in range(5):
+        await asyncio.sleep(0.5)
+        item = f"Item-{i}"
+        await queue.put(item)
+        print(f"Produced: {item}")
+
+async def consumer(queue):
+    while True:
+        item = await queue.get()
+        if item is None:  # Poison pill to stop
+            break
+        print(f"Consumed: {item}")
+        queue.task_done()
+
+async def main():
+    queue = asyncio.Queue()
+
+    prod = asyncio.create_task(producer(queue))
+    cons = asyncio.create_task(consumer(queue))
+
+    await prod
+    await queue.put(None)  # Signal consumer to stop
+    await cons
+
+asyncio.run(main())</code></pre>
+
+                <h3>2️⃣ Rate Limiting with Semaphore</h3>
+                <p>Limit how many tasks can run concurrently.</p>
+
+                <pre><code>import asyncio
+
+async def limited_task(semaphore, task_id):
+    async with semaphore:
+        print(f"Task {task_id} starting")
+        await asyncio.sleep(1)
+        print(f"Task {task_id} done")
+
+async def main():
+    semaphore = asyncio.Semaphore(3)  # Max 3 concurrent
+
+    tasks = [
+        limited_task(semaphore, i)
+        for i in range(10)
+    ]
+
+    await asyncio.gather(*tasks)
+
+asyncio.run(main())</code></pre>
+
+                <h3>3️⃣ Retry with Exponential Backoff</h3>
+                <pre><code>import asyncio
+
+async def unreliable_api():
+    import random
+    if random.random() < 0.7:  # 70% failure
+        raise Exception("API error")
+    return "Success!"
+
+async def retry_with_backoff(coro_func, max_retries=5):
+    for attempt in range(max_retries):
+        try:
+            return await coro_func()
+        except Exception as e:
+            if attempt == max_retries - 1:
+                raise
+
+            delay = 2 ** attempt  # 1, 2, 4, 8, 16 seconds
+            print(f"Attempt {attempt+1} failed. Retry in {delay}s...")
+            await asyncio.sleep(delay)
+
+async def main():
+    result = await retry_with_backoff(unreliable_api)
+    print(f"Result: {result}")
+
+asyncio.run(main())</code></pre>
+
+                <h3>4️⃣ Concurrent HTTP Requests</h3>
+                <pre><code>import asyncio
+import aiohttp
+
+async def fetch(session, url):
+    async with session.get(url) as response:
+        return await response.text()
+
+async def fetch_multiple(urls):
+    async with aiohttp.ClientSession() as session:
+        tasks = [fetch(session, url) for url in urls]
+        results = await asyncio.gather(*tasks)
+        return results
+
+urls = [
+    'https://api.example.com/data1',
+    'https://api.example.com/data2',
+    'https://api.example.com/data3'
+]
+
+# asyncio.run(fetch_multiple(urls))</code></pre>
+            </section>
+
+            <!-- ADVANCED SECTION -->
+            <section id="advanced">
+                <h2>🚀 Advanced Topics</h2>
+
+                <h3>Async Context Managers</h3>
+                <p>Use <code>async with</code> for resource management in async code.</p>
+
+                <pre><code>class AsyncResource:
+    async def __aenter__(self):
+        print("Opening resource...")
+        await asyncio.sleep(0.5)
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        print("Closing resource...")
+        await asyncio.sleep(0.5)
+
+async def main():
+    async with AsyncResource() as resource:
+        print("Using resource...")
+        await asyncio.sleep(1)
+
+asyncio.run(main())</code></pre>
+
+                <h3>Async Iterators</h3>
+                <p>Iterate over async data sources.</p>
+
+                <pre><code>class AsyncRange:
+    def __init__(self, n):
+        self.n = n
+        self.i = 0
+
+    def __aiter__(self):
+        return self
+
+    async def __anext__(self):
+        if self.i >= self.n:
+            raise StopAsyncIteration
+        await asyncio.sleep(0.1)
+        result = self.i
+        self.i += 1
+        return result
+
+async def main():
+    async for num in AsyncRange(5):
+        print(num)
+
+asyncio.run(main())</code></pre>
+
+                <h3>Running Blocking Code</h3>
+                <p>Execute blocking operations without blocking the event loop.</p>
+
+                <pre><code>import asyncio
+import time
+
+def blocking_task():
+    time.sleep(2)  # CPU-intensive or blocking I/O
+    return "Done"
+
+async def main():
+    loop = asyncio.get_running_loop()
+
+    # Run in thread pool
+    result = await loop.run_in_executor(None, blocking_task)
+    print(result)
+
+asyncio.run(main())</code></pre>
+
+                <h3>Async Generators</h3>
+                <pre><code>async def async_generator():
+    for i in range(5):
+        await asyncio.sleep(0.5)
+        yield i
+
+async def main():
+    async for value in async_generator():
+        print(value)
+
+asyncio.run(main())</code></pre>
+            </section>
+
+            <!-- REAL WORLD SECTION -->
+            <section id="realworld">
+                <h2>💼 Real World Examples</h2>
+
+                <h3>Web Scraper with Rate Limiting</h3>
+                <pre><code>import asyncio
+import aiohttp
+
+async def scrape_page(session, url, semaphore):
+    async with semaphore:  # Limit concurrent requests
+        try:
+            async with session.get(url) as response:
+                return await response.text()
+        except Exception as e:
+            print(f"Error scraping {url}: {e}")
+            return None
+
+async def scrape_multiple(urls, max_concurrent=5):
+    semaphore = asyncio.Semaphore(max_concurrent)
+
+    async with aiohttp.ClientSession() as session:
+        tasks = [
+            scrape_page(session, url, semaphore)
+            for url in urls
+        ]
+        results = await asyncio.gather(*tasks)
+
+    return results
+
+# urls = ['...', '...', '...']
+# asyncio.run(scrape_multiple(urls))</code></pre>
+
+                <h3>Background Tasks</h3>
+                <pre><code>import asyncio
+
+async def background_worker():
+    while True:
+        print("Worker running...")
+        await asyncio.sleep(2)
+
+async def main():
+    # Start worker in background
+    worker = asyncio.create_task(background_worker())
+
+    # Do other work
+    for i in range(5):
+        print(f"Main: {i}")
+        await asyncio.sleep(1)
+
+    # Cancel worker
+    worker.cancel()
+    try:
+        await worker
+    except asyncio.CancelledError:
+        print("Worker cancelled")
+
+asyncio.run(main())</code></pre>
+
+                <h3>Timeout Protection</h3>
+                <pre><code>async def api_call_with_timeout():
+    try:
+        async with asyncio.timeout(5):  # Python 3.11+
+            result = await some_api_call()
+            return result
+    except TimeoutError:
+        print("API call timed out!")
+        return None
+
+# Or for older Python:
+async def old_way():
+    try:
+        result = await asyncio.wait_for(
+            some_api_call(),
+            timeout=5
+        )
+        return result
+    except asyncio.TimeoutError:
+        print("API call timed out!")
+        return None</code></pre>
+            </section>
+
+            <!-- BEST PRACTICES SECTION -->
+            <section id="best">
+                <h2>✅ Best Practices & Debugging</h2>
+
+                <h3>Do's ✅</h3>
+                <div class="grid">
+                    <div class="card">
+                        <h4>✅ Use asyncio.run()</h4>
+                        <p>Always use as your main entry point for clean event loop management.</p>
+                    </div>
+                    <div class="card">
+                        <h4>✅ Use gather() for Concurrency</h4>
+                        <p>Run multiple coroutines concurrently instead of awaiting sequentially.</p>
+                    </div>
+                    <div class="card">
+                        <h4>✅ Use Async Libraries</h4>
+                        <p>aiohttp, aiofiles, aiomysql - not requests, open(), pymysql</p>
+                    </div>
+                    <div class="card">
+                        <h4>✅ Always await</h4>
+                        <p>Don't forget await! Use: await coro(), not coro()</p>
+                    </div>
+                </div>
+
+                <h3>Don'ts ❌</h3>
+                <div class="warning-box">
+                    <h4>❌ Never Block the Event Loop</h4>
+                    <pre><code># Bad
+time.sleep(5)  # Blocks everything!
+
+# Good
+await asyncio.sleep(5)  # Non-blocking</code></pre>
+                </div>
+
+                <div class="warning-box">
+                    <h4>❌ Don't Forget await</h4>
+                    <pre><code># Bad
+data = fetch_data()  # Returns coroutine, not data!
+
+# Good
+data = await fetch_data()  # Actually executes</code></pre>
+                </div>
+
+                <div class="warning-box">
+                    <h4>❌ Don't Mix Sync and Async Carelessly</h4>
+                    <pre><code># Bad
+def sync_function():
+    await async_function()  # SyntaxError!
+
+# Good - if needed
+def sync_function():
+    asyncio.run(async_function())</code></pre>
+                </div>
+
+                <h3>Debugging Tips</h3>
+                <pre><code>import asyncio
+import logging
+
+# Enable debug mode
+asyncio.run(main(), debug=True)
+
+# Or set environment variable
+# PYTHONASYNCIODEBUG=1 python script.py
+
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
+
+# Inside async function
+current = asyncio.current_task()
+all_tasks = asyncio.all_tasks()
+print(f"Current: {current.get_name()}")
+print(f"Total tasks: {len(all_tasks)}")</code></pre>
+
+                <h3>Quick Reference</h3>
+                <table>
+                    <tr>
+                        <th>Function</th>
+                        <th>Purpose</th>
+                        <th>Example</th>
+                    </tr>
+                    <tr>
+                        <td><code>asyncio.run()</code></td>
+                        <td>Run main coroutine</td>
+                        <td><code>asyncio.run(main())</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>asyncio.gather()</code></td>
+                        <td>Run concurrent coroutines</td>
+                        <td><code>await asyncio.gather(c1(), c2())</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>asyncio.create_task()</code></td>
+                        <td>Schedule a coroutine</td>
+                        <td><code>task = asyncio.create_task(coro())</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>asyncio.wait()</code></td>
+                        <td>Wait with control</td>
+                        <td><code>done, pending = await asyncio.wait(tasks)</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>asyncio.wait_for()</code></td>
+                        <td>Wait with timeout</td>
+                        <td><code>await asyncio.wait_for(coro(), timeout=5)</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>asyncio.sleep()</code></td>
+                        <td>Async sleep</td>
+                        <td><code>await asyncio.sleep(1)</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>asyncio.Queue()</code></td>
+                        <td>Async-safe queue</td>
+                        <td><code>queue = asyncio.Queue()</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>asyncio.Lock()</code></td>
+                        <td>Async lock</td>
+                        <td><code>async with lock: ...</code></td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- INTERACTIVE DEMO -->
+            <section id="demo">
+                <h2>🎮 Interactive Demo</h2>
+                <p>Click buttons to see asyncio in action! Watch the difference between sequential and concurrent execution.</p>
+
+                <div class="demo-section">
+                    <h3>Sequential vs Concurrent Execution</h3>
+                    <button class="btn" onclick="runSequential()">▶️ Run Sequential (SLOW)</button>
+                    <button class="btn" onclick="runConcurrent()">⚡ Run Concurrent (FAST)</button>
+                    <button class="btn" onclick="clearDemo()">🗑️ Clear Output</button>
+
+                    <div class="output" id="demo-output">
+                        Click a button to see the demo...
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="footer">
+            <h3>🎓 Learning Resources</h3>
+            <p><strong>Official Docs:</strong> <a href="https://docs.python.org/3/library/asyncio.html" style="color: #74b9ff;">docs.python.org/asyncio</a></p>
+            <p><strong>Popular Libraries:</strong> aiohttp, aiofiles, aiomysql, aioredis, httpx</p>
+            <p><strong>Books:</strong> "Using Asyncio in Python" by Caleb Hattingh</p>
+            <p style="margin-top: 30px; opacity: 0.8;">🚀 Happy Async Programming! Start building concurrent applications today!</p>
+        </div>
+    </div>
+
+    <script>
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function addOutput(text, color = '#68d391') {
+            const output = document.getElementById('demo-output');
+            const line = document.createElement('div');
+            line.style.color = color;
+            line.textContent = `[${new Date().toLocaleTimeString()}] ${text}`;
+            output.appendChild(line);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        async function task(name, duration) {
+            addOutput(`🚀 ${name} started (${duration}ms)`, '#74b9ff');
+            await sleep(duration);
+            addOutput(`✅ ${name} completed`, '#00b894');
+        }
+
+        async function runSequential() {
+            addOutput('═══ SEQUENTIAL MODE (SLOW) ═══', '#fdcb6e');
+            const start = Date.now();
+
+            await task('Download', 2000);
+            await task('Process', 1500);
+            await task('Upload', 1000);
+
+            const elapsed = Date.now() - start;
+            addOutput(`⏱️ TOTAL TIME: ${elapsed}ms`, '#ff7675');
+            addOutput(`Each task waited for the previous one!\n`, '#ff7675');
+        }
+
+        async function runConcurrent() {
+            addOutput('═══ CONCURRENT MODE (FAST) ═══', '#00b894');
+            const start = Date.now();
+
+            await Promise.all([
+                task('Download', 2000),
+                task('Process', 1500),
+                task('Upload', 1000)
+            ]);
+
+            const elapsed = Date.now() - start;
+            addOutput(`⚡ TOTAL TIME: ${elapsed}ms`, '#00b894');
+            addOutput(`All tasks ran together! Speedup: ${(4500/elapsed).toFixed(1)}x faster!\n`, '#00b894');
+        }
+
+        function clearDemo() {
+            document.getElementById('demo-output').innerHTML = 'Output cleared. Click a button to start!';
+        }
+
+        // Smooth navigation
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = document.querySelector(link.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
