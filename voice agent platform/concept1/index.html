@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Webhooks + FastAPI + Real-Time STT & Full-Duplex Calling — Beginner-Friendly Notes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #020617;
+      --bg-alt: #020617;
+      --card: #020617;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.15);
+      --accent-2: #22c55e;
+      --accent-3: #f97316;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --border: #1f2937;
+      --danger: #f97373;
+      --danger-soft: rgba(248, 113, 113, 0.16);
+      --radius-lg: 16px;
+      --radius-xl: 22px;
+      --shadow-soft: 0 26px 60px rgba(15, 23, 42, 0.95);
+      --shadow-chip: 0 10px 25px rgba(15, 23, 42, 0.9);
+      --font-mono: "JetBrains Mono", Menlo, Monaco, Consolas, "Courier New", monospace;
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font-sans);
+      background: radial-gradient(circle at top, #020617, #020617 40%, #020617 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .page {
+      min-height: 100vh;
+      padding: 24px 10px 40px;
+      background:
+        radial-gradient(circle at 10% 0, rgba(56,189,248,0.14), transparent 60%),
+        radial-gradient(circle at 90% 0, rgba(34,197,94,0.1), transparent 55%),
+        radial-gradient(circle at 50% 100%, rgba(248,113,113,0.1), transparent 60%);
+    }
+
+    .layout {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 280px) minmax(0, 1fr);
+      gap: 24px;
+    }
+
+    @media (max-width: 960px) {
+      .layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .hero {
+      grid-column: 1 / -1;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 10px;
+      padding: 18px 18px 16px;
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at 0 0, rgba(56,189,248,0.25), transparent 60%),
+        radial-gradient(circle at 100% 0, rgba(34,197,94,0.15), transparent 55%),
+        rgba(15,23,42,0.98);
+      border: 1px solid rgba(148,163,184,0.5);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .hero-title-block {
+      max-width: 720px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.9rem, 3vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h1 .pill {
+      font-size: 0.8rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      color: var(--muted);
+      font-weight: 500;
+      background: rgba(15,23,42,0.9);
+    }
+
+    .hero-subtitle {
+      color: var(--muted);
+      font-size: 0.98rem;
+      max-width: 700px;
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      border: 1px solid rgba(148,163,184,0.45);
+      background: rgba(15,23,42,0.96);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: var(--shadow-chip);
+    }
+
+    .badge span.icon {
+      font-size: 0.9rem;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+      min-width: 220px;
+    }
+
+    @media (max-width: 960px) {
+      .hero-meta {
+        align-items: flex-start;
+      }
+    }
+
+    .hero-tagline {
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    @media (max-width: 960px) {
+      .hero-tagline {
+        text-align: left;
+      }
+    }
+
+    .hero-tagline strong {
+      color: var(--accent);
+    }
+
+    .hero-metrics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 0.8rem;
+      justify-content: flex-end;
+    }
+
+    @media (max-width: 960px) {
+      .hero-metrics {
+        justify-content: flex-start;
+      }
+    }
+
+    .hero-metric-chip {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.96);
+      border: 1px solid rgba(55,65,81,0.95);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: var(--shadow-chip);
+      white-space: nowrap;
+    }
+
+    .hero-metric-chip strong {
+      color: var(--accent);
+    }
+
+    /* Sidebar / TOC */
+    .sidebar {
+      position: sticky;
+      top: 18px;
+      align-self: flex-start;
+      background: rgba(15,23,42,0.98);
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(148,163,184,0.4);
+      padding: 16px 16px 18px;
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(22px);
+    }
+
+    @media (max-width: 960px) {
+      .sidebar {
+        position: static;
+        order: 2;
+      }
+    }
+
+    .sidebar-title {
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--muted);
+    }
+
+    .sidebar-title span {
+      font-size: 0.75rem;
+      opacity: 0.85;
+    }
+
+    .toc {
+      list-style: none;
+      padding: 0;
+      margin: 8px 0 0;
+      font-size: 0.85rem;
+    }
+
+    .toc li {
+      margin: 4px 0;
+    }
+
+    .toc a {
+      text-decoration: none;
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 4px 8px;
+      display: inline-block;
+      transition: all 0.16s ease;
+    }
+
+    .toc a:hover {
+      background: rgba(15,23,42,0.96);
+      color: var(--accent);
+      transform: translateX(2px);
+    }
+
+    .toc li.level-2 {
+      padding-left: 12px;
+      font-size: 0.82rem;
+    }
+
+    /* Main content */
+    .content {
+      background: rgba(15,23,42,0.98);
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(148,163,184,0.35);
+      padding: 20px 20px 24px;
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+    }
+
+    @media (max-width: 600px) {
+      .page {
+        padding: 16px 8px 24px;
+      }
+      .content {
+        padding: 16px 12px 20px;
+      }
+    }
+
+    .section {
+      padding: 18px 18px 20px;
+      border-radius: 18px;
+      background: radial-gradient(circle at 0 0, rgba(56,189,248,0.09), transparent 60%),
+                  radial-gradient(circle at 100% 0, rgba(34,197,94,0.06), transparent 55%),
+                  rgba(15,23,42,0.98);
+      border: 1px solid rgba(31,41,55,0.9);
+      margin-bottom: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .section::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(to bottom right, transparent, rgba(15,23,42,0.8) 65%);
+      opacity: 0.3;
+      mix-blend-mode: soft-light;
+    }
+
+    .section > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      gap: 10px;
+    }
+
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title span.icon {
+      font-size: 1.1rem;
+    }
+
+    .section-tag {
+      font-size: 0.74rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      color: var(--muted);
+      background: rgba(15,23,42,0.92);
+    }
+
+    h3 {
+      font-size: 0.98rem;
+      margin: 12px 0 4px;
+      font-weight: 600;
+    }
+
+    p {
+      margin: 4px 0 8px;
+      font-size: 0.93rem;
+    }
+
+    ul, ol {
+      margin: 4px 0 8px 20px;
+      padding-left: 12px;
+      font-size: 0.92rem;
+    }
+
+    li {
+      margin-bottom: 3px;
+    }
+
+    .note {
+      border-left: 3px solid var(--accent);
+      background: var(--accent-soft);
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      color: #e0f2fe;
+      margin: 8px 0;
+    }
+
+    .warning {
+      border-left: 3px solid var(--danger);
+      background: var(--danger-soft);
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      color: #fee2e2;
+      margin: 8px 0;
+    }
+
+    .inline-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.98);
+      margin-right: 4px;
+      white-space: nowrap;
+    }
+
+    .inline-chip strong {
+      color: var(--accent);
+    }
+
+    /* Code / blocks */
+    pre {
+      background: #020617;
+      border-radius: 12px;
+      padding: 10px 12px;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      border: 1px solid #1e293b;
+      margin: 8px 0;
+    }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.83rem;
+      background: rgba(15,23,42,0.98);
+      padding: 1px 4px;
+      border-radius: 4px;
+      border: 1px solid rgba(31,41,55,0.9);
+    }
+
+    .code-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+
+    .callout-columns {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin: 8px 0 4px;
+    }
+
+    @media (max-width: 900px) {
+      .callout-columns {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .callout {
+      border-radius: 14px;
+      padding: 8px 10px;
+      border: 1px solid rgba(55,65,81,0.9);
+      background: rgba(15,23,42,0.98);
+      font-size: 0.88rem;
+    }
+
+    .callout h4 {
+      margin: 0 0 4px;
+      font-size: 0.9rem;
+    }
+
+    .callout.bad {
+      border-color: rgba(248,113,113,0.75);
+      background: rgba(127,29,29,0.98);
+      color: #fee2e2;
+    }
+
+    .callout.good {
+      border-color: rgba(34,197,94,0.8);
+      background: rgba(5,46,22,0.98);
+      color: #bbf7d0;
+    }
+
+    .diagram {
+      background: #020617;
+      border-radius: 12px;
+      border: 1px solid #1f2937;
+      padding: 10px 12px;
+      margin: 8px 0;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      overflow-x: auto;
+      color: #e5e7eb;
+    }
+
+    .diagram-title {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    details {
+      margin: 4px 0 8px;
+      background: rgba(15,23,42,0.98);
+      border-radius: 12px;
+      border: 1px solid rgba(55,65,81,0.9);
+      padding: 6px 10px 8px;
+      font-size: 0.9rem;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 500;
+      color: var(--accent);
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary::before {
+      content: "▸";
+      margin-right: 6px;
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+
+    details[open] summary::before {
+      content: "▾";
+    }
+
+    .summary-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 900px) {
+      .summary-list {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+      }
+    }
+
+    .summary-item {
+      border-radius: 12px;
+      padding: 8px 10px;
+      background: rgba(15,23,42,0.98);
+      border: 1px solid rgba(55,65,81,0.9);
+      font-size: 0.9rem;
+    }
+
+    .summary-item h4 {
+      margin: 0 0 4px;
+      font-size: 0.9rem;
+      color: var(--accent);
+    }
+
+    .checklist {
+      list-style: none;
+      padding-left: 0;
+      margin-left: 0;
+    }
+
+    .checklist li {
+      margin-bottom: 4px;
+      padding-left: 18px;
+      position: relative;
+      font-size: 0.9rem;
+    }
+
+    .checklist li::before {
+      content: "✔";
+      position: absolute;
+      left: 0;
+      top: 1px;
+      font-size: 0.78rem;
+      color: var(--accent-2);
+    }
+
+    /* Comparison table */
+    .comparison-wrapper {
+      margin-top: 6px;
+      border-radius: 16px;
+      border: 1px solid rgba(55,65,81,0.95);
+      background: radial-gradient(circle at 0 0, rgba(56,189,248,0.18), transparent 60%),
+                  radial-gradient(circle at 100% 0, rgba(34,197,94,0.12), transparent 55%),
+                  rgba(15,23,42,0.98);
+      padding: 10px 10px 12px;
+      overflow-x: auto;
+    }
+
+    .comparison-title {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    table.comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+      min-width: 640px;
+    }
+
+    table.comparison-table th,
+    table.comparison-table td {
+      border: 1px solid rgba(55,65,81,0.9);
+      padding: 6px 8px;
+      text-align: left;
+    }
+
+    table.comparison-table th {
+      background: rgba(15,23,42,0.98);
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    table.comparison-table tr:nth-child(even) td {
+      background: rgba(15,23,42,0.96);
+    }
+
+    table.comparison-table tr:nth-child(odd) td {
+      background: rgba(15,23,42,0.98);
+    }
+
+    table.comparison-table td strong {
+      color: var(--accent);
+    }
+
+    .comparison-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      color: var(--muted);
+    }
+
+    .comparison-bad {
+      color: #fecaca;
+    }
+
+    .comparison-good {
+      color: #bbf7d0;
+    }
+
+    .comparison-neutral {
+      color: #e5e7eb;
+    }
+
+    /* Footer */
+    .footer-note {
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px dashed rgba(75,85,99,0.7);
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.7rem;
+      }
+      .hero-subtitle {
+        font-size: 0.9rem;
+      }
+      p, li {
+        font-size: 0.9rem;
+      }
+      pre {
+        font-size: 0.78rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="layout">
+      <header class="hero">
+        <div class="hero-title-block">
+          <h1>
+            Webhooks, FastAPI & Real-Time STT
+            <span class="pill">Beginner-Friendly Deep Dive</span>
+          </h1>
+          <p class="hero-subtitle">
+            This guide explains what a webhook really is, how to build one using FastAPI, and why putting
+            Speech To Text (STT) behind a webhook can slow down your real-time full-duplex calling system.
+            You can hand this to a junior developer and they should “get it”.
+          </p>
+          <div class="hero-badges">
+            <div class="badge">
+              <span class="icon">🧠</span>
+              <span>Concepts: HTTP, API, Webhook, FastAPI</span>
+            </div>
+            <div class="badge">
+              <span class="icon">🎧</span>
+              <span>Real-time STT & Voice Pipelines</span>
+            </div>
+            <div class="badge">
+              <span class="icon">🏗️</span>
+              <span>Architecture: Hot Path vs Webhook Path</span>
+            </div>
+            <div class="badge">
+              <span class="icon">📊</span>
+              <span>Comparison: API vs Webhook vs Direct STT</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-meta">
+          <div class="hero-tagline">
+            Designed for: <strong>Beginners → Intermediate devs</strong><br />
+            Tech stack focus: <strong>FastAPI + Python + Voice Agent</strong>
+          </div>
+          <div class="hero-metrics">
+            <div class="hero-metric-chip">
+              <span>📚</span>
+              <span><strong>3</strong> layers: HTTP → FastAPI → Voice</span>
+            </div>
+            <div class="hero-metric-chip">
+              <span>⚡</span>
+              <span><strong>Real-time</strong> pipeline safe patterns</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Sidebar / TOC -->
+      <aside class="sidebar">
+        <div class="sidebar-title">
+          <span>Navigation</span>
+          <span>HTML Notes</span>
+        </div>
+        <ul class="toc">
+          <li><a href="#sec-1">1. Basics: HTTP, API, Webhook</a></li>
+          <li class="level-2"><a href="#sec-1-1">1.1 What is HTTP?</a></li>
+          <li class="level-2"><a href="#sec-1-2">1.2 API vs Webhook</a></li>
+          <li><a href="#sec-2">2. FastAPI Fundamentals</a></li>
+          <li class="level-2"><a href="#sec-2-1">2.1 Minimal FastAPI app</a></li>
+          <li class="level-2"><a href="#sec-2-2">2.2 Request body with Pydantic</a></li>
+          <li><a href="#sec-3">3. Building a Webhook in FastAPI</a></li>
+          <li class="level-2"><a href="#sec-3-1">3.1 Basic webhook endpoint</a></li>
+          <li class="level-2"><a href="#sec-3-2">3.2 Securing a webhook</a></li>
+          <li class="level-2"><a href="#sec-3-3">3.3 Testing your webhook</a></li>
+          <li><a href="#sec-4">4. Real-Time STT & Full-Duplex Calling</a></li>
+          <li class="level-2"><a href="#sec-4-1">4.1 What is full-duplex?</a></li>
+          <li class="level-2"><a href="#sec-4-2">4.2 Typical real-time voice pipeline</a></li>
+          <li><a href="#sec-5">5. Why STT via Webhook Can Be Slow</a></li>
+          <li class="level-2"><a href="#sec-5-1">5.1 Hot path vs Webhook path</a></li>
+          <li class="level-2"><a href="#sec-5-2">5.2 Bad pattern: STT via webhook</a></li>
+          <li><a href="#sec-6">6. Recommended Architectures</a></li>
+          <li class="level-2"><a href="#sec-6-1">6.1 Direct STT integration</a></li>
+          <li class="level-2"><a href="#sec-6-2">6.2 Where webhooks make sense</a></li>
+          <li><a href="#sec-8">7. Comparison: API vs Webhook vs Direct STT</a></li>
+          <li><a href="#sec-7">8. Practical Checklists & Summary</a></li>
+        </ul>
+      </aside>
+
+      <!-- Main content -->
+      <main class="content">
+        <!-- Section 1 -->
+        <section class="section" id="sec-1">
+          <div class="section-header">
+            <div class="section-title">
+              <span class="icon">🧩</span>
+              <span>1. Basics: HTTP, API, and Webhooks (Plain Language)</span>
+            </div>
+            <span class="section-tag">Foundation</span>
+          </div>
+
+          <p>
+            Before touching FastAPI, webhooks, or STT, you need to be clear on three words:
+            <span class="inline-chip"><strong>HTTP</strong> = the language of the web</span>
+            <span class="inline-chip"><strong>API</strong> = how apps talk to each other</span>
+            <span class="inline-chip"><strong>Webhook</strong> = the web calls you</span>
+          </p>
+
+          <h3 id="sec-1-1">1.1 What is HTTP?</h3>
+          <p>
+            <strong>HyperText Transfer Protocol (HTTP)</strong> is simply the rulebook that browsers and servers use
+            to talk. When you open a web page, your browser sends an HTTP request and gets an HTTP response back.
+          </p>
+          <p>Key pieces in a simple sense:</p>
+          <ul>
+            <li><strong>URL</strong>: the address (for example, <code>http://127.0.0.1:8000/webhook/stt</code>).</li>
+            <li>
+              <strong>Method</strong>: what you want to do:
+              <ul>
+                <li><code>GET</code> → ask for data.</li>
+                <li><code>POST</code> → send data to be processed or stored.</li>
+              </ul>
+            </li>
+            <li><strong>Headers</strong>: extra info (for example, <code>Content-Type: application/json</code>).</li>
+            <li><strong>Body</strong>: the actual data (often JSON).</li>
+          </ul>
+
+          <h3 id="sec-1-2">1.2 API vs Webhook (in simple words)</h3>
+          <p>
+            Think of two people: <strong>Client</strong> and <strong>Server</strong>.
+          </p>
+          <ul>
+            <li>
+              <strong>Normal API call</strong>:
+              <br />The client asks a question whenever it wants.
+              <br /><em>Example:</em> Your frontend calls <code>/predict</code> to get an AI answer.
+            </li>
+            <li>
+              <strong>Webhook</strong>:
+              <br />The server calls you when something happens.
+              <br /><em>Example:</em> Stripe calls your <code>/webhook/stripe</code> when payment succeeds.
+            </li>
+          </ul>
+
+          <div class="diagram">
+            <div class="diagram-title">Normal API vs Webhook (high-level)</div>
+<pre>Normal API call:
+  Your frontend  ──&gt;  Your FastAPI backend  ──&gt;  Response back
+
+Webhook:
+  External service  ──&gt;  Your FastAPI webhook endpoint  ──&gt;  Your logic
+</pre>
+          </div>
+
+          <p>
+            So technically, a webhook in FastAPI is just a normal <code>POST</code> endpoint. The difference is
+            <strong>who triggers it and when</strong>:
+          </p>
+          <ul>
+            <li>Normal API: you control when you call it.</li>
+            <li>Webhook: some external system decides when to call you.</li>
+          </ul>
+        </section>
+
+        <!-- Section 2 -->
+        <section class="section" id="sec-2">
+          <div class="section-header">
+            <div class="section-title">
+              <span class="icon">⚙️</span>
+              <span>2. FastAPI Fundamentals (Just Enough Theory)</span>
+            </div>
+            <span class="section-tag">FastAPI 101</span>
+          </div>
+
+          <p>
+            <strong>FastAPI</strong> is a Python framework for building <strong>APIs</strong> quickly. It is
+            fast, uses modern Python features, and is popular for microservices and AI backends.
+          </p>
+
+          <h3 id="sec-2-1">2.1 Minimal FastAPI application</h3>
+          <p>Here is the smallest FastAPI application you need to understand:</p>
+
+          <div class="code-label">main.py</div>
+          <pre><code>from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/")
+def read_root():
+    return {"message": "Hello from FastAPI"}
+</code></pre>
+
+          <p>Run it with:</p>
+          <pre><code>uvicorn main:app --reload --host 0.0.0.0 --port 8000</code></pre>
+
+          <p>What is happening here in beginner language:</p>
+          <ul>
+            <li><code>app = FastAPI()</code> → create your API “server object”.</li>
+            <li><code>@app.get("/")</code> → define a GET route at <code>/</code>.</li>
+            <li><code>read_root()</code> → function that runs when someone hits that URL.</li>
+            <li>Return value is auto-converted to JSON → <code>{"message": "Hello from FastAPI"}</code>.</li>
+          </ul>
+
+          <h3 id="sec-2-2">2.2 Request body using Pydantic models</h3>
+          <p>For webhooks, the external service usually sends you JSON. You need to parse it.</p>
+          <p>FastAPI uses <strong>Pydantic</strong> to define data shapes (models) for request bodies.</p>
+
+          <div class="code-label">Example Pydantic model and POST endpoint</div>
+          <pre><code>from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
+
+class MyWebhookPayload(BaseModel):
+    event_type: str
+    data: dict | None = None
+
+@app.post("/webhook/example")
+async def example_webhook(payload: MyWebhookPayload):
+    # payload is already validated and parsed
+    print("Event type:", payload.event_type)
+    print("Data:", payload.data)
+
+    return {"status": "received"}
+</code></pre>
+
+          <p>What FastAPI does for you automatically:</p>
+          <ul>
+            <li>Reads JSON body from the request.</li>
+            <li>Validates it according to <code>MyWebhookPayload</code>.</li>
+            <li>Turns it into a Python object <code>payload</code>.</li>
+            <li>If validation fails → returns a clear error to the caller.</li>
+          </ul>
+
+          <div class="note">
+            You do <strong>not</strong> need to manually call <code>json.loads</code> in most cases.
+            FastAPI does it and hand-delivers a nice Pydantic object to your function.
+          </div>
+        </section>
+
+        <!-- Section 3 -->
+        <section class="section" id="sec-3">
+          <div class="section-header">
+            <div class="section-title">
+              <span class="icon">📨</span>
+              <span>3. Building a Webhook in FastAPI (Step by Step)</span>
+            </div>
+            <span class="section-tag">Core Topic</span>
+          </div>
+
+          <h3 id="sec-3-1">3.1 Basic webhook endpoint</h3>
+          <p>
+            A webhook endpoint is simply a <code>POST</code> route that accepts JSON, does something, and
+            returns a quick response.
+          </p>
+
+          <div class="code-label">Basic webhook in FastAPI</div>
+          <pre><code>from fastapi import FastAPI, Request
+from pydantic import BaseModel
+
+app = FastAPI()
+
+class WebhookPayload(BaseModel):
+    event_type: str
+    data: dict | None = None
+
+@app.post("/webhook/my-service")
+async def receive_webhook(payload: WebhookPayload, request: Request):
+    # Optional: access raw body (for debugging or signature verification)
+    raw_body = await request.body()
+    print("Raw body:", raw_body.decode("utf-8"))
+
+    # Access parsed JSON
+    print("Event type:", payload.event_type)
+    print("Data:", payload.data)
+
+    # TODO: put your business logic here
+    # e.g., save to database, trigger background job, etc.
+
+    # Always respond quickly
+    return {"status": "received", "processed": True}
+</code></pre>
+
+          <p>External systems (Stripe, n8n, etc.) will call:</p>
+          <pre><code>POST http://YOUR_SERVER_IP:8000/webhook/my-service</code></pre>
+
+          <h3 id="sec-3-2">3.2 Securing a webhook with a secret token</h3>
+          <p>
+            In production, you usually do not want random people to hit your webhook. A common simple approach:
+          </p>
+          <ul>
+            <li>Share a secret token with the external service.</li>
+            <li>External service sends a header with a signature.</li>
+            <li>Your FastAPI endpoint verifies the signature.</li>
+          </ul>
+
+          <div class="code-label">Simple HMAC-based verification</div>
+          <pre><code>import os
+import hmac
+import hashlib
+from fastapi import FastAPI, Request, Header, HTTPException
+from pydantic import BaseModel
+
+app = FastAPI()
+
+WEBHOOK_SECRET = os.getenv("WEBHOOK_SECRET", "change-me")
+
+class WebhookPayload(BaseModel):
+    event_type: str
+    data: dict | None = None
+
+def verify_signature(secret: str, body: bytes, signature: str | None) -> bool:
+    if not signature:
+        return False
+    computed = hmac.new(secret.encode(), body, hashlib.sha256).hexdigest()
+    return hmac.compare_digest(computed, signature)
+
+@app.post("/webhook/secure")
+async def secure_webhook(
+    payload: WebhookPayload,
+    request: Request,
+    x_webhook_signature: str | None = Header(default=None),
+):
+    raw_body = await request.body()
+
+    if not verify_signature(WEBHOOK_SECRET, raw_body, x_webhook_signature):
+        raise HTTPException(status_code=401, detail="Invalid signature")
+
+    # At this point, we trust the caller
+    print("Verified event:", payload.event_type)
+    print("Data:", payload.data)
+
+    return {"status": "ok", "verified": True}
+</code></pre>
+
+          <div class="note">
+            Real systems (Stripe, Razorpay, etc.) have their own header names and signing rules, but the
+            principle is the same: compute an HMAC from the raw body and compare.
+          </div>
+
+          <h3 id="sec-3-3">3.3 Testing your webhook locally</h3>
+          <p>Use <code>curl</code> to simulate the external service:</p>
+
+          <div class="code-label">Test basic webhook</div>
+          <pre><code>curl -X POST "http://127.0.0.1:8000/webhook/my-service" \
+  -H "Content-Type: application/json" \
+  -d '{
+        "event_type": "test.event",
+        "data": {
+          "message": "Hello from curl"
+        }
+      }'
+</code></pre>
+
+          <p>You should see in your FastAPI console:</p>
+          <ul>
+            <li>Printed raw body.</li>
+            <li>Parsed <code>event_type</code> and <code>data</code>.</li>
+            <li>HTTP response <code>{"status": "received", "processed": true}</code>.</li>
+          </ul>
+
+          <div class="warning">
+            If this simple test is slow or failing, do not even think of wiring it into a real-time audio
+            pipeline. Fix the basics first.
+          </div>
+        </section>
+
+        <!-- Section 4 -->
+        <section class="section" id="sec-4">
+          <div class="section-header">
+            <div class="section-title">
+              <span class="icon">🎧</span>
+              <span>4. Real-Time STT & Full-Duplex Calling</span>
+            </div>
+            <span class="section-tag">Voice Pipeline</span>
+          </div>
+
+          <p>
+            You are building a <strong>real-time voice agent</strong>. That means you care a lot about:
+          </p>
+          <ul>
+            <li>Low latency (small delay).</li>
+            <li>Smooth conversation (no weird pauses).</li>
+            <li>Full-duplex (talk and listen at the same time).</li>
+          </ul>
+
+          <h3 id="sec-4-1">4.1 What is full-duplex in simple words?</h3>
+          <p>
+            <strong>Full-duplex</strong> is like a normal phone call: both people can speak and listen at the
+            same time.
+          </p>
+          <ul>
+            <li><strong>Half-duplex</strong>: walkie-talkie (one speaks, other listens).</li>
+            <li><strong>Full-duplex</strong>: phone call (both directions live).</li>
+          </ul>
+
+          <div class="diagram">
+            <div class="diagram-title">Full-duplex voice agent (conceptual)</div>
+<pre>Caller (human)
+   │   audio in
+   ▼
+Your system (voice agent)
+   ▲   audio out
+   │
+
+Inside your system:
+  Microphone / SIP audio
+     ──&gt;  STT (Speech to Text)
+     ──&gt;  LLM (brain / reasoning)
+     ──&gt;  TTS (Text to Speech)
+     ──&gt;  Back to caller (audio)
+</pre>
+          </div>
+
+          <h3 id="sec-4-2">4.2 Typical real-time voice pipeline</h3>
+          <p>For a modern voice agent, the “hot path” usually looks like this:</p>
+
+          <div class="diagram">
+            <div class="diagram-title">Hot path (ultra-latency-sensitive pipeline)</div>
+<pre>Audio in  ──&gt;  STT  ──&gt;  LLM  ──&gt;  TTS  ──&gt;  Audio out
+
+More detailed:
+  1. Receive raw audio frames from user (WebSocket / RTP / etc.).
+  2. Send frames to STT engine (streaming).
+  3. Get partial or final transcripts.
+  4. Feed transcript to LLM to get response.
+  5. Convert LLM text to audio via TTS.
+  6. Stream audio back to user.
+</pre>
+          </div>
+
+          <p>Key property: everything should be as direct and fast as possible:</p>
+          <ul>
+            <li>No unnecessary network hops.</li>
+            <li>No heavy blocking operations in the main loop.</li>
+            <li>Prefer streaming (send small chunks continuously).</li>
+          </ul>
+        </section>
+
+        <!-- Section 5 -->
+        <section class="section" id="sec-5">
+          <div class="section-header">
+            <div class="section-title">
+              <span class="icon">🐌</span>
+              <span>5. Why STT via Webhook Can Slow Down Real-Time Calls</span>
+            </div>
+            <span class="section-tag">Anti-Pattern</span>
+          </div>
+
+          <h3 id="sec-5-1">5.1 Hot path vs Webhook path (mentally separate them)</h3>
+          <p>
+            In your brain, treat these as two different highways:
+          </p>
+
+          <div class="callout-columns">
+            <div class="callout good">
+              <h4>✅ Hot path</h4>
+              <ul>
+                <li>Audio → STT → LLM → TTS → Audio.</li>
+                <li>Everything is streaming and direct.</li>
+                <li>Runs inside your main process / event loop.</li>
+                <li>Every millisecond counts.</li>
+              </ul>
+            </div>
+            <div class="callout bad">
+              <h4>⚠️ Webhook path</h4>
+              <ul>
+                <li>HTTP request → routing → handler → response.</li>
+                <li>Useful for async events and notifications.</li>
+                <li>Some latency is acceptable (hundreds of ms).</li>
+                <li>Not suitable per audio chunk.</li>
+              </ul>
+            </div>
+          </div>
+
+          <p>
+            If you mix both, you will add overhead to the most sensitive part of your system.
+          </p>
+
+          <h3 id="sec-5-2">5.2 Bad pattern: calling STT webhook for every chunk</h3>
+          <p>Imagine code like this inside your orchestrator:</p>
+
+          <div class="code-label">❌ Bad pattern (simplified)</div>
+          <pre><code>for chunk in audio_stream:
+    # 1) send audio chunk to FastAPI webhook
+    res = requests.post(
+        "http://127.0.0.1:8000/webhook/stt",
+        json={"audio_chunk": base64_audio(chunk)}
+    )
+
+    # 2) wait for HTTP response
+    text = res.json()["text"]
+
+    # 3) send text to LLM, etc...
+</code></pre>
+
+          <p>Why this is bad for real-time:</p>
+          <ul>
+            <li><strong>Blocking call</strong>: <code>requests.post</code> waits until response is back.</li>
+            <li><strong>HTTP overhead per chunk</strong>: headers, JSON, routing, etc.</li>
+            <li><strong>Extra hop</strong> even if FastAPI and orchestrator are on the same machine.</li>
+          </ul>
+
+          <div class="diagram">
+            <div class="diagram-title">Unnecessary loop with webhook</div>
+<pre>Orchestrator   --HTTP-->   FastAPI webhook   --calls STT-->   STT
+     ^                                                        |
+     |                                                        |
+     ----------------------HTTP response----------------------+
+</pre>
+          </div>
+
+          <div class="warning">
+            If your audio chunks are every 20–40 milliseconds and you wrap each chunk in an HTTP POST,
+            you are basically guaranteeing lag, jitter, and a terrible user experience.
+          </div>
+
+          <p>Correct approach:</p>
+          <ul>
+            <li>Call the STT engine via its Python SDK or streaming API directly inside the orchestrator.</li>
+            <li>Do not use HTTP as a “middleman” for every chunk.</li>
+          </ul>
+        </section>
+
+        <!-- Section 6 -->
+        <section class="section" id="sec-6">
+          <div class="section-header">
+            <div class="section-title">
+              <span class="icon">🏗️</span>
+              <span>6. Recommended Architectures: What To Do Instead</span>
+            </div>
+            <span class="section-tag">Best Practice</span>
+          </div>
+
+          <h3 id="sec-6-1">6.1 Direct STT integration inside the orchestrator</h3>
+          <p>
+            A clean approach is to treat STT as a <strong>Python class or module</strong>, not as a webhook.
+          </p>
+
+          <div class="code-label">Conceptual folder structure</div>
+          <pre><code>backend/
+  app/
+    main.py            # FastAPI HTTP + WebSocket endpoints
+    orchestration.py   # real-time call handler
+    stt_providers/
+      __init__.py
+      sarvam.py
+      deepgram.py
+      whisper_stream.py
+</code></pre>
+
+          <p>Inside <code>stt_providers/sarvam.py</code> you might have:</p>
+
+          <div class="code-label">Simplified STT provider class</div>
+          <pre><code>class SarvamSTT:
+    def __init__(self, api_key: str):
+        self.api_key = api_key
+        # init SDK client...
+
+    async def stream(self, audio_chunks_async):
+        async for event in self._sdk_stream(audio_chunks_async):
+            yield event.text
+</code></pre>
+
+          <p>And inside your orchestration logic:</p>
+
+          <div class="code-label">Real-time handler (conceptual)</div>
+          <pre><code>async def handle_call(ws):
+    stt = SarvamSTT(api_key="...")   # no HTTP in between
+
+    async for chunk in receive_audio_chunks(ws):
+        text = await stt.feed_chunk(chunk)   # direct usage
+        if text:
+            reply = await llm.generate(text)
+            audio = await tts.speak(reply)
+            await ws.send_bytes(audio)
+</code></pre>
+
+          <div class="note">
+            This design keeps everything inside the same process / event loop and avoids additional HTTP
+            latency on the hot path.
+          </div>
+
+          <h3 id="sec-6-2">6.2 Where webhooks actually make sense in a voice system</h3>
+          <p>Use webhooks for tasks that are:</p>
+          <ul>
+            <li>Not real-time critical.</li>
+            <li>Okay with 1–5 seconds delay.</li>
+            <li>More about integration than conversation.</li>
+          </ul>
+
+          <details>
+            <summary>Examples of good webhook use in a voice project</summary>
+            <ul>
+              <li>
+                <strong>Call completed → send transcript</strong><br />
+                After the call ends, your backend calls a CRM webhook with:
+                <ul>
+                  <li>Full transcript.</li>
+                  <li>Call summary.</li>
+                  <li>Sentiment scores, tags, etc.</li>
+                </ul>
+              </li>
+              <li>
+                <strong>Payment success / failure events</strong><br />
+                Payment gateway calls your webhook; you update the customer status.
+              </li>
+              <li>
+                <strong>Analytics / logging</strong><br />
+                At the end of a session, send logs to a log collector via webhook.
+              </li>
+            </ul>
+          </details>
+
+          <div class="diagram">
+            <div class="diagram-title">Recommended split</div>
+<pre>Real-time pipeline (no webhooks inside):
+  Audio --&gt; STT --&gt; LLM --&gt; TTS --&gt; Audio
+
+Asynchronous integrations (via webhooks or HTTP):
+  After call:
+    - send summary to CRM
+    - store analytics
+    - trigger workflows in other systems
+</pre>
+          </div>
+        </section>
+
+        <!-- Section 8 (comparison) -->
+        <section class="section" id="sec-8">
+          <div class="section-header">
+            <div class="section-title">
+              <span class="icon">📊</span>
+              <span>7. Comparison: Normal API vs Webhook vs Direct STT Integration</span>
+            </div>
+            <span class="section-tag">Decision Guide</span>
+          </div>
+
+          <p>
+            This comparison table helps you decide when to use a <strong>normal API call</strong>, when to use a
+            <strong>webhook</strong>, and when you must use
+            <strong>direct STT integration inside your orchestrator</strong>.
+          </p>
+
+          <div class="comparison-wrapper">
+            <div class="comparison-title">Side-by-side comparison on key parameters</div>
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Parameter</th>
+                  <th>
+                    Normal API<br />
+                    <span class="comparison-tag">Client → Server</span>
+                  </th>
+                  <th>
+                    Webhook<br />
+                    <span class="comparison-tag">Server → You</span>
+                  </th>
+                  <th>
+                    Direct STT Integration<br />
+                    <span class="comparison-tag">Inside orchestrator</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Who starts the call?</strong></td>
+                  <td>Client (for example, frontend, n8n, another service)</td>
+                  <td>External service (for example, Stripe, CRM)</td>
+                  <td>Your own code (no HTTP, just function / SDK calls)</td>
+                </tr>
+                <tr>
+                  <td><strong>Trigger style</strong></td>
+                  <td>On demand (you ask whenever you want something)</td>
+                  <td>Event-based (they call you when something happens)</td>
+                  <td>Continuous / streaming inside your event loop</td>
+                </tr>
+                <tr>
+                  <td><strong>Typical use case</strong></td>
+                  <td>Fetch data, perform actions, sync state</td>
+                  <td>Notifications, payment events, call-complete events</td>
+                  <td>Real-time STT, TTS, LLM calls in a voice pipeline</td>
+                </tr>
+                <tr>
+                  <td><strong>Latency sensitivity</strong></td>
+                  <td class="comparison-neutral">Medium – small delays are usually okay</td>
+                  <td class="comparison-neutral">Low – seconds of delay are acceptable</td>
+                  <td class="comparison-good"><strong>Very high – every millisecond matters</strong></td>
+                </tr>
+                <tr>
+                  <td><strong>Works for per-audio-chunk STT?</strong></td>
+                  <td class="comparison-bad">Technically possible but too slow and heavy</td>
+                  <td class="comparison-bad">No – webhooks are not for 20–40ms loops</td>
+                  <td class="comparison-good"><strong>Yes – this is the right place</strong></td>
+                </tr>
+                <tr>
+                  <td><strong>Network overhead</strong></td>
+                  <td>One HTTP request per call</td>
+                  <td>One HTTP request per event from external service</td>
+                  <td>None (in-process calls or dedicated streaming socket)</td>
+                </tr>
+                <tr>
+                  <td><strong>Implementation shape</strong></td>
+                  <td>FastAPI route like <code>@app.post("/do-something")</code></td>
+                  <td>FastAPI route like <code>@app.post("/webhook/...")</code></td>
+                  <td>Class / function imported into <code>orchestration.py</code></td>
+                </tr>
+                <tr>
+                  <td><strong>Security approach</strong></td>
+                  <td>Authentication, authorization (tokens, sessions, etc.)</td>
+                  <td>Shared secret, HMAC signature, IP allowlists</td>
+                  <td>Internal – environment variables, secrets in config, no external caller</td>
+                </tr>
+                <tr>
+                  <td><strong>Failure impact</strong></td>
+                  <td>Client sees error immediately, can retry</td>
+                  <td>Event may be lost or retried by external service</td>
+                  <td class="comparison-bad">Directly impacts live call quality if poorly designed</td>
+                </tr>
+                <tr>
+                  <td><strong>Best fit in your voice system</strong></td>
+                  <td>Config APIs, managing users, one-off actions</td>
+                  <td>“Call finished → send transcript / summary / analytics”</td>
+                  <td class="comparison-good"><strong>Live audio handling + STT + LLM + TTS loop</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>
+            If the task is <strong>inside the real-time loop</strong> (for example, convert each audio chunk to text),
+            choose the <span class="inline-chip"><strong>Direct STT Integration</strong></span> pattern.
+            If it is <strong>after the call</strong> (for example, send transcript to CRM), a
+            <span class="inline-chip"><strong>Webhook</strong></span> is perfect.
+          </p>
+        </section>
+
+        <!-- Section 7 -->
+        <section class="section" id="sec-7">
+          <div class="section-header">
+            <div class="section-title">
+              <span class="icon">✅</span>
+              <span>8. Practical Checklists & Final Summary</span>
+            </div>
+            <span class="section-tag">Cheat Sheet</span>
+          </div>
+
+          <h3>8.1 When designing a webhook in FastAPI</h3>
+          <ul class="checklist">
+            <li>Make it a <code>POST</code> route.</li>
+            <li>Define a Pydantic model for expected JSON.</li>
+            <li>Keep the logic fast (do heavy work in background if needed).</li>
+            <li>Add some form of security (secret header or signature).</li>
+            <li>Test with <code>curl</code> or Postman before connecting real services.</li>
+          </ul>
+
+          <h3>8.2 When working on real-time STT & full-duplex calling</h3>
+          <ul class="checklist">
+            <li>Identify the <strong>hot path</strong> (audio → STT → LLM → TTS → audio).</li>
+            <li>Keep the hot path free of HTTP round-trips wherever possible.</li>
+            <li>Integrate STT, LLM, and TTS via direct Python APIs or streaming clients.</li>
+            <li>Use async/await and streaming, not blocking HTTP calls.</li>
+            <li>Move all “nice to have” stuff (logging, CRM sync, notifications) off the hot path.</li>
+          </ul>
+
+          <h3>8.3 Short “do vs do not” table</h3>
+          <div class="callout-columns">
+            <div class="callout good">
+              <h4>✅ Do</h4>
+              <ul>
+                <li>Use FastAPI <code>POST</code> routes as webhooks.</li>
+                <li>Secure webhooks with secrets / signatures.</li>
+                <li>Call STT/LLM/TTS directly inside orchestration code.</li>
+                <li>Use webhooks after the call for integrations.</li>
+              </ul>
+            </div>
+            <div class="callout bad">
+              <h4>❌ Do not</h4>
+              <ul>
+                <li>Send every audio chunk through an HTTP webhook.</li>
+                <li>Put heavy work directly in the webhook handler.</li>
+                <li>Combine real-time audio loop with slow network calls.</li>
+                <li>Assume “localhost HTTP = free” — it still costs time.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="summary-list">
+            <div class="summary-item">
+              <h4>Concept Summary</h4>
+              <p>
+                A webhook is just an HTTP endpoint that external systems call. In FastAPI, it is a <code>POST</code>
+                route with a Pydantic model for the body.
+              </p>
+            </div>
+            <div class="summary-item">
+              <h4>Architecture Summary</h4>
+              <p>
+                Keep your real-time voice pipeline free from webhook overhead. Use webhooks only for things that can
+                tolerate delay: logs, analytics, CRM, notifications.
+              </p>
+            </div>
+            <div class="summary-item">
+              <h4>Implementation Summary</h4>
+              <p>
+                For STT: integrate provider SDKs directly as Python classes. For webhooks: build simple, secure,
+                fast endpoints in FastAPI and test them with curl.
+              </p>
+            </div>
+          </div>
+
+          <div class="footer-note">
+            Next obvious step: wire this theory into your actual STT orchestration file
+            (<code>orchestration.py</code>) and keep the webhook endpoints for clean, decoupled integrations only.
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
+
