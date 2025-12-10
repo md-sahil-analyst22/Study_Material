@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Real-Time Full-Duplex AI Calling – WebSocket vs Redis vs Kafka (Beginner → Intermediate)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+  <!-- Mermaid for Diagrams -->
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+    mermaid.initialize({ startOnLoad: true, theme: "dark" });
+  </script>
+
+  <style>
+    body {
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #020617;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1f2937;
+      border-radius: 999px;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.7s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .tab-active {
+      border-bottom-width: 2px;
+      border-color: #f97316;
+      color: #f97316;
+      font-weight: 600;
+    }
+
+    .accordion-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.25s ease-out;
+    }
+    .accordion-body[data-open="true"] {
+      max-height: 800px;
+      transition: max-height 0.3s ease-in;
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-slate-950 text-slate-100">
+  <div class="min-h-screen flex flex-col">
+
+    <!-- Top Nav -->
+    <header class="w-full border-b border-slate-800 bg-slate-950/80 backdrop-blur">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+        <div class="flex items-center gap-2">
+          <div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-pink-500 via-orange-400 to-yellow-300 flex items-center justify-center shadow-lg shadow-pink-500/40">
+            <i class="ph ph-phone-call text-slate-950 text-xl"></i>
+          </div>
+          <div>
+            <h1 class="text-sm sm:text-base font-semibold tracking-tight">
+              Real-Time AI Calling – Streaming Deep Dive
+            </h1>
+            <p class="text-xs text-slate-400 hidden sm:block">
+              WebSocket • Redis • Kafka • From Zero to Intermediate
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <a href="#study-path" class="hidden sm:inline-flex items-center gap-1 rounded-full bg-slate-900 px-3 py-1 text-xs text-slate-300 border border-slate-700">
+            <i class="ph ph-graduation-cap text-sm"></i>
+            Study Path
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+        <!-- HERO -->
+        <section class="grid lg:grid-cols-[2fr,1.4fr] gap-6 items-center fade-in">
+          <div class="space-y-4">
+            <div class="inline-flex items-center gap-2 rounded-full bg-slate-900 border border-slate-800 px-3 py-1 text-xs text-slate-300">
+              <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+              Beginner → Intermediate Study Material
+            </div>
+            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-semibold leading-tight">
+              Streaming via <span class="text-pink-400">WebSocket</span>,
+              <span class="text-orange-400">Redis</span> &amp;
+              <span class="text-sky-400">Kafka</span> for Full-Duplex AI Calling
+            </h2>
+            <p class="text-slate-300 text-sm sm:text-base">
+              You’ll go from “What is a request?” to “How do I design a real-time voice pipeline?”
+              step by step. No magic, no hand-waving — just clean mental models, diagrams,
+              and working code examples.
+            </p>
+
+            <div class="flex flex-wrap gap-3 pt-2">
+              <a href="#study-path" class="inline-flex items-center gap-2 rounded-full bg-pink-500 hover:bg-pink-400 text-slate-950 text-xs sm:text-sm font-semibold px-4 py-2 shadow shadow-pink-500/40 transition">
+                <i class="ph ph-rocket-launch text-base"></i>
+                Follow the Learning Path
+              </a>
+              <a href="#code-lab" class="inline-flex items-center gap-2 rounded-full bg-slate-900 hover:bg-slate-800 text-slate-100 text-xs sm:text-sm px-4 py-2 border border-slate-700 transition">
+                <i class="ph ph-code text-base"></i>
+                Jump to Code Lab
+              </a>
+            </div>
+          </div>
+
+          <div class="rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-800 p-4 sm:p-5 shadow-xl shadow-black/50">
+            <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
+              <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+              Mental Model: Who Does What?
+            </h3>
+            <div class="space-y-3 text-xs sm:text-sm">
+              <div class="flex items-start gap-3">
+                <div class="mt-1 h-6 w-6 rounded-xl bg-slate-900 flex items-center justify-center border border-slate-700">
+                  <i class="ph ph-arrows-left-right text-pink-400 text-lg"></i>
+                </div>
+                <div>
+                  <div class="font-semibold text-pink-300">WebSocket – The Live Line</div>
+                  <p class="text-slate-300 text-xs">
+                    Persistent full-duplex connection between caller and backend.
+                    Carries audio chunks and control signals with minimal overhead.
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <div class="mt-1 h-6 w-6 rounded-xl bg-slate-900 flex items-center justify-center border border-slate-700">
+                  <i class="ph ph-arrows-split text-orange-300 text-lg"></i>
+                </div>
+                <div>
+                  <div class="font-semibold text-orange-300">Redis – The Internal Dispatcher</div>
+                  <p class="text-slate-300 text-xs">
+                    Super-fast in-memory bus for moving messages between gateway, STT, LLM, and TTS workers.
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <div class="mt-1 h-6 w-6 rounded-xl bg-slate-900 flex items-center justify-center border border-slate-700">
+                  <i class="ph ph-database text-sky-300 text-lg"></i>
+                </div>
+                <div>
+                  <div class="font-semibold text-sky-300">Kafka – The Flight Recorder</div>
+                  <p class="text-slate-300 text-xs">
+                    Durable event log that remembers what every call did: events, transcripts, errors, metrics.
+                    Great for analytics, auditing, and replay.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- STUDY PATH -->
+        <section id="study-path" class="rounded-3xl bg-slate-950/60 border border-slate-800 p-4 sm:p-6 space-y-4">
+          <div class="flex items-center justify-between flex-wrap gap-3">
+            <h3 class="text-lg sm:text-xl font-semibold">Suggested Learning Path (Beginner → Intermediate)</h3>
+          </div>
+          <ol class="list-decimal list-inside text-xs sm:text-sm text-slate-200 space-y-2">
+            <li>
+              <span class="font-semibold">Level 0 – Foundations:</span> Requests, connections, TCP vs HTTP, latency & throughput.
+            </li>
+            <li>
+              <span class="font-semibold">Level 1 – WebSocket Basics:</span> What it is, how it differs from HTTP, simple chat example.
+            </li>
+            <li>
+              <span class="font-semibold">Level 2 – Redis Basics:</span> Key-value, Pub/Sub, Streams, how to use it as an internal bus.
+            </li>
+            <li>
+              <span class="font-semibold">Level 3 – Kafka Basics:</span> Topics, partitions, producers, consumers, offsets.
+            </li>
+            <li>
+              <span class="font-semibold">Level 4 – Combine for AI Calling:</span> Full-duplex pipeline design, diagrams, message flows.
+            </li>
+            <li>
+              <span class="font-semibold">Level 5 – Code Lab:</span> FastAPI WebSocket endpoint, Redis Pub/Sub, Kafka events.
+            </li>
+            <li>
+              <span class="font-semibold">Level 6 – Performance & Pitfalls:</span> Tuning, backpressure, retries, when not to over-engineer.
+            </li>
+          </ol>
+        </section>
+
+        <!-- LEVEL 0: FOUNDATIONS -->
+        <section id="foundations" class="space-y-4">
+          <h3 class="text-lg sm:text-xl font-semibold">Level 0 – Foundations: How Data Moves on the Network</h3>
+
+          <div class="grid md:grid-cols-2 gap-4 lg:gap-5">
+            <div class="rounded-3xl bg-slate-950 border border-slate-800 p-4 sm:p-5 space-y-3">
+              <h4 class="font-semibold text-sm sm:text-base">1. Request/Response vs Stream</h4>
+              <p class="text-xs sm:text-sm text-slate-300">
+                The simplest model on the web is:
+                <span class="font-mono text-slate-100">client → request → server → response → close</span>.
+                This is how normal HTTP works.
+              </p>
+              <ul class="list-disc list-inside text-xs sm:text-sm text-slate-300 space-y-1">
+                <li><span class="font-semibold">Request/Response:</span> One request, one response. Good for APIs, pages.</li>
+                <li><span class="font-semibold">Streaming:</span> Connection stays open, and both sides can send multiple messages over time.</li>
+              </ul>
+              <p class="text-xs sm:text-sm text-slate-300">
+                For **voice calls**, you don’t want to send one giant request after the user finishes speaking.
+                You want **continuous, tiny packets** going both ways — that’s streaming.
+              </p>
+            </div>
+
+            <div class="rounded-3xl bg-slate-950 border border-slate-800 p-4 sm:p-5 space-y-3">
+              <h4 class="font-semibold text-sm sm:text-base">2. Latency, Throughput, and Jitter</h4>
+              <ul class="list-disc list-inside text-xs sm:text-sm text-slate-300 space-y-1">
+                <li>
+                  <span class="font-semibold">Latency:</span> How long one message takes from sender → receiver.
+                  For real-time voice, you want < 150 ms end-to-end.
+                </li>
+                <li>
+                  <span class="font-semibold">Throughput:</span> How much data per second you can push (e.g., MB/s).
+                </li>
+                <li>
+                  <span class="font-semibold">Jitter:</span> Variation in latency.
+                  If some packets take 50 ms and some 500 ms, your audio will feel choppy.
+                </li>
+              </ul>
+              <p class="text-xs sm:text-sm text-slate-300">
+                **WebSocket + Redis** focus on super low latency and stable jitter.
+                **Kafka** focuses on durability and throughput, not microsecond latency.
+              </p>
+            </div>
+          </div>
+
+          <!-- HTTP vs WebSocket Diagram -->
+          <div class="rounded-3xl bg-slate-950 border border-slate-800 p-4 sm:p-6 space-y-3">
+            <h4 class="font-semibold text-sm sm:text-base">3. HTTP vs WebSocket – Visual Difference</h4>
+            <pre class="mermaid text-xs leading-relaxed">
+sequenceDiagram
+    participant Browser
+    participant Server
+
+    Note over Browser,Server: Classic HTTP (Request / Response)
+    Browser->>Server: HTTP Request (GET /api/user)
+    Server-->>Browser: HTTP Response (JSON)
+    Note over Browser,Server: Connection effectively ends
+
+    Note over Browser,Server: WebSocket (Persistent)
+    Browser->>Server: HTTP Upgrade to WebSocket
+    Server-->>Browser: 101 Switching Protocols
+    loop During Call
+        Browser->>Server: Audio/Text Frame
+        Server-->>Browser: AI Reply / Events
+    end
+            </pre>
+            <p class="text-xs sm:text-sm text-slate-300">
+              In HTTP, every interaction is a separate “knock on the door”.
+              In WebSocket, you open the door once and keep talking.
+            </p>
+          </div>
+        </section>
+
+        <!-- Big Picture Tabs (same as earlier, kept) -->
+        <section id="big-picture" class="bg-slate-950/60 border border-slate-800 rounded-3xl p-4 sm:p-6 lg:p-7 space-y-5">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h3 class="text-lg sm:text-xl font-semibold">Big Picture: How a Full-Duplex AI Call Actually Flows</h3>
+              <p class="text-xs sm:text-sm text-slate-300">
+                See the story first, then dive into pipeline-level details.
+              </p>
+            </div>
+            <div class="flex rounded-full bg-slate-900 border border-slate-700 text-xs sm:text-sm">
+              <button class="tab-btn tab-active px-4 py-2 rounded-full" data-tab="story">
+                Beginner Story
+              </button>
+              <button class="tab-btn px-4 py-2 rounded-full" data-tab="pipeline">
+                Technical Pipeline
+              </button>
+            </div>
+          </div>
+
+          <div id="tab-story" class="tab-panel space-y-4">
+            <p class="text-sm sm:text-base text-slate-200">
+              Think of the call center as three layers:
+            </p>
+            <ol class="list-decimal list-inside space-y-2 text-sm text-slate-300">
+              <li>
+                **The phone line (WebSocket/WebRTC):** Keeps you and the AI connected.
+              </li>
+              <li>
+                **The office routing system (Redis):** Takes your sentences and forwards them to
+                “employees”: STT, LLM, TTS.
+              </li>
+              <li>
+                **The CCTV + black box recorder (Kafka):** Records everything important that
+                happens, so you can rewind the story later.
+              </li>
+            </ol>
+          </div>
+
+          <div id="tab-pipeline" class="tab-panel hidden space-y-4">
+            <p class="text-sm sm:text-base text-slate-200">
+              Pipeline layers for full-duplex calling:
+            </p>
+            <ul class="space-y-2 text-sm text-slate-300">
+              <li>
+                <span class="font-semibold text-pink-300">Edge:</span> WebSocket/WebRTC handling audio/text from user devices.
+              </li>
+              <li>
+                <span class="font-semibold text-orange-300">Core:</span> Redis Pub/Sub and/or Streams connecting gateway, STT, LLM, and TTS.
+              </li>
+              <li>
+                <span class="font-semibold text-sky-300">Backbone:</span> Kafka topics capturing business events, transcripts, metrics.
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ARCHITECTURE DIAGRAM -->
+        <section id="architecture" class="space-y-4">
+          <div class="flex items-center justify-between gap-3 flex-wrap">
+            <h3 class="text-lg sm:text-xl font-semibold">Architecture – Live Path vs Logging Path</h3>
+            <span class="text-xs text-slate-400">
+              Mermaid diagram • scroll if needed
+            </span>
+          </div>
+
+          <div class="rounded-3xl bg-slate-950 border border-slate-800 p-4 sm:p-6">
+            <pre class="mermaid text-xs leading-relaxed">
+flowchart LR
+  Caller((Caller<br/>Browser / Softphone))
+  GW[Call Gateway<br/>(FastAPI + WebSocket)]
+  RQ[(Redis<br/>Pub/Sub + Cache)]
+  STT[STT Workers<br/>(Sarvam / Whisper)]
+  LLM[LLM Orchestrator<br/>(Gemini / OpenAI / etc.)]
+  TTS[TTS Workers<br/>(Coqui / Provider)]
+  K[(Kafka Cluster)]
+  DB[(Warehouse / Supabase / Postgres)]
+
+  Caller <--> GW
+  GW -->|audio chunks| RQ
+  RQ --> STT
+  STT -->|partial/final text| RQ
+  RQ --> LLM
+  LLM -->|bot reply text| RQ
+  RQ --> TTS
+  TTS -->|audio frames| GW
+  GW -->|streamed audio| Caller
+
+  GW -->|call events| K
+  STT -->|utterance events| K
+  LLM -->|decision events| K
+  TTS -->|playback events| K
+
+  K -->|batch / ETL| DB
+            </pre>
+          </div>
+        </section>
+
+        <!-- DEEP DIVE CARDS (kept + lightly extended) -->
+        <section class="space-y-5">
+          <h3 class="text-lg sm:text-xl font-semibold">Deep Dive: WebSocket, Redis, Kafka</h3>
+
+          <div class="grid md:grid-cols-3 gap-4 lg:gap-5">
+            <!-- WebSocket Card -->
+            <article id="websocket" class="rounded-3xl bg-gradient-to-br from-pink-500/15 via-slate-950 to-slate-950 border border-pink-500/40 p-4 sm:p-5 flex flex-col">
+              <div class="flex items-center gap-2 mb-3">
+                <div class="h-8 w-8 rounded-2xl bg-pink-600 flex items-center justify-center shadow shadow-pink-500/50">
+                  <i class="ph ph-arrows-left-right text-slate-50 text-lg"></i>
+                </div>
+                <h4 class="font-semibold">WebSocket – Real-Time Pipe</h4>
+              </div>
+              <p class="text-xs sm:text-sm text-slate-100 mb-3">
+                WebSocket creates a persistent, full-duplex connection over a single TCP socket.
+                After the initial HTTP upgrade, both sides can send messages at any time.
+              </p>
+              <ul class="space-y-1.5 text-xs sm:text-sm text-slate-200">
+                <li><span class="font-semibold">Used by:</span> Browsers, apps, and backend gateway.</li>
+                <li><span class="font-semibold">Pattern:</span> Message-based, not stream-of-bytes only (you frame messages).</li>
+                <li><span class="font-semibold">Reality:</span> You still run it over TCP; it’s just a smarter protocol on top.</li>
+              </ul>
+            </article>
+
+            <!-- Redis Card -->
+            <article id="redis" class="rounded-3xl bg-gradient-to-br from-orange-500/15 via-slate-950 to-slate-950 border border-orange-500/40 p-4 sm:p-5 flex flex-col">
+              <div class="flex items-center gap-2 mb-3">
+                <div class="h-8 w-8 rounded-2xl bg-orange-500 flex items-center justify-center shadow shadow-orange-500/50">
+                  <i class="ph ph-arrows-split text-slate-50 text-lg"></i>
+                </div>
+                <h4 class="font-semibold">Redis – Internal Streaming Bus</h4>
+              </div>
+              <p class="text-xs sm:text-sm text-slate-100 mb-3">
+                Redis started as a key-value store, but it also provides
+                Pub/Sub and Streams, which are perfect for internal messaging in a real-time system.
+              </p>
+              <ul class="space-y-1.5 text-xs sm:text-sm text-slate-200">
+                <li><span class="font-semibold">Pub/Sub:</span> Fire-and-forget messages to multiple subscribers.</li>
+                <li><span class="font-semibold">Streams:</span> Ordered entries with IDs, basic persistence, consumer groups.</li>
+              </ul>
+            </article>
+
+            <!-- Kafka Card -->
+            <article id="kafka" class="rounded-3xl bg-gradient-to-br from-sky-500/15 via-slate-950 to-slate-950 border border-sky-500/40 p-4 sm:p-5 flex flex-col">
+              <div class="flex items-center gap-2 mb-3">
+                <div class="h-8 w-8 rounded-2xl bg-sky-500 flex items-center justify-center shadow shadow-sky-500/50">
+                  <i class="ph ph-database text-slate-50 text-lg"></i>
+                </div>
+                <h4 class="font-semibold">Kafka – Event Log & Replay</h4>
+              </div>
+              <p class="text-xs sm:text-sm text-slate-100 mb-3">
+                Kafka is an append-only, partitioned log. Producers write events to topics,
+                consumers read them using offsets. Events stay there for hours/days/months.
+              </p>
+              <ul class="space-y-1.5 text-xs sm:text-sm text-slate-200">
+                <li><span class="font-semibold">Key feature:</span> Replay. You can re-run a consumer from offset 0.</li>
+                <li><span class="font-semibold">Scaling:</span> More partitions → more parallel consumers.</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        <!-- COMPARISON TABLE (kept) -->
+        <section id="comparison" class="space-y-4">
+          <div class="flex items-center justify-between gap-3 flex-wrap">
+            <h3 class="text-lg sm:text-xl font-semibold">Side-by-Side Comparison</h3>
+            <span class="text-xs text-slate-400">Scroll horizontally on mobile</span>
+          </div>
+          <div class="overflow-x-auto rounded-3xl border border-slate-800 bg-slate-950">
+            <table class="min-w-full text-xs sm:text-sm">
+              <thead class="bg-slate-900/90">
+                <tr>
+                  <th class="px-4 py-3 text-left font-semibold text-slate-200">Dimension</th>
+                  <th class="px-4 py-3 text-left font-semibold text-pink-300">WebSocket</th>
+                  <th class="px-4 py-3 text-left font-semibold text-orange-300">Redis</th>
+                  <th class="px-4 py-3 text-left font-semibold text-sky-300">Kafka</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800">
+                <tr>
+                  <td class="px-4 py-3 text-slate-200 font-medium">Role</td>
+                  <td class="px-4 py-3 text-slate-100">Edge transport (client &lt;→ gateway)</td>
+                  <td class="px-4 py-3 text-slate-100">Internal bus and cache</td>
+                  <td class="px-4 py-3 text-slate-100">Durable event log</td>
+                </tr>
+                <tr>
+                  <td class="px-4 py-3 text-slate-200 font-medium">Latency</td>
+                  <td class="px-4 py-3 text-slate-100">Low (suitable for live speech)</td>
+                  <td class="px-4 py-3 text-slate-100">Very low (in-memory)</td>
+                  <td class="px-4 py-3 text-slate-100">Higher (tradeoff for durability)</td>
+                </tr>
+                <tr>
+                  <td class="px-4 py-3 text-slate-200 font-medium">Durability</td>
+                  <td class="px-4 py-3 text-slate-100">None by default</td>
+                  <td class="px-4 py-3 text-slate-100">Limited (Streams persist)</td>
+                  <td class="px-4 py-3 text-slate-100">High (retention, replication)</td>
+                </tr>
+                <tr>
+                  <td class="px-4 py-3 text-slate-200 font-medium">Best For</td>
+                  <td class="px-4 py-3 text-slate-100">Live user interaction</td>
+                  <td class="px-4 py-3 text-slate-100">Service-to-service streaming</td>
+                  <td class="px-4 py-3 text-slate-100">Analytics, audit, replay</td>
+                </tr>
+                <tr>
+                  <td class="px-4 py-3 text-slate-200 font-medium">Scaling</td>
+                  <td class="px-4 py-3 text-slate-100">More gateways behind load balancer</td>
+                  <td class="px-4 py-3 text-slate-100">Vertical + limited sharding</td>
+                  <td class="px-4 py-3 text-slate-100">Horizontal via partitions & brokers</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- LEVEL 1: WEBSOCKET CODE LAB -->
+        <section id="code-lab" class="space-y-4">
+          <h3 class="text-lg sm:text-xl font-semibold">Level 1 – WebSocket Code Lab (FastAPI)</h3>
+
+          <div class="grid lg:grid-cols-2 gap-4 lg:gap-5">
+            <div class="rounded-3xl bg-slate-950 border border-slate-800 p-4 sm:p-5 space-y-3">
+              <h4 class="font-semibold text-sm sm:text-base">Simple Echo Server (Text)</h4>
+              <p class="text-xs sm:text-sm text-slate-300">
+                First, a minimal WebSocket echo endpoint.
+              </p>
+              <pre class="text-[11px] sm:text-xs bg-slate-900 border border-slate-800 rounded-2xl p-3 overflow-x-auto">
+<code># app.py
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.websocket("/ws/echo")
+async def websocket_echo(ws: WebSocket):
+    await ws.accept()
+    try:
+        while True:
+            msg = await ws.receive_text()
+            reply = f"Echo: {msg}"
+            await ws.send_text(reply)
+    except WebSocketDisconnect:
+        print("Client disconnected")</code>
+              </pre>
+              <p class="text-xs sm:text-sm text-slate-300">
+                Use a browser WS client (or Postman / VSCode extension) to connect to
+                <code>ws://localhost:8000/ws/echo</code> and send text messages.
+              </p>
+            </div>
+
+            <div class="rounded-3xl bg-slate-950 border border-slate-800 p-4 sm:p-5 space-y-3">
+              <h4 class="font-semibold text-sm sm:text-base">Streaming Audio Chunks (Concept)</h4>
+              <p class="text-xs sm:text-sm text-slate-300">
+                For audio, you typically:
+              </p>
+              <ol class="list-decimal list-inside text-xs sm:text-sm text-slate-300 space-y-1">
+                <li>Capture microphone audio in the browser.</li>
+                <li>Encode each chunk (e.g., Float32Array) into binary or base64.</li>
+                <li>Send each chunk as a WebSocket message.</li>
+              </ol>
+              <pre class="text-[11px] sm:text-xs bg-slate-900 border border-slate-800 rounded-2xl p-3 overflow-x-auto">
+<code># Pseudocode inside a FastAPI WebSocket endpoint
+@app.websocket("/ws/audio")
+async def websocket_audio(ws: WebSocket):
+    await ws.accept()
+    while True:
+        msg = await ws.receive_bytes()  # raw bytes from client
+        # 1) Push to Redis as audio chunk for STT
+        # 2) Optionally send back partial transcripts or events</code>
+              </pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- LEVEL 2: REDIS PRACTICAL -->
+        <section id="redis-lab" class="space-y-4">
+          <h3 class="text-lg sm:text-xl font-semibold">Level 2 – Redis as Real-Time Bus</h3>
+
+          <div class="grid lg:grid-cols-2 gap-4 lg:gap-5">
+            <div class="rounded-3xl bg-slate-950 border border-slate-800 p-4 sm:p-5 space-y-3">
+              <h4 class="font-semibold text-sm sm:text-base">Concept: Pub/Sub for Live Audio/Text</h4>
+              <p class="text-xs sm:text-sm text-slate-300">
+                In your AI calling system:
+              </p>
+              <ul class="list-disc list-inside text-xs sm:text-sm text-slate-300 space-y-1">
+                <li>Gateway publishes user audio chunks on channel <code>audio:call_id</code>.</li>
+                <li>STT workers subscribe to <code>audio:call_id</code>, send transcripts to <code>text:call_id</code>.</li>
+                <li>LLM/TTS workers subscribe to <code>text:call_id</code> and respond.</li>
+              </ul>
+              <pre class="text-[11px] sm:text-xs bg-slate-900 border border-slate-800 rounded-2xl p-3 overflow-x-auto">
+<code># publisher.py
+import asyncio
+import aioredis
+
+async def main():
+    redis = await aioredis.from_url("redis://localhost:6379", decode_responses=True)
+    await redis.publish("audio:call123", "base64_audio_chunk")
+
+asyncio.run(main())</code>
+              </pre>
+            </div>
+
+            <div class="rounded-3xl bg-slate-950 border border-slate-800 p-4 sm:p-5 space-y-3">
+              <h4 class="font-semibold text-sm sm:text-base">Simple Redis Subscriber</h4>
+              <pre class="text-[11px] sm:text-xs bg-slate-900 border border-slate-800 rounded-2xl p-3 overflow-x-auto">
+<code># subscriber_stt.py
+import asyncio
+import aioredis
+
+async def stt_worker():
+    redis = await aioredis.from_url("redis://localhost:6379", decode_responses=True)
+    pubsub = redis.pubsub()
+    await pubsub.subscribe("audio:call123")
+
+    async for message in pubsub.listen():
+        if message["type"] == "message":
+            audio_chunk = message["data"]
+            # run STT on audio_chunk...
+            transcript = "hello world (dummy)"
+            await redis.publish("text:call123", transcript)
+
+asyncio.run(stt_worker())</code>
+              </pre>
+              <p class="text-xs sm:text-sm text-slate-300">
+                This is the basic pattern you’ll reuse: **Gateway → Redis → Worker → Redis → Gateway**.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- LEVEL 3: KAFKA PRACTICAL -->
+        <section id="kafka-lab" class="space-y-4">
+          <h3 class="text-lg sm:text-xl font-semibold">Level 3 – Kafka for Events & Analytics</h3>
+
+          <div class="grid lg:grid-cols-2 gap-4 lg:gap-5">
+            <div class="rounded-3xl bg-slate-950 border border-slate-800 p-4 sm:p-5 space-y-3">
+              <h4 class="font-semibold text-sm sm:text-base">Producer: Log Call Events</h4>
+              <p class="text-xs sm:text-sm text-slate-300">
+                Use Kafka for high-value events: call started, call ended, final transcripts, error logs.
+              </p>
+              <pre class="text-[11px] sm:text-xs bg-slate-900 border border-slate-800 rounded-2xl p-3 overflow-x-auto">
+<code># producer.py
+from kafka import KafkaProducer
+import json
+import time
+
+producer = KafkaProducer(
+    bootstrap_servers=["localhost:9092"],
+    value_serializer=lambda v: json.dumps(v).encode("utf-8"),
+)
+
+event = {
+    "type": "call_started",
+    "call_id": "call123",
+    "tenant": "IT",
+    "timestamp": time.time(),
+}
+producer.send("call-events", value=event)
+producer.flush()</code>
+              </pre>
+            </div>
+
+            <div class="rounded-3xl bg-slate-950 border border-slate-800 p-4 sm:p-5 space-y-3">
+              <h4 class="font-semibold text-sm sm:text-base">Consumer: Analytics Worker</h4>
+              <pre class="text-[11px] sm:text-xs bg-slate-900 border border-slate-800 rounded-2xl p-3 overflow-x-auto">
+<code># consumer.py
+from kafka import KafkaConsumer
+import json
+
+consumer = KafkaConsumer(
+    "call-events",
+    bootstrap_servers=["localhost:9092"],
+    value_deserializer=lambda v: json.loads(v.decode("utf-8")),
+    auto_offset_reset="earliest",
+    enable_auto_commit=True,
+    group_id="analytics-service",
+)
+
+for msg in consumer:
+    event = msg.value
+    print("Received event:", event)
+    # Write to DB / metrics system / dashboard...</code>
+              </pre>
+              <p class="text-xs sm:text-sm text-slate-300">
+                Because Kafka **remembers** events, new consumers can join later, start from earlier offsets,
+                and rebuild metrics or debug issues.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- DESIGN PATTERNS & ANTI-PATTERNS -->
+        <section id="patterns" class="space-y-4">
+          <h3 class="text-lg sm:text-xl font-semibold">Level 4 – Design Patterns & Anti-Patterns</h3>
+
+          <div class="grid md:grid-cols-2 gap-4 lg:gap-5">
+            <div class="rounded-3xl bg-slate-950 border border-emerald-500/40 p-4 sm:p-5 space-y-3">
+              <h4 class="font-semibold text-sm sm:text-base text-emerald-300">Good Patterns</h4>
+              <ul class="list-disc list-inside text-xs sm:text-sm text-slate-200 space-y-1">
+                <li><span class="font-semibold">Edge isolation:</span> WebSocket gateway is a separate service.</li>
+                <li><span class="font-semibold">Internal bus:</span> Redis connects gateway, STT, LLM, TTS.</li>
+                <li><span class="font-semibold">Async logging:</span> Kafka receives events without blocking the call.</li>
+                <li><span class="font-semibold">Tenant-aware topics:</span> Include tenant ID in Kafka messages, labels in Redis channels.</li>
+                <li><span class="font-semibold">Backpressure:</span> Limit in-flight messages per call; if STT lagging, slow down audio ingestion.</li>
+              </ul>
+            </div>
+            <div class="rounded-3xl bg-slate-950 border border-red-500/40 p-4 sm:p-5 space-y-3">
+              <h4 class="font-semibold text-sm sm:text-base text-red-300">Anti-Patterns</h4>
+              <ul class="list-disc list-inside text-xs sm:text-sm text-slate-200 space-y-1">
+                <li>Streaming every 20ms **audio chunk into Kafka** just because it’s “cool”.</li>
+                <li>Having the **browser talk directly to Redis** or Kafka (never do this).</li>
+                <li>Doing heavy synchronous DB writes **inside the WebSocket receive loop**.</li>
+                <li>Not separating **real-time errors** (user-facing) from **observability errors** (logged only).</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- FAQ / ACCORDION (kept) -->
+        <section class="space-y-4">
+          <h3 class="text-lg sm:text-xl font-semibold">FAQ: When to Use What?</h3>
+
+          <div class="grid md:grid-cols-2 gap-4 lg:gap-5">
+            <div class="rounded-2xl bg-slate-950 border border-slate-800 p-4">
+              <button class="accordion-header w-full flex items-center justify-between text-left text-sm sm:text-base font-semibold text-slate-100">
+                <span>I’m a beginner. Where should I start coding?</span>
+                <i class="ph ph-caret-down text-slate-400"></i>
+              </button>
+              <div class="accordion-body mt-2 text-xs sm:text-sm text-slate-300" data-open="false">
+                <p class="pt-2">
+                  Start with:
+                </p>
+                <ol class="list-decimal list-inside mt-1 space-y-1">
+                  <li>FastAPI + WebSocket echo server.</li>
+                  <li>Redis Pub/Sub demo (one publisher, one subscriber).</li>
+                  <li>Kafka producer + consumer printing events.</li>
+                </ol>
+                <p class="mt-2">
+                  Once you’re comfortable, combine them into the AI calling pipeline.
+                </p>
+              </div>
+            </div>
+
+            <div class="rounded-2xl bg-slate-950 border border-slate-800 p-4">
+              <button class="accordion-header w-full flex items-center justify-between text-left text-sm sm:text-base font-semibold text-slate-100">
+                <span>Is Redis enough, or do I really need Kafka?</span>
+                <i class="ph ph-caret-down text-slate-400"></i>
+              </button>
+              <div class="accordion-body mt-2 text-xs sm:text-sm text-slate-300" data-open="false">
+                <p class="pt-2">
+                  For a small system / POC:
+                </p>
+                <ul class="list-disc list-inside mt-1 space-y-1">
+                  <li>WebSocket + Redis only might be enough.</li>
+                  <li>You log minimal events to DB directly.</li>
+                </ul>
+                <p class="mt-2">
+                  When you need **auditability, replay, multi-team consumption**, and
+                  structured analytics, Kafka becomes very valuable.
+                </p>
+              </div>
+            </div>
+
+            <div class="rounded-2xl bg-slate-950 border border-slate-800 p-4">
+              <button class="accordion-header w-full flex items-center justify-between text-left text-sm sm:text-base font-semibold text-slate-100">
+                <span>Can I use plain HTTP streaming instead of WebSocket?</span>
+                <i class="ph ph-caret-down text-slate-400"></i>
+              </button>
+              <div class="accordion-body mt-2 text-xs sm:text-sm text-slate-300" data-open="false">
+                <p class="pt-2">
+                  You can use techniques like Server-Sent Events (SSE) for one-way streaming
+                  (server → client) and chunked HTTP responses, but:
+                </p>
+                <ul class="list-disc list-inside mt-1 space-y-1">
+                  <li>SSE is one-way (server → browser), not full-duplex.</li>
+                  <li>For audio both ways, WebSocket or WebRTC is the practical choice.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="rounded-2xl bg-slate-950 border border-slate-800 p-4">
+              <button class="accordion-header w-full flex items-center justify-between text-left text-sm sm:text-base font-semibold text-slate-100">
+                <span>How do I test performance locally?</span>
+                <i class="ph ph-caret-down text-slate-400"></i>
+              </button>
+              <div class="accordion-body mt-2 text-xs sm:text-sm text-slate-300" data-open="false">
+                <p class="pt-2">
+                  Basic ideas:
+                </p>
+                <ul class="list-disc list-inside mt-1 space-y-1">
+                  <li>Simulate multiple WebSocket clients (Python, Locust, k6, custom scripts).</li>
+                  <li>Measure latency from audio chunk sent → transcript received → TTS back.</li>
+                  <li>Observe Redis CPU, memory, and network usage.</li>
+                  <li>Observe Kafka lag and consumer throughput for event topics.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- GLOSSARY & CHECKLIST -->
+        <section id="glossary" class="space-y-4">
+          <h3 class="text-lg sm:text-xl font-semibold">Level 5 – Glossary & Quick Checklist</h3>
+
+          <div class="grid md:grid-cols-2 gap-4 lg:gap-5">
+            <div class="rounded-3xl bg-slate-950 border border-slate-800 p-4 sm:p-5 space-y-2">
+              <h4 class="font-semibold text-sm sm:text-base">Glossary (Beginner-Friendly)</h4>
+              <ul class="space-y-1 text-xs sm:text-sm text-slate-300">
+                <li><span class="font-semibold">Full-duplex:</span> Both sides can send data at the same time.</li>
+                <li><span class="font-semibold">Gateway:</span> Service that manages client connections (WebSocket).</li>
+                <li><span class="font-semibold">Pub/Sub:</span> Publish-Subscribe messaging pattern (one sends, many receive).</li>
+                <li><span class="font-semibold">Topic:</span> Named stream of messages in Kafka.</li>
+                <li><span class="font-semibold">Partition:</span> Slice of a Kafka topic for parallelism.</li>
+                <li><span class="font-semibold">Offset:</span> Position of a message in a Kafka partition.</li>
+                <li><span class="font-semibold">Backpressure:</span> Mechanism to slow down senders when receivers are overloaded.</li>
+              </ul>
+            </div>
+
+            <div class="rounded-3xl bg-slate-950 border border-slate-800 p-4 sm:p-5 space-y-2">
+              <h4 class="font-semibold text-sm sm:text-base">Checklist: Before You Go to Production</h4>
+              <ul class="list-disc list-inside text-xs sm:text-sm text-slate-300 space-y-1">
+                <li>Gateway WebSocket connections are authenticated and rate-limited.</li>
+                <li>Redis is not exposed publicly; only backend services can reach it.</li>
+                <li>Kafka topics are well-named and have retention configured per use case.</li>
+                <li>Errors in STT/LLM/TTS are surfaced gracefully to the caller.</li>
+                <li>Call events are traceable end-to-end via call_id across Redis/Kafka/DB.</li>
+                <li>Monitoring is in place for latency, error rates, and resource usage.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- SUMMARY SECTION -->
+        <section class="rounded-3xl bg-gradient-to-r from-pink-600/20 via-slate-950 to-sky-600/10 border border-slate-700 p-4 sm:p-6 lg:p-7 space-y-3">
+          <h3 class="text-lg sm:text-xl font-semibold">Final Summary – How to Think About It</h3>
+          <ol class="list-decimal list-inside text-xs sm:text-sm text-slate-100 space-y-2">
+            <li>
+              <span class="font-semibold text-pink-300">WebSocket = The call itself.</span>
+              Without it (or WebRTC), you don’t have real-time full-duplex audio/text.
+            </li>
+            <li>
+              <span class="font-semibold text-orange-300">Redis = The nervous system.</span>
+              It moves signals internally between the “organs” (STT, LLM, TTS) quickly.
+            </li>
+            <li>
+              <span class="font-semibold text-sky-300">Kafka = The memory + black box.</span>
+              It remembers what happened so humans and other services can learn from it later.
+            </li>
+            <li>
+              Use each tool where it shines. Don’t force Kafka into the hot path or try to use WebSocket as a database.
+            </li>
+          </ol>
+        </section>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 bg-slate-950">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400">
+        <span>Real-Time Streaming Study Material • WebSocket • Redis • Kafka • AI Calling</span>
+        <span>Made for builders who actually ship systems</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- JS: Tabs & Accordions -->
+  <script>
+    // Tabs
+    const tabButtons = document.querySelectorAll(".tab-btn");
+    const tabPanels = {
+      story: document.getElementById("tab-story"),
+      pipeline: document.getElementById("tab-pipeline")
+    };
+
+    tabButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const tab = btn.dataset.tab;
+        tabButtons.forEach(b => b.classList.remove("tab-active"));
+        btn.classList.add("tab-active");
+        Object.entries(tabPanels).forEach(([key, panel]) => {
+          if (key === tab) {
+            panel.classList.remove("hidden");
+          } else {
+            panel.classList.add("hidden");
+          }
+        });
+      });
+    });
+
+    // Accordions
+    const accordionHeaders = document.querySelectorAll(".accordion-header");
+    accordionHeaders.forEach(header => {
+      header.addEventListener("click", () => {
+        const body = header.parentElement.querySelector(".accordion-body");
+        const isOpen = body.getAttribute("data-open") === "true";
+        body.setAttribute("data-open", String(!isOpen));
+      });
+    });
+  </script>
+</body>
+</html>
+
