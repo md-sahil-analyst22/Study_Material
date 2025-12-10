@@ -1,0 +1,2494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Comprehensive Study Material</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2E7D32;
+            --secondary-color: #1976D2;
+            --accent-color: #F57C00;
+            --danger-color: #D32F2F;
+            --dark-bg: #0F1419;
+            --light-bg: #FFFFFF;
+            --card-bg: #F5F5F5;
+            --text-dark: #212121;
+            --text-light: #666666;
+            --border-color: #E0E0E0;
+            --code-bg: #263238;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            color: var(--text-dark);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        nav {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        nav h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        nav .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        nav .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+            font-size: 0.95rem;
+        }
+
+        nav .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header Section */
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 15px;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .hero-section h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-section p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        /* Section Styling */
+        section {
+            background: white;
+            border-radius: 12px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-left: 5px solid var(--primary-color);
+        }
+
+        section.django-section {
+            border-left-color: var(--accent-color);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            font-size: 1.3rem;
+            margin-top: 1.8rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        h4 {
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.8rem;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .badge-fastapi {
+            background: linear-gradient(135deg, #00a86b, #00c896);
+            color: white;
+        }
+
+        .badge-django {
+            background: linear-gradient(135deg, #f57c00, #ff9800);
+            color: white;
+        }
+
+        .badge-python {
+            background: linear-gradient(135deg, #306998, #ffe873);
+            color: #212121;
+        }
+
+        .badge-websocket {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        /* Code Block - IMPROVED FOR MOBILE */
+        .code-block {
+            background: var(--code-bg);
+            color: #E0E0E0;
+            padding: 1.5rem;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--accent-color);
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            word-break: break-word;
+            white-space: pre-wrap;
+            overflow-wrap: break-word;
+        }
+
+        .code-block code {
+            color: inherit;
+            display: block;
+        }
+
+        /* Diagram Container */
+        .diagram-container {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border: 2px solid var(--primary-color);
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: auto;
+        }
+
+        .diagram {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Comparison Grid */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .comparison-box {
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .comparison-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .comparison-box h4 {
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .comparison-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .comparison-box li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            font-size: 0.95rem;
+        }
+
+        .comparison-box li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        /* Feature Grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .feature-card .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: white;
+            margin-top: 0;
+        }
+
+        .feature-card p {
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        table th {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        table tr:hover {
+            background: var(--card-bg);
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline-item {
+            padding-left: 2.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .timeline-item:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px var(--primary-color);
+        }
+
+        .timeline-item:after {
+            content: "";
+            position: absolute;
+            left: 8px;
+            top: 20px;
+            width: 4px;
+            height: calc(100% + 1.5rem);
+            background: var(--primary-color);
+        }
+
+        .timeline-item:last-child:after {
+            display: none;
+        }
+
+        .timeline-content {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .timeline-content h4 {
+            margin-top: 0;
+        }
+
+        /* Alert Box */
+        .alert {
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--secondary-color);
+            font-size: 0.95rem;
+        }
+
+        .alert.important {
+            background: #E3F2FD;
+            border-left-color: var(--secondary-color);
+        }
+
+        .alert.tip {
+            background: #F0F4C3;
+            border-left-color: #FBC02D;
+        }
+
+        .alert.warning {
+            background: #FFF3E0;
+            border-left-color: var(--accent-color);
+        }
+
+        /* Syntax Highlighting */
+        .string { color: #81C784; }
+        .keyword { color: #64B5F6; font-weight: bold; }
+        .function { color: #FFB74D; }
+        .comment { color: #78909C; }
+        .number { color: #E082B6; }
+
+        /* Info Box */
+        .info-box {
+            background: #ECEFF1;
+            border-left: 4px solid var(--secondary-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .info-box strong {
+            color: var(--secondary-color);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            section {
+                padding: 2rem;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h2 {
+                font-size: 1.7rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            nav h1 {
+                font-size: 1.5rem;
+                margin-bottom: 0.5rem;
+            }
+
+            nav .nav-links {
+                gap: 0.5rem;
+                flex-direction: column;
+                font-size: 0.9rem;
+            }
+
+            nav .nav-links a {
+                font-size: 0.9rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            section {
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .hero-section {
+                padding: 2rem 1rem;
+            }
+
+            .hero-section h1 {
+                font-size: 1.8rem;
+            }
+
+            .hero-section p {
+                font-size: 1rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            h3 {
+                font-size: 1.1rem;
+            }
+
+            .code-block {
+                padding: 1rem;
+                font-size: 0.8rem;
+                line-height: 1.5;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .feature-card {
+                padding: 1.5rem;
+            }
+
+            .comparison-grid {
+                gap: 1rem;
+            }
+
+            .comparison-box {
+                padding: 1rem;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            table th, table td {
+                padding: 0.75rem;
+            }
+
+            .diagram-container {
+                padding: 1rem;
+                min-height: 250px;
+            }
+
+            .badge {
+                font-size: 0.7rem;
+                padding: 0.25rem 0.6rem;
+            }
+
+            .alert {
+                padding: 1rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            nav {
+                padding: 0.75rem;
+            }
+
+            nav h1 {
+                font-size: 1.3rem;
+            }
+
+            nav .nav-links {
+                gap: 0.25rem;
+            }
+
+            nav .nav-links a {
+                font-size: 0.8rem;
+            }
+
+            .container {
+                padding: 0.75rem;
+            }
+
+            section {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .hero-section {
+                padding: 1.5rem 1rem;
+            }
+
+            .hero-section h1 {
+                font-size: 1.4rem;
+            }
+
+            .hero-section p {
+                font-size: 0.9rem;
+            }
+
+            h2 {
+                font-size: 1.3rem;
+            }
+
+            h3 {
+                font-size: 1rem;
+            }
+
+            h4 {
+                font-size: 0.95rem;
+            }
+
+            .code-block {
+                padding: 0.75rem;
+                font-size: 0.75rem;
+                line-height: 1.4;
+                margin: 1rem 0;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+
+            .feature-card {
+                padding: 1rem;
+            }
+
+            .feature-card .icon {
+                font-size: 2rem;
+            }
+
+            .feature-card h4 {
+                font-size: 1rem;
+            }
+
+            table {
+                font-size: 0.75rem;
+            }
+
+            table th, table td {
+                padding: 0.5rem;
+            }
+
+            .diagram-container {
+                padding: 0.75rem;
+                min-height: 200px;
+            }
+
+            .badge {
+                font-size: 0.65rem;
+                padding: 0.2rem 0.5rem;
+            }
+
+            .alert {
+                padding: 0.75rem;
+                font-size: 0.85rem;
+                border-left-width: 3px;
+            }
+
+            .timeline-item {
+                padding-left: 2rem;
+            }
+
+            .timeline-item:before {
+                width: 16px;
+                height: 16px;
+            }
+
+            .timeline-item:after {
+                left: 6px;
+            }
+        }
+
+        /* Footer */
+        footer {
+            background: var(--text-dark);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            font-size: 0.95rem;
+        }
+
+        .highlight {
+            background: #FFFACD;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <h1>📡 WebSocket Study Hub</h1>
+        <ul class="nav-links">
+            <li><a href="#intro">Introduction</a></li>
+            <li><a href="#architecture">Architecture</a></li>
+            <li><a href="#fastapi">FastAPI (80%)</a></li>
+            <li><a href="#django">Django (20%)</a></li>
+            <li><a href="#security">Security</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="container">
+        <section class="hero-section">
+            <h1>🚀 Master WebSocket Programming</h1>
+            <p>A comprehensive guide to real-time bidirectional communication using Python, FastAPI, and Django</p>
+            <p style="margin-top: 1rem; font-size: 0.9rem;">
+                <span class="badge badge-websocket">WebSocket Protocol</span>
+                <span class="badge badge-fastapi">FastAPI (80%)</span>
+                <span class="badge badge-django">Django (20%)</span>
+                <span class="badge badge-python">Python</span>
+            </p>
+        </section>
+
+        <!-- 1. Introduction Section -->
+        <section id="intro">
+            <h2>📚 1. Introduction to WebSockets</h2>
+
+            <h3>What is WebSocket?</h3>
+            <p>WebSocket is a communication protocol that provides <span class="highlight">full-duplex (bidirectional) communication</span> over a single TCP connection. Unlike HTTP, which is request-response based, WebSocket maintains an open connection allowing real-time data transfer between client and server.</p>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="icon">⚡</div>
+                    <h4>Real-Time Communication</h4>
+                    <p>Instant data exchange between client and server without polling</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🔄</div>
+                    <h4>Bidirectional</h4>
+                    <p>Both client and server can initiate communication at any time</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">📊</div>
+                    <h4>Low Latency</h4>
+                    <p>Minimal overhead with persistent connection</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🎯</div>
+                    <h4>Efficient</h4>
+                    <p>Reduces bandwidth and server load compared to polling</p>
+                </div>
+            </div>
+
+            <h3>HTTP vs WebSocket</h3>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>🔵 HTTP</h4>
+                    <ul>
+                        <li>Request-Response model</li>
+                        <li>Stateless connection</li>
+                        <li>Higher latency</li>
+                        <li>More overhead per request</li>
+                        <li>Polling required for updates</li>
+                        <li>Simple to implement</li>
+                    </ul>
+                </div>
+                <div class="comparison-box">
+                    <h4>🟢 WebSocket</h4>
+                    <ul>
+                        <li>Persistent connection</li>
+                        <li>Maintains state</li>
+                        <li>Lower latency</li>
+                        <li>Minimal overhead</li>
+                        <li>Real-time push updates</li>
+                        <li>More complex implementation</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Common Use Cases</h3>
+            <table>
+                <tr>
+                    <th>Application Type</th>
+                    <th>Example</th>
+                    <th>Benefit</th>
+                </tr>
+                <tr>
+                    <td><strong>Chat Applications</strong></td>
+                    <td>Slack, Discord, WhatsApp Web</td>
+                    <td>Instant message delivery</td>
+                </tr>
+                <tr>
+                    <td><strong>Live Notifications</strong></td>
+                    <td>Twitter, Facebook feeds</td>
+                    <td>Real-time updates without refresh</td>
+                </tr>
+                <tr>
+                    <td><strong>Collaborative Tools</strong></td>
+                    <td>Google Docs, Figma</td>
+                    <td>Synchronized editing</td>
+                </tr>
+                <tr>
+                    <td><strong>Gaming</strong></td>
+                    <td>Multiplayer games</td>
+                    <td>Low-latency player interactions</td>
+                </tr>
+                <tr>
+                    <td><strong>Real-time Analytics</strong></td>
+                    <td>Stock tickers, dashboards</td>
+                    <td>Live data streaming</td>
+                </tr>
+                <tr>
+                    <td><strong>IoT Systems</strong></td>
+                    <td>Smart home monitoring</td>
+                    <td>Instant device status updates</td>
+                </tr>
+            </table>
+        </section>
+
+        <!-- 2. WebSocket Handshake -->
+        <section>
+            <h2>🤝 2. WebSocket Handshake Process</h2>
+
+            <p>The WebSocket handshake is an HTTP upgrade mechanism that transitions from HTTP to WebSocket protocol.</p>
+
+            <h3>Handshake Flow Diagram</h3>
+            <div class="diagram-container">
+                <div style="width: 100%; text-align: left; font-family: monospace; font-size: 0.85rem;">
+                    <div style="text-align: center; font-weight: bold; margin-bottom: 1.5rem; color: var(--primary-color);">CLIENT → SERVER → CLIENT</div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                        <div style="background: #E3F2FD; padding: 1rem; border-radius: 8px;">
+                            <strong style="color: var(--secondary-color);">Step 1: Client Initiates</strong>
+                            <pre style="margin-top: 0.5rem; color: var(--text-dark);">GET /chat HTTP/1.1
+Host: server.com
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Key: x3JJ...
+Sec-WebSocket-Version: 13</pre>
+                        </div>
+
+                        <div style="background: #F3E5F5; padding: 1rem; border-radius: 8px;">
+                            <strong style="color: #7B1FA2;">Step 2: Server Validates</strong>
+                            <pre style="margin-top: 0.5rem; color: var(--text-dark);">Server checks:
+✓ Upgrade header
+✓ Connection header
+✓ Sec-WebSocket-Key
+✓ Sec-WebSocket-Version</pre>
+                        </div>
+
+                        <div style="background: #E8F5E9; padding: 1rem; border-radius: 8px;">
+                            <strong style="color: var(--primary-color);">Step 3: Server Accepts</strong>
+                            <pre style="margin-top: 0.5rem; color: var(--text-dark);">HTTP/1.1 101 
+Switching Protocols
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Accept: Kq...</pre>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 1.5rem; color: var(--primary-color); font-weight: bold;">
+                        ✨ Connection Established → Full-Duplex Communication
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert important">
+                <strong>📌 Key Point:</strong> The handshake is HTTP-based, but once upgraded, communication is handled by the WebSocket protocol directly over TCP.
+            </div>
+        </section>
+
+        <!-- 3. WebSocket Frame Structure -->
+        <section>
+            <h2>🎯 3. WebSocket Frame Structure</h2>
+
+            <h3>Frame Components</h3>
+            <p>Each WebSocket message is divided into frames with specific structure:</p>
+
+            <div class="diagram-container">
+                <div style="width: 100%; background: white; padding: 1.5rem; border-radius: 8px; text-align: left;">
+                    <table style="width: 100%; margin: 0;">
+                        <tr style="background: var(--code-bg); color: white;">
+                            <th>Field</th>
+                            <th>Size</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td><strong>FIN</strong></td>
+                            <td>1 bit</td>
+                            <td>Final frame indicator (1 = last, 0 = more fragments)</td>
+                        </tr>
+                        <tr style="background: var(--card-bg);">
+                            <td><strong>RSV1-3</strong></td>
+                            <td>3 bits</td>
+                            <td>Reserved for extensions (must be 0)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>OPCODE</strong></td>
+                            <td>4 bits</td>
+                            <td>Frame type (text, binary, close, ping, pong)</td>
+                        </tr>
+                        <tr style="background: var(--card-bg);">
+                            <td><strong>MASK</strong></td>
+                            <td>1 bit</td>
+                            <td>1 for client→server, 0 for server→client</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Payload Length</strong></td>
+                            <td>7/16/64 bits</td>
+                            <td>Message length encoding</td>
+                        </tr>
+                        <tr style="background: var(--card-bg);">
+                            <td><strong>Masking Key</strong></td>
+                            <td>32 bits</td>
+                            <td>Random key for client→server (XOR mask)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Payload Data</strong></td>
+                            <td>Variable</td>
+                            <td>Actual message content</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <h3>Frame Opcodes</h3>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>Data Frames</h4>
+                    <ul>
+                        <li><strong>0x0:</strong> Continuation</li>
+                        <li><strong>0x1:</strong> Text frame</li>
+                        <li><strong>0x2:</strong> Binary frame</li>
+                    </ul>
+                </div>
+                <div class="comparison-box">
+                    <h4>Control Frames</h4>
+                    <ul>
+                        <li><strong>0x8:</strong> Close connection</li>
+                        <li><strong>0x9:</strong> Ping (heartbeat)</li>
+                        <li><strong>0xA:</strong> Pong (response)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. FastAPI Implementation (80%) -->
+        <section id="fastapi">
+            <h2>⚡ 4. FastAPI WebSocket Implementation (80%)</h2>
+
+            <div class="alert tip">
+                <strong>💡 Why FastAPI?</strong> FastAPI is built on ASGI (Asynchronous Server Gateway Interface), providing native WebSocket support with modern async/await syntax and automatic documentation.
+            </div>
+
+            <h3>Basic WebSocket Server</h3>
+            <p>A simple echo server that receives messages and sends them back:</p>
+
+            <div class="code-block"><code><span class="keyword">from</span> fastapi <span class="keyword">import</span> FastAPI, WebSocket
+<span class="keyword">from</span> fastapi.middleware.cors <span class="keyword">import</span> CORSMiddleware
+
+app = <span class="function">FastAPI</span>()
+
+<span class="comment"># Allow CORS for development</span>
+app.<span class="function">add_middleware</span>(
+    CORSMiddleware,
+    allow_origins=[<span class="string">"*"</span>],
+    allow_credentials=<span class="keyword">True</span>,
+    allow_methods=[<span class="string">"*"</span>],
+    allow_headers=[<span class="string">"*"</span>],
+)
+
+<span class="comment"># Basic WebSocket endpoint</span>
+@app.<span class="function">websocket</span>(<span class="string">"/ws"</span>)
+<span class="keyword">async def</span> <span class="function">websocket_endpoint</span>(websocket: WebSocket):
+    <span class="keyword">await</span> websocket.<span class="function">accept</span>()
+    <span class="keyword">try</span>:
+        <span class="keyword">while True</span>:
+            <span class="comment"># Receive message from client</span>
+            data = <span class="keyword">await</span> websocket.<span class="function">receive_text</span>()
+            
+            <span class="comment"># Send message back</span>
+            <span class="keyword">await</span> websocket.<span class="function">send_text</span>(f<span class="string">"Echo: {data}"</span>)
+    <span class="keyword">except</span> Exception as e:
+        print(f<span class="string">"Connection closed: {e}"</span>)</code></div>
+
+            <h3>Connection Manager Pattern</h3>
+            <p>For managing multiple connections (chat rooms, broadcast scenarios):</p>
+
+            <div class="code-block"><code><span class="keyword">from</span> typing <span class="keyword">import</span> List, Dict
+<span class="keyword">from</span> fastapi <span class="keyword">import</span> WebSocketDisconnect
+
+<span class="keyword">class</span> <span class="function">ConnectionManager</span>:
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="keyword">self</span>):
+        <span class="string">"""Initialize connection manager"""</span>
+        <span class="comment"># rooms: {room_id: [websocket1, websocket2, ...]}</span>
+        <span class="keyword">self</span>.active_connections: Dict[str, List[WebSocket]] = {}
+
+    <span class="keyword">async def</span> <span class="function">connect</span>(<span class="keyword">self</span>, room_id: str, websocket: WebSocket):
+        <span class="string">"""Accept and register connection"""</span>
+        <span class="keyword">await</span> websocket.<span class="function">accept</span>()
+        <span class="keyword">if</span> room_id <span class="keyword">not in</span> <span class="keyword">self</span>.active_connections:
+            <span class="keyword">self</span>.active_connections[room_id] = []
+        <span class="keyword">self</span>.active_connections[room_id].<span class="function">append</span>(websocket)
+        print(f<span class="string">"Client connected to room {room_id}"</span>)
+
+    <span class="keyword">async def</span> <span class="function">disconnect</span>(<span class="keyword">self</span>, room_id: str, websocket: WebSocket):
+        <span class="string">"""Remove disconnected client"""</span>
+        <span class="keyword">self</span>.active_connections[room_id].<span class="function">remove</span>(websocket)
+        print(f<span class="string">"Client disconnected from room {room_id}"</span>)
+
+    <span class="keyword">async def</span> <span class="function">broadcast</span>(<span class="keyword">self</span>, room_id: str, message: str):
+        <span class="string">"""Send message to all clients in room"""</span>
+        <span class="keyword">if</span> room_id <span class="keyword">in</span> <span class="keyword">self</span>.active_connections:
+            <span class="keyword">for</span> connection <span class="keyword">in</span> <span class="keyword">self</span>.active_connections[room_id]:
+                <span class="keyword">try</span>:
+                    <span class="keyword">await</span> connection.<span class="function">send_text</span>(message)
+                <span class="keyword">except</span>:
+                    <span class="keyword">pass</span>  <span class="comment"># Connection might be closed</span>
+
+    <span class="keyword">async def</span> <span class="function">send_personal_message</span>(<span class="keyword">self</span>, message: str, websocket: WebSocket):
+        <span class="string">"""Send message to specific client"""</span>
+        <span class="keyword">await</span> websocket.<span class="function">send_text</span>(message)
+
+<span class="comment"># Usage in endpoint</span>
+manager = <span class="function">ConnectionManager</span>()
+
+@app.<span class="function">websocket</span>(<span class="string">"/ws/{room_id}"</span>)
+<span class="keyword">async def</span> <span class="function">websocket_endpoint</span>(websocket: WebSocket, room_id: str):
+    <span class="keyword">await</span> manager.<span class="function">connect</span>(room_id, websocket)
+    <span class="keyword">try</span>:
+        <span class="keyword">while True</span>:
+            data = <span class="keyword">await</span> websocket.<span class="function">receive_text</span>()
+            <span class="comment"># Send to requester</span>
+            <span class="keyword">await</span> manager.<span class="function">send_personal_message</span>(
+                f<span class="string">"You sent: {data}"</span>, websocket
+            )
+            <span class="comment"># Broadcast to others</span>
+            <span class="keyword">await</span> manager.<span class="function">broadcast</span>(
+                room_id, f<span class="string">"Client: {data}"</span>
+            )
+    <span class="keyword">except</span> WebSocketDisconnect:
+        <span class="keyword">await</span> manager.<span class="function">disconnect</span>(room_id, websocket)</code></div>
+
+            <h3>JSON Message Handling</h3>
+            <p>For structured message communication:</p>
+
+            <div class="code-block"><code><span class="keyword">from</span> pydantic <span class="keyword">import</span> BaseModel
+<span class="keyword">from</span> typing <span class="keyword">import</span> Optional
+<span class="keyword">import</span> json
+
+<span class="keyword">class</span> <span class="function">Message</span>(BaseModel):
+    <span class="keyword">type</span>: str  <span class="comment"># "chat", "notification", "update"</span>
+    sender: str
+    content: str
+    room_id: Optional[str] = <span class="keyword">None</span>
+
+<span class="keyword">@app.websocket</span>(<span class="string">"/ws/json/{room_id}"</span>)
+<span class="keyword">async def</span> <span class="function">websocket_json_endpoint</span>(websocket: WebSocket, room_id: str):
+    <span class="keyword">await</span> manager.<span class="function">connect</span>(room_id, websocket)
+    <span class="keyword">try</span>:
+        <span class="keyword">while True</span>:
+            <span class="comment"># Receive JSON data</span>
+            data = <span class="keyword">await</span> websocket.<span class="function">receive_json</span>()
+            message = Message(**data)
+            
+            <span class="comment"># Process based on message type</span>
+            <span class="keyword">if</span> message.<span class="keyword">type</span> == <span class="string">"chat"</span>:
+                response = {
+                    <span class="string">"type"</span>: <span class="string">"chat_response"</span>,
+                    <span class="string">"message"</span>: message.content,
+                    <span class="string">"from"</span>: message.sender,
+                    <span class="string">"timestamp"</span>: <span class="function">str</span>(datetime.now())
+                }
+                <span class="keyword">await</span> manager.<span class="function">broadcast</span>(room_id, json.<span class="function">dumps</span>(response))
+    <span class="keyword">except</span> WebSocketDisconnect:
+        <span class="keyword">await</span> manager.<span class="function">disconnect</span>(room_id, websocket)</code></div>
+
+            <h3>Advanced Features</h3>
+
+            <h4>🔐 Authentication</h4>
+            <div class="code-block"><code><span class="keyword">from</span> fastapi <span class="keyword">import</span> Query, status
+<span class="keyword">from</span> fastapi.exceptions <span class="keyword">import</span> WebSocketException
+
+@app.<span class="function">websocket</span>(<span class="string">"/ws/auth/{room_id}"</span>)
+<span class="keyword">async def</span> <span class="function">websocket_auth_endpoint</span>(
+    websocket: WebSocket,
+    room_id: str,
+    token: str = <span class="function">Query</span>(<span class="keyword">None</span>)
+):
+    <span class="comment"># Validate token before accepting</span>
+    <span class="keyword">if</span> <span class="keyword">not</span> <span class="function">verify_token</span>(token):
+        <span class="keyword">await</span> websocket.<span class="function">close</span>(
+            code=status.WS_1008_POLICY_VIOLATION,
+            reason=<span class="string">"Invalid token"</span>
+        )
+        <span class="keyword">return</span>
+    
+    <span class="keyword">await</span> manager.<span class="function">connect</span>(room_id, websocket)
+    <span class="comment"># ... rest of logic</span></code></div>
+
+            <h4>❤️ Heartbeat/Keep-Alive</h4>
+            <div class="code-block"><code><span class="keyword">import</span> asyncio
+
+@app.<span class="function">websocket</span>(<span class="string">"/ws/heartbeat/{room_id}"</span>)
+<span class="keyword">async def</span> <span class="function">websocket_heartbeat_endpoint</span>(websocket: WebSocket, room_id: str):
+    <span class="keyword">await</span> manager.<span class="function">connect</span>(room_id, websocket)
+    
+    <span class="keyword">async def</span> <span class="function">heartbeat</span>():
+        <span class="string">"""Send ping every 30 seconds"""</span>
+        <span class="keyword">while True</span>:
+            <span class="keyword">try</span>:
+                <span class="keyword">await</span> asyncio.<span class="function">sleep</span>(<span class="number">30</span>)
+                <span class="keyword">await</span> websocket.<span class="function">send_json</span>({
+                    <span class="string">"type"</span>: <span class="string">"ping"</span>,
+                    <span class="string">"timestamp"</span>: <span class="function">str</span>(datetime.now())
+                })
+            <span class="keyword">except</span>:
+                <span class="keyword">break</span>
+    
+    heartbeat_task = asyncio.<span class="function">create_task</span>(<span class="function">heartbeat</span>())
+    
+    <span class="keyword">try</span>:
+        <span class="keyword">while True</span>:
+            data = <span class="keyword">await</span> websocket.<span class="function">receive_json</span>()
+            <span class="keyword">if</span> data.<span class="function">get</span>(<span class="string">"type"</span>) == <span class="string">"pong"</span>:
+                print(<span class="string">"Pong received"</span>)
+    <span class="keyword">except</span> WebSocketDisconnect:
+        heartbeat_task.<span class="function">cancel</span>()
+        <span class="keyword">await</span> manager.<span class="function">disconnect</span>(room_id, websocket)</code></div>
+        </section>
+
+        <!-- 5. Django WebSocket (20%) -->
+        <section id="django" class="django-section">
+            <h2>🎛️ 5. Django WebSocket Implementation (20%)</h2>
+
+            <div class="alert warning">
+                <strong>⚠️ Note:</strong> Django doesn't have native WebSocket support. Use <strong>Django Channels</strong> (async layer) for WebSocket functionality.
+            </div>
+
+            <h3>Installation & Setup</h3>
+            <div class="code-block"><code><span class="comment"># Install Django Channels</span>
+pip install channels channels-redis
+
+<span class="comment"># Update settings.py</span>
+INSTALLED_APPS = [
+    <span class="string">"daphne"</span>,  <span class="comment"># ASGI server for Django</span>
+    <span class="string">"channels"</span>,
+    <span class="comment"># ... other apps</span>
+]
+
+ASGI_APPLICATION = <span class="string">"myproject.asgi.application"</span>
+
+<span class="comment"># Channel Layers (for cross-process messaging)</span>
+CHANNEL_LAYERS = {
+    <span class="string">"default"</span>: {
+        <span class="string">"BACKEND"</span>: <span class="string">"channels_redis.core.RedisChannelLayer"</span>,
+        <span class="string">"CONFIG"</span>: {
+            <span class="string">"hosts"</span>: [(<span class="string">"127.0.0.1"</span>, <span class="number">6379</span>)],
+        },
+    }
+}</code></div>
+
+            <h3>Django Channels Consumer</h3>
+            <div class="code-block"><code><span class="keyword">from</span> channels.generic.websocket <span class="keyword">import</span> AsyncWebsocketConsumer
+<span class="keyword">import</span> json
+
+<span class="keyword">class</span> <span class="function">ChatConsumer</span>(AsyncWebsocketConsumer):
+    <span class="keyword">async def</span> <span class="function">connect</span>(<span class="keyword">self</span>):
+        <span class="string">"""Handle new WebSocket connection"""</span>
+        <span class="keyword">self</span>.room_name = <span class="keyword">self</span>.scope[<span class="string">'url_route'</span>][<span class="string">'kwargs'</span>][<span class="string">'room_name'</span>]
+        <span class="keyword">self</span>.room_group_name = f<span class="string">'chat_{self.room_name}'</span>
+        
+        <span class="comment"># Join room group</span>
+        <span class="keyword">await</span> <span class="keyword">self</span>.channel_layer.<span class="function">group_add</span>(
+            <span class="keyword">self</span>.room_group_name,
+            <span class="keyword">self</span>.channel_name
+        )
+        <span class="keyword">await</span> <span class="keyword">self</span>.accept()
+
+    <span class="keyword">async def</span> <span class="function">disconnect</span>(<span class="keyword">self</span>, close_code):
+        <span class="string">"""Handle disconnection"""</span>
+        <span class="keyword">await</span> <span class="keyword">self</span>.channel_layer.<span class="function">group_discard</span>(
+            <span class="keyword">self</span>.room_group_name,
+            <span class="keyword">self</span>.channel_name
+        )
+
+    <span class="keyword">async def</span> <span class="function">receive</span>(<span class="keyword">self</span>, text_data):
+        <span class="string">"""Receive message from WebSocket"""</span>
+        data = json.<span class="function">loads</span>(text_data)
+        message = data[<span class="string">'message'</span>]
+        
+        <span class="comment"># Send to all in group</span>
+        <span class="keyword">await</span> <span class="keyword">self</span>.channel_layer.<span class="function">group_send</span>(
+            <span class="keyword">self</span>.room_group_name,
+            {
+                <span class="string">'type'</span>: <span class="string">'chat_message'</span>,
+                <span class="string">'message'</span>: message
+            }
+        )
+
+    <span class="keyword">async def</span> <span class="function">chat_message</span>(<span class="keyword">self</span>, event):
+        <span class="string">"""Send message to WebSocket"""</span>
+        <span class="keyword">await</span> <span class="keyword">self</span>.send(text_data=json.<span class="function">dumps</span>({
+            <span class="string">'message'</span>: event[<span class="string">'message'</span>]
+        }))</code></div>
+
+            <h3>URL Routing (asgi.py)</h3>
+            <div class="code-block"><code><span class="keyword">from</span> channels.routing <span class="keyword">import</span> ProtocolTypeRouter, URLRouter
+<span class="keyword">from</span> channels.auth <span class="keyword">import</span> AuthMiddlewareStack
+<span class="keyword">from</span> django.core.asgi <span class="keyword">import</span> get_asgi_application
+<span class="keyword">from</span> django.urls <span class="keyword">import</span> path
+
+<span class="keyword">from</span> chat.consumers <span class="keyword">import</span> ChatConsumer
+
+application = ProtocolTypeRouter({
+    <span class="string">"http"</span>: <span class="function">get_asgi_application</span>(),
+    <span class="string">"websocket"</span>: AuthMiddlewareStack(
+        URLRouter([
+            path(
+                <span class="string">"ws/chat/&lt;room_name&gt;/"</span>,
+                ChatConsumer.as_asgi()
+            ),
+        ])
+    ),
+})</code></div>
+
+            <h3>Admin Dashboard Component</h3>
+            <p>Django admin interface for managing active connections:</p>
+
+            <div class="code-block"><code><span class="keyword">from</span> django.contrib <span class="keyword">import</span> admin
+<span class="keyword">from</span> .models <span class="keyword">import</span> ChatRoom, Message
+
+@admin.<span class="function">register</span>(ChatRoom)
+<span class="keyword">class</span> <span class="function">ChatRoomAdmin</span>(admin.ModelAdmin):
+    list_display = [<span class="string">'name'</span>, <span class="string">'created_at'</span>, <span class="string">'get_active_users'</span>]
+    readonly_fields = [<span class="string">'created_at'</span>, <span class="string">'updated_at'</span>]
+    
+    <span class="keyword">def</span> <span class="function">get_active_users</span>(<span class="keyword">self</span>, obj):
+        <span class="string">"""Display active user count in admin"""</span>
+        <span class="keyword">return</span> obj.users.<span class="function">count</span>()
+    get_active_users.short_description = <span class="string">"Active Users"</span>
+
+@admin.<span class="function">register</span>(Message)
+<span class="keyword">class</span> <span class="function">MessageAdmin</span>(admin.ModelAdmin):
+    list_display = [<span class="string">'sender'</span>, <span class="string">'room'</span>, <span class="string">'created_at'</span>]
+    list_filter = [<span class="string">'created_at'</span>, <span class="string">'room'</span>]
+    search_fields = [<span class="string">'content'</span>, <span class="string">'sender__username'</span>]</code></div>
+        </section>
+
+        <!-- 6. Architecture Diagram -->
+        <section>
+            <h2>🏗️ 6. WebSocket Architecture Overview</h2>
+
+            <div class="diagram-container">
+                <div style="width: 100%; padding: 1rem;">
+                    <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 2rem; align-items: center;">
+                        <!-- Client Side -->
+                        <div style="text-align: center;">
+                            <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
+                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">💻</div>
+                                <div style="font-weight: bold;">Client</div>
+                                <div style="font-size: 0.9rem; margin-top: 0.5rem;">Browser/App</div>
+                            </div>
+                            <div style="font-size: 0.85rem; color: var(--text-light);">
+                                <div>✓ WebSocket API</div>
+                                <div>✓ Event Listeners</div>
+                                <div>✓ Message Queue</div>
+                            </div>
+                        </div>
+
+                        <!-- Connection Arrow -->
+                        <div style="text-align: center; font-size: 2rem; color: var(--primary-color);">
+                            ⇄
+                        </div>
+
+                        <!-- Server Side -->
+                        <div style="text-align: center;">
+                            <div style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
+                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚡</div>
+                                <div style="font-weight: bold;">Server</div>
+                                <div style="font-size: 0.9rem; margin-top: 0.5rem;">FastAPI/Django</div>
+                            </div>
+                            <div style="font-size: 0.85rem; color: var(--text-light);">
+                                <div>✓ Connection Manager</div>
+                                <div>✓ Message Router</div>
+                                <div>✓ State Management</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid var(--border-color);">
+                        <div style="font-weight: bold; color: var(--primary-color); margin-bottom: 1rem;">Scalability Layer (Redis)</div>
+                        <div style="background: #FFF3E0; padding: 1rem; border-radius: 8px; text-align: center; color: var(--text-dark);">
+                            <strong>Pub/Sub Channel</strong> - For distributed message broadcasting across multiple server instances
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Data Flow Timeline</h3>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h4>1. Initial Connection</h4>
+                        <p>Client initiates HTTP upgrade request → Server validates → WebSocket established</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h4>2. Register Connection</h4>
+                        <p>Server adds client to connection manager (room/group)</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h4>3. Client Sends Message</h4>
+                        <p>Message frames transmitted → Server receives and processes</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h4>4. Server Broadcasts</h4>
+                        <p>Message routed to all relevant clients in room/group</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h4>5. Client Receives</h4>
+                        <p>Message frames reassembled → Client processes via event handlers</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h4>6. Connection Cleanup</h4>
+                        <p>On disconnect → Server removes client → Closes TCP connection</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. Security Best Practices -->
+        <section id="security">
+            <h2>🔒 7. Security Best Practices</h2>
+
+            <div class="feature-grid">
+                <div class="feature-card" style="background: linear-gradient(135deg, #D32F2F, #FF5252);">
+                    <div class="icon">🔐</div>
+                    <h4>Use WSS (Secure)</h4>
+                    <p>Always use WebSocket Secure (wss://) in production with TLS/SSL encryption</p>
+                </div>
+                <div class="feature-card" style="background: linear-gradient(135deg, #1976D2, #42A5F5);">
+                    <div class="icon">🔑</div>
+                    <h4>Authenticate</h4>
+                    <p>Validate tokens/credentials before accepting connections</p>
+                </div>
+                <div class="feature-card" style="background: linear-gradient(135deg, #F57C00, #FFB74D);">
+                    <div class="icon">⏱️</div>
+                    <h4>Rate Limiting</h4>
+                    <p>Limit message frequency to prevent abuse and DOS attacks</p>
+                </div>
+                <div class="feature-card" style="background: linear-gradient(135deg, #7B1FA2, #AB47BC);">
+                    <div class="icon">✓</div>
+                    <h4>Validate Input</h4>
+                    <p>Sanitize and validate all incoming message data</p>
+                </div>
+            </div>
+
+            <h3>Implementation Examples</h3>
+
+            <h4>🔐 HTTPS/WSS Configuration</h4>
+            <div class="code-block"><code><span class="comment"># FastAPI with SSL</span>
+<span class="keyword">import</span> ssl
+<span class="keyword">import</span> uvicorn
+
+<span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:
+    ssl_context = ssl.<span class="function">SSLContext</span>(ssl.PROTOCOL_TLS_SERVER)
+    ssl_context.<span class="function">load_cert_chain</span>(
+        <span class="string">"/path/to/cert.pem"</span>,
+        <span class="string">"/path/to/key.pem"</span>
+    )
+    
+    uvicorn.<span class="function">run</span>(
+        app,
+        host=<span class="string">"0.0.0.0"</span>,
+        port=<span class="number">443</span>,
+        ssl_context=ssl_context
+    )</code></div>
+
+            <h4>🔑 Token-Based Authentication</h4>
+            <div class="code-block"><code><span class="keyword">from</span> fastapi <span class="keyword">import</span> Query, status
+<span class="keyword">import</span> jwt
+
+<span class="keyword">def</span> <span class="function">verify_token</span>(token: str) -> dict:
+    <span class="string">"""Verify JWT token"""</span>
+    <span class="keyword">try</span>:
+        payload = jwt.<span class="function">decode</span>(
+            token,
+            <span class="string">"secret-key"</span>,
+            algorithms=[<span class="string">"HS256"</span>]
+        )
+        <span class="keyword">return</span> payload
+    <span class="keyword">except</span> jwt.InvalidTokenError:
+        <span class="keyword">return</span> <span class="keyword">None</span>
+
+@app.<span class="function">websocket</span>(<span class="string">"/ws/secure"</span>)
+<span class="keyword">async def</span> <span class="function">secure_websocket</span>(
+    websocket: WebSocket,
+    token: str = <span class="function">Query</span>()
+):
+    <span class="comment"># Verify before accepting</span>
+    user = <span class="function">verify_token</span>(token)
+    <span class="keyword">if</span> <span class="keyword">not</span> user:
+        <span class="keyword">await</span> websocket.<span class="function">close</span>(
+            code=status.WS_1008_POLICY_VIOLATION,
+            reason=<span class="string">"Invalid token"</span>
+        )
+        <span class="keyword">return</span>
+    
+    <span class="keyword">await</span> websocket.<span class="function">accept</span>()
+    <span class="comment"># ... proceed with authenticated connection</span></code></div>
+
+            <h4>⏱️ Rate Limiting</h4>
+            <div class="code-block"><code><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime, timedelta
+<span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict
+
+<span class="keyword">class</span> <span class="function">RateLimiter</span>:
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="keyword">self</span>, max_messages=<span class="number">100</span>, window_seconds=<span class="number">60</span>):
+        <span class="keyword">self</span>.max_messages = max_messages
+        <span class="keyword">self</span>.window = window_seconds
+        <span class="keyword">self</span>.user_messages = defaultdict(list)
+    
+    <span class="keyword">def</span> <span class="function">is_allowed</span>(<span class="keyword">self</span>, user_id: str) -> bool:
+        <span class="string">"""Check if user can send message"""</span>
+        now = datetime.now()
+        cutoff = now - timedelta(seconds=<span class="keyword">self</span>.window)
+        
+        <span class="comment"># Remove old messages</span>
+        <span class="keyword">self</span>.user_messages[user_id] = [
+            ts <span class="keyword">for</span> ts <span class="keyword">in</span> <span class="keyword">self</span>.user_messages[user_id]
+            <span class="keyword">if</span> ts > cutoff
+        ]
+        
+        <span class="keyword">if</span> <span class="function">len</span>(<span class="keyword">self</span>.user_messages[user_id]) >= <span class="keyword">self</span>.max_messages:
+            <span class="keyword">return</span> <span class="keyword">False</span>
+        
+        <span class="keyword">self</span>.user_messages[user_id].<span class="function">append</span>(now)
+        <span class="keyword">return</span> <span class="keyword">True</span>
+
+rate_limiter = <span class="function">RateLimiter</span>(max_messages=<span class="number">50</span>, window_seconds=<span class="number">60</span>)
+
+@app.<span class="function">websocket</span>(<span class="string">"/ws/ratelimited/{user_id}"</span>)
+<span class="keyword">async def</span> <span class="function">websocket_endpoint</span>(websocket: WebSocket, user_id: str):
+    <span class="keyword">await</span> websocket.<span class="function">accept</span>()
+    <span class="keyword">try</span>:
+        <span class="keyword">while True</span>:
+            data = <span class="keyword">await</span> websocket.<span class="function">receive_text</span>()
+            
+            <span class="keyword">if</span> <span class="keyword">not</span> rate_limiter.<span class="function">is_allowed</span>(user_id):
+                <span class="keyword">await</span> websocket.<span class="function">send_json</span>({
+                    <span class="string">"error"</span>: <span class="string">"Rate limit exceeded"</span>
+                })
+                <span class="keyword">continue</span>
+            
+            <span class="comment"># Process message</span>
+            <span class="keyword">await</span> websocket.<span class="function">send_text</span>(f<span class="string">"OK: {data}"</span>)
+    <span class="keyword">except</span>:
+        <span class="keyword">pass</span></code></div>
+
+            <h4>✓ Input Validation</h4>
+            <div class="code-block"><code><span class="keyword">from</span> pydantic <span class="keyword">import</span> BaseModel, validator, constr
+
+<span class="keyword">class</span> <span class="function">SafeMessage</span>(BaseModel):
+    content: <span class="function">constr</span>(max_length=<span class="number">500</span>)
+    sender_id: str
+    message_type: str
+    
+    @<span class="function">validator</span>(<span class="string">'content'</span>)
+    <span class="keyword">def</span> <span class="function">sanitize_content</span>(cls, v):
+        <span class="comment"># Remove HTML tags, SQL injection attempts, etc.</span>
+        <span class="keyword">import</span> re
+        v = re.<span class="function">sub</span>(r<span class="string">'&lt;[^&gt;]+&gt;'</span>, <span class="string">''</span>, v)
+        <span class="keyword">return</span> v.strip()
+    
+    @<span class="function">validator</span>(<span class="string">'message_type'</span>)
+    <span class="keyword">def</span> <span class="function">validate_type</span>(cls, v):
+        allowed_types = [<span class="string">'chat'</span>, <span class="string">'notification'</span>, <span class="string">'system'</span>]
+        <span class="keyword">if</span> v <span class="keyword">not in</span> allowed_types:
+            <span class="keyword">raise</span> <span class="function">ValueError</span>(f<span class="string">'Invalid type: {v}'</span>)
+        <span class="keyword">return</span> v
+
+@app.<span class="function">websocket</span>(<span class="string">"/ws/safe"</span>)
+<span class="keyword">async def</span> <span class="function">safe_websocket</span>(websocket: WebSocket):
+    <span class="keyword">await</span> websocket.<span class="function">accept</span>()
+    <span class="keyword">try</span>:
+        <span class="keyword">while True</span>:
+            data = <span class="keyword">await</span> websocket.<span class="function">receive_json</span>()
+            <span class="keyword">try</span>:
+                message = <span class="function">SafeMessage</span>(**data)
+                <span class="comment"># Message is validated and sanitized</span>
+                <span class="keyword">await</span> websocket.<span class="function">send_json</span>({<span class="string">"status"</span>: <span class="string">"ok"</span>})
+            <span class="keyword">except</span>:
+                <span class="keyword">await</span> websocket.<span class="function">send_json</span>({<span class="string">"error"</span>: <span class="string">"Invalid message"</span>})
+    <span class="keyword">except</span>:
+        <span class="keyword">pass</span></code></div>
+        </section>
+
+        <!-- 8. Client-Side Implementation -->
+        <section>
+            <h2>🖥️ 8. Client-Side JavaScript</h2>
+
+            <h3>Basic WebSocket Client</h3>
+            <div class="code-block"><code><span class="keyword">class</span> <span class="function">WebSocketClient</span> {
+    <span class="function">constructor</span>(url) {
+        <span class="keyword">this</span>.url = url;
+        <span class="keyword">this</span>.ws = <span class="keyword">null</span>;
+        <span class="keyword">this</span>.reconnectAttempts = <span class="number">0</span>;
+        <span class="keyword">this</span>.maxReconnectAttempts = <span class="number">5</span>;
+    }
+
+    <span class="function">connect</span>() {
+        <span class="keyword">this</span>.ws = <span class="keyword">new</span> <span class="function">WebSocket</span>(<span class="keyword">this</span>.url);
+        
+        <span class="keyword">this</span>.ws.onopen = () => {
+            console.<span class="function">log</span>(<span class="string">"Connected"</span>);
+            <span class="keyword">this</span>.reconnectAttempts = <span class="number">0</span>;
+            <span class="keyword">this</span>.<span class="function">onConnect</span>();
+        };
+        
+        <span class="keyword">this</span>.ws.onmessage = (event) => {
+            <span class="keyword">this</span>.<span class="function">onMessage</span>(JSON.<span class="function">parse</span>(event.data));
+        };
+        
+        <span class="keyword">this</span>.ws.onerror = (error) => {
+            console.<span class="function">error</span>(<span class="string">"WebSocket error:"</span>, error);
+            <span class="keyword">this</span>.<span class="function">onError</span>(error);
+        };
+        
+        <span class="keyword">this</span>.ws.onclose = () => {
+            console.<span class="function">log</span>(<span class="string">"Disconnected"</span>);
+            <span class="keyword">this</span>.<span class="function">onDisconnect</span>();
+            <span class="keyword">this</span>.<span class="function">attemptReconnect</span>();
+        };
+    }
+
+    <span class="function">send</span>(message) {
+        <span class="keyword">if</span> (<span class="keyword">this</span>.ws.readyState === <span class="function">WebSocket</span>.OPEN) {
+            <span class="keyword">this</span>.ws.<span class="function">send</span>(JSON.<span class="function">stringify</span>(message));
+        }
+    }
+
+    <span class="function">attemptReconnect</span>() {
+        <span class="keyword">if</span> (<span class="keyword">this</span>.reconnectAttempts < <span class="keyword">this</span>.maxReconnectAttempts) {
+            <span class="keyword">this</span>.reconnectAttempts++;
+            <span class="keyword">const</span> delay = Math.<span class="function">pow</span>(<span class="number">2</span>, <span class="keyword">this</span>.reconnectAttempts) * <span class="number">1000</span>;
+            setTimeout(() => <span class="keyword">this</span>.<span class="function">connect</span>(), delay);
+        }
+    }
+
+    <span class="function">onConnect</span>() { <span class="comment">/* Override */</span> }
+    <span class="function">onMessage</span>(data) { <span class="comment">/* Override */</span> }
+    <span class="function">onError</span>(error) { <span class="comment">/* Override */</span> }
+    <span class="function">onDisconnect</span>() { <span class="comment">/* Override */</span> }
+}
+
+<span class="comment">// Usage</span>
+<span class="keyword">const</span> client = <span class="keyword">new</span> <span class="function">WebSocketClient</span>(<span class="string">"ws://localhost:8000/ws/room1"</span>);
+client.<span class="function">connect</span>();</code></div>
+
+            <h3>Advanced Client with Heartbeat</h3>
+            <div class="code-block"><code><span class="keyword">class</span> <span class="function">AdvancedWebSocketClient</span> <span class="keyword">extends</span> <span class="function">WebSocketClient</span> {
+    <span class="function">constructor</span>(url) {
+        <span class="keyword">super</span>(url);
+        <span class="keyword">this</span>.heartbeatInterval = <span class="keyword">null</span>;
+        <span class="keyword">this</span>.messageHandlers = {};
+    }
+
+    <span class="function">onConnect</span>() {
+        <span class="string">"""Start heartbeat"""</span>
+        <span class="keyword">this</span>.heartbeatInterval = setInterval(() => {
+            <span class="keyword">this</span>.<span class="function">send</span>({ type: <span class="string">"ping"</span> });
+        }, <span class="number">30000</span>);
+    }
+
+    <span class="function">onMessage</span>(data) {
+        <span class="string">"""Route messages by type"""</span>
+        <span class="keyword">const</span> handler = <span class="keyword">this</span>.messageHandlers[data.type];
+        <span class="keyword">if</span> (handler) handler(data);
+    }
+
+    <span class="function">onDisconnect</span>() {
+        <span class="string">"""Clean up heartbeat"""</span>
+        <span class="keyword">if</span> (<span class="keyword">this</span>.heartbeatInterval) {
+            clearInterval(<span class="keyword">this</span>.heartbeatInterval);
+        }
+    }
+
+    <span class="function">on</span>(messageType, handler) {
+        <span class="string">"""Register message handler"""</span>
+        <span class="keyword">this</span>.messageHandlers[messageType] = handler;
+    }
+}
+
+<span class="comment">// Advanced usage</span>
+<span class="keyword">const</span> client = <span class="keyword">new</span> <span class="function">AdvancedWebSocketClient</span>(<span class="string">"ws://localhost:8000/ws/room1"</span>);
+
+client.<span class="function">on</span>(<span class="string">"chat"</span>, (data) => {
+    console.<span class="function">log</span>(<span class="string">"New message:"</span>, data.message);
+});
+
+client.<span class="function">on</span>(<span class="string">"notification"</span>, (data) => {
+    <span class="comment">// Show notification to user</span>
+});
+
+client.<span class="function">connect</span>();</code></div>
+        </section>
+
+        <!-- 9. Performance & Optimization -->
+        <section>
+            <h2>⚙️ 9. Performance & Optimization</h2>
+
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>💾 Message Batching</h4>
+                    <p>Combine multiple small messages into larger batches to reduce overhead and network traffic.</p>
+                </div>
+                <div class="comparison-box">
+                    <h4>📦 Binary Data</h4>
+                    <p>Use binary frames instead of JSON for better performance and reduced bandwidth.</p>
+                </div>
+                <div class="comparison-box">
+                    <h4>🔄 Connection Pooling</h4>
+                    <p>Reuse connections to reduce handshake overhead in high-frequency communication.</p>
+                </div>
+                <div class="comparison-box">
+                    <h4>📊 Compression</h4>
+                    <p>Enable per-message deflate compression to reduce payload size significantly.</p>
+                </div>
+            </div>
+
+            <h3>Optimization Techniques</h3>
+
+            <h4>🔄 Redis Pub/Sub for Scalability</h4>
+            <div class="code-block"><code><span class="keyword">import</span> redis.asyncio as redis
+
+<span class="keyword">class</span> <span class="function">RedisConnectionManager</span>:
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="keyword">self</span>):
+        <span class="keyword">self</span>.active_connections = {}
+        <span class="keyword">self</span>.redis = <span class="keyword">None</span>
+    
+    <span class="keyword">async def</span> <span class="function">init_redis</span>(<span class="keyword">self</span>):
+        <span class="string">"""Connect to Redis"""</span>
+        <span class="keyword">self</span>.redis = <span class="keyword">await</span> redis.<span class="function">from_url</span>(<span class="string">"redis://localhost"</span>)
+    
+    <span class="keyword">async def</span> <span class="function">broadcast_to_room</span>(<span class="keyword">self</span>, room_id: str, message: str):
+        <span class="string">"""Publish to Redis channel"""</span>
+        <span class="keyword">await</span> <span class="keyword">self</span>.redis.<span class="function">publish</span>(
+            f<span class="string">"room:{room_id}"</span>,
+            message
+        )
+    
+    <span class="keyword">async def</span> <span class="function">subscribe_to_room</span>(<span class="keyword">self</span>, room_id: str, websocket: WebSocket):
+        <span class="string">"""Subscribe to room updates"""</span>
+        pubsub = <span class="keyword">self</span>.redis.<span class="function">pubsub</span>()
+        <span class="keyword">await</span> pubsub.<span class="function">subscribe</span>(f<span class="string">"room:{room_id}"</span>)
+        
+        <span class="keyword">async for</span> message <span class="keyword">in</span> pubsub.<span class="function">listen</span>():
+            <span class="keyword">if</span> message[<span class="string">"type"</span>] == <span class="string">"message"</span>:
+                <span class="keyword">await</span> websocket.<span class="function">send_text</span>(message[<span class="string">"data"</span>])
+
+<span class="comment"># Usage in FastAPI</span>
+manager = <span class="function">RedisConnectionManager</span>()
+
+@app.<span class="function">on_event</span>(<span class="string">"startup"</span>)
+<span class="keyword">async def</span> <span class="function">startup</span>():
+    <span class="keyword">await</span> manager.<span class="function">init_redis</span>()
+
+@app.<span class="function">websocket</span>(<span class="string">"/ws/redis/{room_id}"</span>)
+<span class="keyword">async def</span> <span class="function">websocket_endpoint</span>(websocket: WebSocket, room_id: str):
+    <span class="keyword">await</span> websocket.<span class="function">accept</span>()
+    <span class="keyword">await</span> manager.<span class="function">subscribe_to_room</span>(room_id, websocket)</code></div>
+
+            <h3>Monitoring & Logging</h3>
+            <div class="code-block"><code><span class="keyword">import</span> logging
+<span class="keyword">from</span> datetime <span class="keyword">import</span> datetime
+
+logger = logging.<span class="function">getLogger</span>(__name__)
+
+<span class="keyword">class</span> <span class="function">MonitoredConnectionManager</span>:
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="keyword">self</span>):
+        <span class="keyword">self</span>.connections = {}
+        <span class="keyword">self</span>.metrics = {
+            <span class="string">"total_messages"</span>: <span class="number">0</span>,
+            <span class="string">"total_connections"</span>: <span class="number">0</span>,
+            <span class="string">"active_connections"</span>: <span class="number">0</span>
+        }
+    
+    <span class="keyword">async def</span> <span class="function">connect</span>(<span class="keyword">self</span>, room_id: str, websocket: WebSocket):
+        <span class="keyword">await</span> websocket.<span class="function">accept</span>()
+        <span class="keyword">if</span> room_id <span class="keyword">not in</span> <span class="keyword">self</span>.connections:
+            <span class="keyword">self</span>.connections[room_id] = []
+        
+        <span class="keyword">self</span>.connections[room_id].<span class="function">append</span>(websocket)
+        <span class="keyword">self</span>.metrics[<span class="string">"active_connections"</span>] += <span class="number">1</span>
+        <span class="keyword">self</span>.metrics[<span class="string">"total_connections"</span>] += <span class="number">1</span>
+        
+        logger.<span class="function">info</span>(
+            f<span class="string">"Client connected to {room_id}. "</span>
+            f<span class="string">"Active: {self.metrics['active_connections']}"</span>
+        )
+    
+    <span class="keyword">async def</span> <span class="function">broadcast</span>(<span class="keyword">self</span>, room_id: str, message: str):
+        <span class="keyword">self</span>.metrics[<span class="string">"total_messages"</span>] += <span class="number">1</span>
+        logger.<span class="function">debug</span>(f<span class="string">"Broadcasting to {room_id}: {message[:50]}"</span>)
+        
+        <span class="keyword">for</span> connection <span class="keyword">in</span> <span class="keyword">self</span>.connections.<span class="function">get</span>(room_id, []):
+            <span class="keyword">try</span>:
+                <span class="keyword">await</span> connection.<span class="function">send_text</span>(message)
+            <span class="keyword">except</span>:
+                logger.<span class="function">warning</span>(<span class="string">"Failed to send message"</span>)
+    
+    <span class="keyword">def</span> <span class="function">get_metrics</span>(<span class="keyword">self</span>):
+        <span class="string">"""Return monitoring metrics"""</span>
+        <span class="keyword">return</span> <span class="keyword">self</span>.metrics</code></div>
+        </section>
+
+        <!-- 10. Common Pitfalls & Solutions -->
+        <section>
+            <h2>⚠️ 10. Common Pitfalls & Solutions</h2>
+
+            <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;">
+                <div style="background: #FFF3E0; border-left: 4px solid var(--accent-color); padding: 1.5rem; border-radius: 8px;">
+                    <h4 style="color: var(--accent-color); margin-bottom: 0.5rem;">❌ Memory Leaks</h4>
+                    <p><strong>Problem:</strong> Connections not properly cleaned up on disconnect</p>
+                    <p style="margin-top: 0.5rem;"><strong>✅ Solution:</strong> Always remove websocket from connection list in except/finally blocks</p>
+                </div>
+
+                <div style="background: #FFEBEE; border-left: 4px solid #D32F2F; padding: 1.5rem; border-radius: 8px;">
+                    <h4 style="color: #D32F2F; margin-bottom: 0.5rem;">❌ Unhandled Exceptions</h4>
+                    <p><strong>Problem:</strong> Single client error crashes entire room/server</p>
+                    <p style="margin-top: 0.5rem;"><strong>✅ Solution:</strong> Wrap all operations in try-except, log errors, notify other clients gracefully</p>
+                </div>
+
+                <div style="background: #F3E5F5; border-left: 4px solid #7B1FA2; padding: 1.5rem; border-radius: 8px;">
+                    <h4 style="color: #7B1FA2; margin-bottom: 0.5rem;">❌ No Connection Timeouts</h4>
+                    <p><strong>Problem:</strong> Stale connections consume resources indefinitely</p>
+                    <p style="margin-top: 0.5rem;"><strong>✅ Solution:</strong> Implement heartbeat/ping-pong with timeout logic</p>
+                </div>
+
+                <div style="background: #E3F2FD; border-left: 4px solid var(--secondary-color); padding: 1.5rem; border-radius: 8px;">
+                    <h4 style="color: var(--secondary-color); margin-bottom: 0.5rem;">❌ No Message Ordering</h4>
+                    <p><strong>Problem:</strong> Messages arrive out of order in distributed systems</p>
+                    <p style="margin-top: 0.5rem;"><strong>✅ Solution:</strong> Add sequence numbers/timestamps to messages for client-side reordering</p>
+                </div>
+
+                <div style="background: #F0F4C3; border-left: 4px solid #FBC02D; padding: 1.5rem; border-radius: 8px;">
+                    <h4 style="color: #FBC02D; margin-bottom: 0.5rem;">❌ No Rate Limiting</h4>
+                    <p><strong>Problem:</strong> Single user floods server with messages causing DOS</p>
+                    <p style="margin-top: 0.5rem;"><strong>✅ Solution:</strong> Implement per-user message rate limits with sliding window algorithm</p>
+                </div>
+
+                <div style="background: #E8F5E9; border-left: 4px solid var(--primary-color); padding: 1.5rem; border-radius: 8px;">
+                    <h4 style="color: var(--primary-color); margin-bottom: 0.5rem;">❌ Ignoring Backpressure</h4>
+                    <p><strong>Problem:</strong> Slow clients cause server buffers to overflow</p>
+                    <p style="margin-top: 0.5rem;"><strong>✅ Solution:</strong> Check connection state before sending, implement queue with max size</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 11. Real-World Use Cases -->
+        <section>
+            <h2>🌍 11. Real-World Use Cases & Examples</h2>
+
+            <h3>1. Real-Time Chat Application</h3>
+            <p>Multi-user chat with instant message delivery, typing indicators, and user presence awareness.</p>
+
+            <div class="code-block"><code><span class="keyword">from</span> fastapi <span class="keyword">import</span> FastAPI, WebSocket, WebSocketDisconnect
+<span class="keyword">from</span> typing <span class="keyword">import</span> Dict, List
+<span class="keyword">import</span> json
+<span class="keyword">from</span> datetime <span class="keyword">import</span> datetime
+
+app = FastAPI()
+
+<span class="keyword">class</span> <span class="function">ChatManager</span>:
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="keyword">self</span>):
+        <span class="keyword">self</span>.active_chats: Dict[str, List[WebSocket]] = {}
+        <span class="keyword">self</span>.user_typing: Dict[str, set] = {}
+    
+    <span class="keyword">async</span> <span class="keyword">def</span> <span class="function">connect</span>(<span class="keyword">self</span>, room_id: str, user_id: str, 
+                      websocket: WebSocket):
+        <span class="keyword">await</span> websocket.accept()
+        <span class="keyword">if</span> room_id <span class="keyword">not</span> <span class="keyword">in</span> <span class="keyword">self</span>.active_chats:
+            <span class="keyword">self</span>.active_chats[room_id] = []
+            <span class="keyword">self</span>.user_typing[room_id] = set()
+        
+        <span class="keyword">self</span>.active_chats[room_id].append(websocket)
+        
+        <span class="comment"># Notify room about new user</span>
+        <span class="keyword">await</span> <span class="keyword">self</span>.<span class="function">broadcast</span>(
+            room_id,
+            {
+                <span class="string">"type"</span>: <span class="string">"user_joined"</span>,
+                <span class="string">"user_id"</span>: user_id,
+                <span class="string">"timestamp"</span>: datetime.now().isoformat()
+            }
+        )
+    
+    <span class="keyword">async</span> <span class="keyword">def</span> <span class="function">broadcast</span>(<span class="keyword">self</span>, room_id: str, message: dict):
+        <span class="keyword">for</span> connection <span class="keyword">in</span> <span class="keyword">self</span>.active_chats.get(room_id, []):
+            <span class="keyword">try</span>:
+                <span class="keyword">await</span> connection.send_json(message)
+            <span class="keyword">except</span>:
+                <span class="keyword">pass</span>
+    
+    <span class="keyword">async</span> <span class="keyword">def</span> <span class="function">handle_typing</span>(<span class="keyword">self</span>, room_id: str, user_id: str, 
+                           is_typing: bool):
+        <span class="keyword">if</span> is_typing:
+            <span class="keyword">self</span>.user_typing[room_id].add(user_id)
+        <span class="keyword">else</span>:
+            <span class="keyword">self</span>.user_typing[room_id].discard(user_id)
+        
+        <span class="keyword">await</span> <span class="keyword">self</span>.<span class="function">broadcast</span>(
+            room_id,
+            {
+                <span class="string">"type"</span>: <span class="string">"typing_status"</span>,
+                <span class="string">"typing_users"</span>: list(<span class="keyword">self</span>.user_typing[room_id])
+            }
+        )
+
+chat_manager = <span class="function">ChatManager</span>()
+
+<span class="keyword">@</span>app.websocket(<span class="string">"/ws/chat/{room_id}/{user_id}"</span>)
+<span class="keyword">async</span> <span class="keyword">def</span> <span class="function">websocket_chat</span>(
+    websocket: WebSocket, 
+    room_id: str, 
+    user_id: str
+):
+    <span class="keyword">await</span> chat_manager.connect(room_id, user_id, websocket)
+    <span class="keyword">try</span>:
+        <span class="keyword">while</span> <span class="keyword">True</span>:
+            data = <span class="keyword">await</span> websocket.receive_json()
+            
+            <span class="keyword">if</span> data.<span class="function">get</span>(<span class="string">"type"</span>) == <span class="string">"message"</span>:
+                <span class="keyword">await</span> chat_manager.broadcast(
+                    room_id,
+                    {
+                        <span class="string">"type"</span>: <span class="string">"message"</span>,
+                        <span class="string">"user_id"</span>: user_id,
+                        <span class="string">"content"</span>: data[<span class="string">"content"</span>],
+                        <span class="string">"timestamp"</span>: datetime.now().isoformat()
+                    }
+                )
+            
+            <span class="keyword">elif</span> data.<span class="function">get</span>(<span class="string">"type"</span>) == <span class="string">"typing"</span>:
+                <span class="keyword">await</span> chat_manager.handle_typing(
+                    room_id, 
+                    user_id, 
+                    data[<span class="string">"is_typing"</span>]
+                )
+    
+    <span class="keyword">except</span> WebSocketDisconnect:
+        <span class="keyword">await</span> chat_manager.broadcast(
+            room_id,
+            {
+                <span class="string">"type"</span>: <span class="string">"user_left"</span>,
+                <span class="string">"user_id"</span>: user_id
+            }
+        )</code></div>
+
+            <h3>2. Real-Time Dashboard/Analytics</h3>
+            <p>Live metrics, performance monitoring, and data visualization updates.</p>
+
+            <div class="code-block"><code><span class="keyword">import</span> asyncio
+<span class="keyword">import</span> random
+<span class="keyword">from</span> datetime <span class="keyword">import</span> datetime
+
+<span class="keyword">class</span> <span class="function">MetricsGenerator</span>:
+    <span class="keyword">@staticmethod</span>
+    <span class="keyword">async</span> <span class="keyword">def</span> <span class="function">generate_metrics</span>():
+        <span class="string">"""Simulate real-time metrics"""</span>
+        <span class="keyword">return</span> {
+            <span class="string">"cpu_usage"</span>: random.uniform(<span class="number">20</span>, <span class="number">80</span>),
+            <span class="string">"memory_usage"</span>: random.uniform(<span class="number">30</span>, <span class="number">70</span>),
+            <span class="string">"active_connections"</span>: random.randint(<span class="number">100</span>, <span class="number">1000</span>),
+            <span class="string">"requests_per_sec"</span>: random.randint(<span class="number">50</span>, <span class="number">500</span>),
+            <span class="string">"timestamp"</span>: datetime.now().isoformat()
+        }
+
+<span class="keyword">@</span>app.websocket(<span class="string">"/ws/dashboard/{user_id}"</span>)
+<span class="keyword">async</span> <span class="keyword">def</span> <span class="function">websocket_dashboard</span>(
+    websocket: WebSocket, 
+    user_id: str
+):
+    <span class="keyword">await</span> websocket.accept()
+    <span class="keyword">try</span>:
+        <span class="keyword">while</span> <span class="keyword">True</span>:
+            <span class="comment"># Send metrics every 2 seconds</span>
+            metrics = <span class="keyword">await</span> MetricsGenerator.generate_metrics()
+            <span class="keyword">await</span> websocket.send_json(metrics)
+            <span class="keyword">await</span> asyncio.sleep(<span class="number">2</span>)
+    
+    <span class="keyword">except</span> WebSocketDisconnect:
+        print(f<span class="string">"User {user_id} disconnected"</span>)</code></div>
+
+            <h3>3. Collaborative Editing Tool</h3>
+            <p>Real-time document synchronization with operational transformation.</p>
+
+            <div class="code-block"><code><span class="keyword">from</span> pydantic <span class="keyword">import</span> BaseModel
+
+<span class="keyword">class</span> <span class="function">DocumentChange</span>(BaseModel):
+    user_id: str
+    position: int
+    content: str
+    operation: str  <span class="comment"># "insert", "delete"</span>
+
+<span class="keyword">class</span> <span class="function">DocumentManager</span>:
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="keyword">self</span>):
+        <span class="keyword">self</span>.documents: Dict[str, str] = {}
+        <span class="keyword">self</span>.clients: Dict[str, List[WebSocket]] = {}
+        <span class="keyword">self</span>.change_history: Dict[str, list] = {}
+    
+    <span class="keyword">async</span> <span class="keyword">def</span> <span class="function">apply_change</span>(
+        <span class="keyword">self</span>, 
+        doc_id: str, 
+        change: DocumentChange
+    ):
+        <span class="string">"""Apply operational transformation"""</span>
+        <span class="keyword">if</span> doc_id <span class="keyword">not</span> <span class="keyword">in</span> <span class="keyword">self</span>.documents:
+            <span class="keyword">self</span>.documents[doc_id] = <span class="string">""</span>
+            <span class="keyword">self</span>.change_history[doc_id] = []
+        
+        doc = <span class="keyword">self</span>.documents[doc_id]
+        
+        <span class="keyword">if</span> change.operation == <span class="string">"insert"</span>:
+            new_doc = (
+                doc[:change.position] + 
+                change.content + 
+                doc[change.position:]
+            )
+        <span class="keyword">elif</span> change.operation == <span class="string">"delete"</span>:
+            new_doc = (
+                doc[:change.position] + 
+                doc[change.position + len(change.content):]
+            )
+        
+        <span class="keyword">self</span>.documents[doc_id] = new_doc
+        <span class="keyword">self</span>.change_history[doc_id].append(
+            change.dict()
+        )
+        
+        <span class="comment"># Broadcast to all clients</span>
+        <span class="keyword">await</span> <span class="keyword">self</span>.<span class="function">broadcast_change</span>(doc_id, change)
+    
+    <span class="keyword">async</span> <span class="keyword">def</span> <span class="function">broadcast_change</span>(
+        <span class="keyword">self</span>, 
+        doc_id: str, 
+        change: DocumentChange
+    ):
+        <span class="keyword">for</span> connection <span class="keyword">in</span> <span class="keyword">self</span>.clients.get(doc_id, []):
+            <span class="keyword">try</span>:
+                <span class="keyword">await</span> connection.send_json(change.dict())
+            <span class="keyword">except</span>:
+                <span class="keyword">pass</span>
+
+doc_manager = <span class="function">DocumentManager</span>()
+
+<span class="keyword">@</span>app.websocket(<span class="string">"/ws/document/{doc_id}/{user_id}"</span>)
+<span class="keyword">async</span> <span class="keyword">def</span> <span class="function">websocket_document</span>(
+    websocket: WebSocket, 
+    doc_id: str, 
+    user_id: str
+):
+    <span class="keyword">await</span> websocket.accept()
+    
+    <span class="comment"># Send current document state</span>
+    <span class="keyword">await</span> websocket.send_json({
+        <span class="string">"type"</span>: <span class="string">"document_state"</span>,
+        <span class="string">"content"</span>: doc_manager.documents.get(doc_id, <span class="string">""</span>)
+    })
+    
+    <span class="keyword">if</span> doc_id <span class="keyword">not</span> <span class="keyword">in</span> doc_manager.clients:
+        doc_manager.clients[doc_id] = []
+    
+    doc_manager.clients[doc_id].append(websocket)
+    
+    <span class="keyword">try</span>:
+        <span class="keyword">while</span> <span class="keyword">True</span>:
+            data = <span class="keyword">await</span> websocket.receive_json()
+            change = <span class="function">DocumentChange</span>(**data)
+            <span class="keyword">await</span> doc_manager.apply_change(doc_id, change)
+    
+    <span class="keyword">except</span> WebSocketDisconnect:
+        doc_manager.clients[doc_id].remove(websocket)</code></div>
+
+            <h3>4. IoT Device Monitoring</h3>
+            <p>Real-time device status, sensor data, and control commands.</p>
+
+            <div class="code-block"><code><span class="keyword">class</span> <span class="function">IoTManager</span>:
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="keyword">self</span>):
+        <span class="keyword">self</span>.devices: Dict[str, dict] = {}
+        <span class="keyword">self</span>.subscribers: Dict[str, List[WebSocket]] = {}
+    
+    <span class="keyword">async</span> <span class="keyword">def</span> <span class="function">update_device</span>(
+        <span class="keyword">self</span>, 
+        device_id: str, 
+        sensor_data: dict
+    ):
+        <span class="string">"""Update device sensor readings"""</span>
+        <span class="keyword">if</span> device_id <span class="keyword">not</span> <span class="keyword">in</span> <span class="keyword">self</span>.devices:
+            <span class="keyword">self</span>.devices[device_id] = {}
+        
+        <span class="keyword">self</span>.devices[device_id].update({
+            <span class="string">"last_update"</span>: datetime.now().isoformat(),
+            **sensor_data
+        })
+        
+        <span class="comment"># Notify all subscribers</span>
+        <span class="keyword">for</span> connection <span class="keyword">in</span> <span class="keyword">self</span>.subscribers.get(
+            device_id, []
+        ):
+            <span class="keyword">try</span>:
+                <span class="keyword">await</span> connection.send_json({
+                    <span class="string">"device_id"</span>: device_id,
+                    <span class="string">"data"</span>: <span class="keyword">self</span>.devices[device_id]
+                })
+            <span class="keyword">except</span>:
+                <span class="keyword">pass</span>
+    
+    <span class="keyword">async</span> <span class="keyword">def</span> <span class="function">send_command</span>(
+        <span class="keyword">self</span>, 
+        device_id: str, 
+        command: str, 
+        params: dict
+    ):
+        <span class="string">"""Send control command to device"""</span>
+        <span class="keyword">return</span> {
+            <span class="string">"device_id"</span>: device_id,
+            <span class="string">"command"</span>: command,
+            <span class="string">"params"</span>: params,
+            <span class="string">"sent_at"</span>: datetime.now().isoformat()
+        }
+
+iot_manager = <span class="function">IoTManager</span>()
+
+<span class="keyword">@</span>app.websocket(<span class="string">"/ws/iot/{device_id}"</span>)
+<span class="keyword">async</span> <span class="keyword">def</span> <span class="function">websocket_iot</span>(
+    websocket: WebSocket, 
+    device_id: str
+):
+    <span class="keyword">await</span> websocket.accept()
+    
+    <span class="keyword">if</span> device_id <span class="keyword">not</span> <span class="keyword">in</span> iot_manager.subscribers:
+        iot_manager.subscribers[device_id] = []
+    
+    iot_manager.subscribers[device_id].append(websocket)
+    
+    <span class="keyword">try</span>:
+        <span class="keyword">while</span> <span class="keyword">True</span>:
+            data = <span class="keyword">await</span> websocket.receive_json()
+            
+            <span class="keyword">if</span> data.get(<span class="string">"type"</span>) == <span class="string">"sensor_data"</span>:
+                <span class="keyword">await</span> iot_manager.update_device(
+                    device_id, 
+                    data[<span class="string">"sensor_data"</span>]
+                )
+            
+            <span class="keyword">elif</span> data.get(<span class="string">"type"</span>) == <span class="string">"command"</span>:
+                response = <span class="keyword">await</span> iot_manager.send_command(
+                    device_id,
+                    data[<span class="string">"command"</span>],
+                    data.get(<span class="string">"params"</span>, {})
+                )
+                <span class="keyword">await</span> websocket.send_json(response)
+    
+    <span class="keyword">except</span> WebSocketDisconnect:
+        iot_manager.subscribers[device_id].remove(websocket)</code></div>
+
+            <h3>5. Live Notification System</h3>
+            <p>Push notifications, alerts, and real-time updates to users.</p>
+
+            <div class="code-block"><code><span class="keyword">class</span> <span class="function">NotificationManager</span>:
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="keyword">self</span>):
+        <span class="keyword">self</span>.user_connections: Dict[str, List[WebSocket]] = {}
+    
+    <span class="keyword">async</span> <span class="keyword">def</span> <span class="function">send_notification</span>(
+        <span class="keyword">self</span>, 
+        user_id: str, 
+        notification: dict
+    ):
+        <span class="string">"""Send notification to specific user"""</span>
+        <span class="keyword">for</span> connection <span class="keyword">in</span> <span class="keyword">self</span>.user_connections.get(
+            user_id, []
+        ):
+            <span class="keyword">try</span>:
+                <span class="keyword">await</span> connection.send_json({
+                    <span class="string">"type"</span>: <span class="string">"notification"</span>,
+                    <span class="string">"id"</span>: notification.get(<span class="string">"id"</span>),
+                    <span class="string">"title"</span>: notification.get(<span class="string">"title"</span>),
+                    <span class="string">"message"</span>: notification.get(<span class="string">"message"</span>),
+                    <span class="string">"timestamp"</span>: datetime.now().isoformat()
+                })
+            <span class="keyword">except</span>:
+                <span class="keyword">pass</span>
+    
+    <span class="keyword">async</span> <span class="keyword">def</span> <span class="function">broadcast_notification</span>(
+        <span class="keyword">self</span>, 
+        notification: dict
+    ):
+        <span class="string">"""Send to all connected users"""</span>
+        <span class="keyword">for</span> user_id <span class="keyword">in</span> <span class="keyword">self</span>.user_connections:
+            <span class="keyword">await</span> <span class="keyword">self</span>.<span class="function">send_notification</span>(
+                user_id, 
+                notification
+            )
+
+notif_manager = <span class="function">NotificationManager</span>()
+
+<span class="keyword">@</span>app.websocket(<span class="string">"/ws/notifications/{user_id}"</span>)
+<span class="keyword">async</span> <span class="keyword">def</span> <span class="function">websocket_notifications</span>(
+    websocket: WebSocket, 
+    user_id: str
+):
+    <span class="keyword">await</span> websocket.accept()
+    
+    <span class="keyword">if</span> user_id <span class="keyword">not</span> <span class="keyword">in</span> notif_manager.user_connections:
+        notif_manager.user_connections[user_id] = []
+    
+    notif_manager.user_connections[user_id].append(websocket)
+    
+    <span class="keyword">try</span>:
+        <span class="keyword">while</span> <span class="keyword">True</span>:
+            <span class="comment"># Keep connection alive</span>
+            <span class="keyword">await</span> websocket.receive_text()
+    
+    <span class="keyword">except</span> WebSocketDisconnect:
+        notif_manager.user_connections[user_id].remove(websocket)</code></div>
+        </section>
+
+        <!-- 12. Scaling & Performance Optimization -->
+        <section>
+            <h2>📈 12. Scaling & Performance Optimization</h2>
+
+            <h3>Horizontal Scaling with Load Balancing</h3>
+            <p><strong>Challenge:</strong> WebSocket connections are stateful, making traditional load balancing difficult.</p>
+
+            <div class="info-box">
+                <strong>Solution: Sticky Sessions (Session Affinity)</strong>
+                <p>Route all requests from a client to the same server instance to maintain connection state.</p>
+            </div>
+
+            <div class="code-block"><code><span class="comment"># Nginx configuration for sticky sessions</span>
+upstream websocket_backend {
+    ip_hash;  <span class="comment"># Ensures same client always goes to same backend</span>
+    server backend1.example.com:8000;
+    server backend2.example.com:8000;
+    server backend3.example.com:8000;
+}
+
+server {
+    listen <span class="number">80</span>;
+    server_name ws.example.com;
+
+    location /ws {
+        proxy_pass http://websocket_backend;
+        proxy_http_version <span class="number">1.1</span>;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection <span class="string">"upgrade"</span>;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        
+        <span class="comment"># Connection timeout settings</span>
+        proxy_connect_timeout <span class="number">7d</span>;
+        proxy_send_timeout <span class="number">7d</span>;
+        proxy_read_timeout <span class="number">7d</span>;
+    }
+}</code></div>
+
+            <h3>Message Compression</h3>
+            <p>Reduce bandwidth usage by 50-80% with per-message deflate compression:</p>
+
+            <div class="code-block"><code><span class="keyword">from</span> fastapi <span class="keyword">import</span> FastAPI
+<span class="keyword">import</span> uvicorn
+
+app = FastAPI()
+
+<span class="comment"># When running with uvicorn, compression is automatic</span>
+<span class="comment"># For custom compression settings:</span>
+
+<span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:
+    uvicorn.run(
+        app,
+        host=<span class="string">"0.0.0.0"</span>,
+        port=<span class="number">8000</span>,
+        ws_max_size=<span class="number">16</span> * <span class="number">1024</span> * <span class="number">1024</span>,  <span class="comment"># 16MB max message</span>
+        ws_ping_interval=<span class="number">20</span>,  <span class="comment"># Ping every 20 seconds</span>
+        ws_ping_pong_interval=<span class="number">20</span>,  <span class="comment"># Pong timeout</span>
+    )</code></div>
+
+            <h3>Connection Pooling & Resource Management</h3>
+
+            <div class="code-block"><code><span class="keyword">import</span> psutil
+
+<span class="keyword">class</span> <span class="function">ResourceMonitor</span>:
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="keyword">self</span>, max_connections=<span class="number">10000</span>):
+        <span class="keyword">self</span>.max_connections = max_connections
+        <span class="keyword">self</span>.current_connections = <span class="number">0</span>
+    
+    <span class="keyword">async</span> <span class="keyword">def</span> <span class="function">check_resources</span>(<span class="keyword">self</span>) -> bool:
+        <span class="string">"""Check if server has capacity"""</span>
+        memory = psutil.virtual_memory()
+        cpu = psutil.cpu_percent(interval=<span class="number">0.1</span>)
+        
+        <span class="comment"># Reject if resources critical</span>
+        <span class="keyword">if</span> memory.percent > <span class="number">90</span> <span class="keyword">or</span> cpu > <span class="number">95</span>:
+            <span class="keyword">return</span> <span class="keyword">False</span>
+        
+        <span class="comment"># Reject if at connection limit</span>
+        <span class="keyword">if</span> <span class="keyword">self</span>.current_connections >= <span class="keyword">self</span>.max_connections:
+            <span class="keyword">return</span> <span class="keyword">False</span>
+        
+        <span class="keyword">return</span> <span class="keyword">True</span>
+    
+    <span class="keyword">async</span> <span class="keyword">def</span> <span class="function">register_connection</span>(<span class="keyword">self</span>):
+        <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">await</span> <span class="keyword">self</span>.<span class="function">check_resources</span>():
+            <span class="keyword">raise</span> Exception(<span class="string">"Server at capacity"</span>)
+        <span class="keyword">self</span>.current_connections += <span class="number">1</span>
+    
+    <span class="keyword">def</span> <span class="function">unregister_connection</span>(<span class="keyword">self</span>):
+        <span class="keyword">self</span>.current_connections -= <span class="number">1</span>
+
+monitor = <span class="function">ResourceMonitor</span>(max_connections=<span class="number">10000</span>)
+
+<span class="keyword">@</span>app.websocket(<span class="string">"/ws/monitored"</span>)
+<span class="keyword">async</span> <span class="keyword">def</span> <span class="function">monitored_websocket</span>(websocket: WebSocket):
+    <span class="keyword">try</span>:
+        <span class="keyword">await</span> monitor.register_connection()
+        <span class="keyword">await</span> websocket.accept()
+        
+        <span class="keyword">while</span> <span class="keyword">True</span>:
+            data = <span class="keyword">await</span> websocket.receive_text()
+            <span class="keyword">await</span> websocket.send_text(f<span class="string">"Echo: {data}"</span>)
+    
+    <span class="keyword">except</span> Exception as e:
+        <span class="keyword">await</span> websocket.close(
+            code=<span class="number">1008</span>,
+            reason=<span class="string">"Server at capacity"</span>
+        )
+    
+    <span class="keyword">finally</span>:
+        monitor.unregister_connection()</code></div>
+
+            <h3>Connection Statistics</h3>
+
+            <div class="code-block"><code><span class="keyword">from</span> collections <span class="keyword">import</span> Counter
+<span class="keyword">from</span> time <span class="keyword">import</span> time
+
+<span class="keyword">class</span> <span class="function">ConnectionStats</span>:
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="keyword">self</span>):
+        <span class="keyword">self</span>.total_connections = <span class="number">0</span>
+        <span class="keyword">self</span>.active_connections = <span class="number">0</span>
+        <span class="keyword">self</span>.messages_sent = <span class="number">0</span>
+        <span class="keyword">self</span>.messages_received = <span class="number">0</span>
+        <span class="keyword">self</span>.start_time = time()
+    
+    <span class="keyword">def</span> <span class="function">get_stats</span>(<span class="keyword">self</span>) -> dict:
+        uptime = time() - <span class="keyword">self</span>.start_time
+        <span class="keyword">return</span> {
+            <span class="string">"active_connections"</span>: <span class="keyword">self</span>.active_connections,
+            <span class="string">"total_connections"</span>: <span class="keyword">self</span>.total_connections,
+            <span class="string">"messages_sent"</span>: <span class="keyword">self</span>.messages_sent,
+            <span class="string">"messages_received"</span>: <span class="keyword">self</span>.messages_received,
+            <span class="string">"uptime_seconds"</span>: int(uptime)
+        }
+
+stats = <span class="function">ConnectionStats</span>()
+
+<span class="keyword">@</span>app.get(<span class="string">"/stats"</span>)
+<span class="keyword">async</span> <span class="keyword">def</span> <span class="function">get_stats</span>():
+    <span class="keyword">return</span> stats.get_stats()</code></div>
+        </section>
+
+        <!-- 13. Key Takeaways & Best Practices -->
+        <section style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-left: none;">
+            <h2 style="color: white;">🎓 Key Takeaways & Best Practices</h2>
+
+            <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-top: 1.5rem;">
+                <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 8px; border-left: 3px solid white;">
+                    <h4 style="color: white; margin-bottom: 0.5rem;">📡 Protocol Understanding</h4>
+                    <p>WebSocket is a persistent, bidirectional protocol built on HTTP upgrade mechanism with efficient frame-based messaging. Understand handshake, frame structure, and opcodes.</p>
+                </div>
+
+                <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 8px; border-left: 3px solid white;">
+                    <h4 style="color: white; margin-bottom: 0.5rem;">⚡ FastAPI Implementation (80%)</h4>
+                    <p>Use FastAPI's native async WebSocket support with connection managers for scalable real-time applications. Leverage Python's async/await for performance.</p>
+                </div>
+
+                <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 8px; border-left: 3px solid white;">
+                    <h4 style="color: white; margin-bottom: 0.5rem;">🛠️ Django Integration (20%)</h4>
+                    <p>Django Channels + Daphne enables WebSocket support with admin interface for monitoring and managing connections in legacy systems.</p>
+                </div>
+
+                <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 8px; border-left: 3px solid white;">
+                    <h4 style="color: white; margin-bottom: 0.5rem;">🔒 Security First</h4>
+                    <p>Always use WSS (secure), implement JWT token authentication, enforce rate limiting, validate/sanitize input, and use CORS appropriately.</p>
+                </div>
+
+                <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 8px; border-left: 3px solid white;">
+                    <h4 style="color: white; margin-bottom: 0.5rem;">📈 Scalability</h4>
+                    <p>Use Redis Pub/Sub for horizontal scaling, sticky sessions for load balancing, compression for bandwidth reduction, and proper resource monitoring.</p>
+                </div>
+
+                <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 8px; border-left: 3px solid white;">
+                    <h4 style="color: white; margin-bottom: 0.5rem;">✅ Production Ready</h4>
+                    <p>Handle exceptions gracefully, implement proper cleanup, use comprehensive logging/monitoring, test edge cases, and plan for failures.</p>
+                </div>
+
+                <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 8px; border-left: 3px solid white;">
+                    <h4 style="color: white; margin-bottom: 0.5rem;">💔 Heartbeat & Timeouts</h4>
+                    <p>Implement ping/pong mechanism every 20-30 seconds, set connection timeout, detect stale connections, and gracefully reconnect clients.</p>
+                </div>
+
+                <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 8px; border-left: 3px solid white;">
+                    <h4 style="color: white; margin-bottom: 0.5rem;">📊 Monitoring & Observability</h4>
+                    <p>Track active connections, message throughput, latency, errors, and resource usage. Use structured logging and metrics aggregation.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 14. Quick Reference Checklist -->
+        <section>
+            <h2>✅ 14. Quick Implementation Checklist</h2>
+
+            <h3>Before Production Deployment</h3>
+
+            <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+                <div style="background: #F0F4C3; padding: 1rem; border-radius: 8px; border-left: 3px solid #FBC02D;">
+                    <p><strong>✓ Protocol & Communication</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem;">
+                        <li>WebSocket handshake properly handled</li>
+                        <li>Frame structure and opcodes understood</li>
+                        <li>Message serialization (JSON/Binary) tested</li>
+                    </ul>
+                </div>
+
+                <div style="background: #E3F2FD; padding: 1rem; border-radius: 8px; border-left: 3px solid var(--secondary-color);">
+                    <p><strong>✓ Connection Management</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem;">
+                        <li>Connection acceptance and rejection logic</li>
+                        <li>Proper cleanup on disconnect (no memory leaks)</li>
+                        <li>Heartbeat/ping-pong mechanism (20-30s interval)</li>
+                    </ul>
+                </div>
+
+                <div style="background: #FFF3E0; padding: 1rem; border-radius: 8px; border-left: 3px solid var(--accent-color);">
+                    <p><strong>✓ Security</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem;">
+                        <li>WSS (wss://) enabled with valid SSL/TLS certificate</li>
+                        <li>Authentication token validation before accept()</li>
+                        <li>Input validation and sanitization implemented</li>
+                        <li>Rate limiting per user/IP configured</li>
+                    </ul>
+                </div>
+
+                <div style="background: #E8F5E9; padding: 1rem; border-radius: 8px; border-left: 3px solid var(--primary-color);">
+                    <p><strong>✓ Scalability</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem;">
+                        <li>Redis Pub/Sub for multi-instance sync</li>
+                        <li>Load balancer with sticky sessions configured</li>
+                        <li>Connection pooling and resource limits set</li>
+                        <li>Message compression enabled</li>
+                    </ul>
+                </div>
+
+                <div style="background: #F3E5F5; padding: 1rem; border-radius: 8px; border-left: 3px solid #7B1FA2;">
+                    <p><strong>✓ Monitoring & Logging</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem;">
+                        <li>Metrics collection (connections, messages, latency)</li>
+                        <li>Structured logging with correlation IDs</li>
+                        <li>Error tracking and alerting</li>
+                        <li>Performance profiling and bottleneck analysis</li>
+                    </ul>
+                </div>
+
+                <div style="background: #FCE4EC; padding: 1rem; border-radius: 8px; border-left: 3px solid #E91E63;">
+                    <p><strong>✓ Testing & Documentation</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem;">
+                        <li>Unit tests for message handlers</li>
+                        <li>Integration tests for multi-client scenarios</li>
+                        <li>Load testing (1000+ concurrent connections)</li>
+                        <li>Documentation for API and deployment</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 15. Comparison: WebSocket vs Alternatives -->
+        <section>
+            <h2>🔄 15. WebSocket vs Alternatives</h2>
+
+            <table>
+                <tr>
+                    <th>Feature</th>
+                    <th>WebSocket</th>
+                    <th>HTTP Long Polling</th>
+                    <th>Server-Sent Events (SSE)</th>
+                    <th>gRPC</th>
+                </tr>
+                <tr>
+                    <td><strong>Bidirectional</strong></td>
+                    <td>✅ Yes</td>
+                    <td>⚠️ Simulated</td>
+                    <td>❌ Server → Client</td>
+                    <td>✅ Yes (HTTP/2)</td>
+                </tr>
+                <tr>
+                    <td><strong>Latency</strong></td>
+                    <td>✅ Low (ms)</td>
+                    <td>❌ High (seconds)</td>
+                    <td>✅ Low-Medium</td>
+                    <td>✅ Very Low</td>
+                </tr>
+                <tr>
+                    <td><strong>Bandwidth</strong></td>
+                    <td>✅ Efficient</td>
+                    <td>❌ Wasteful</td>
+                    <td>✅ Good</td>
+                    <td>✅ Excellent (binary)</td>
+                </tr>
+                <tr>
+                    <td><strong>Browser Support</strong></td>
+                    <td>✅ Excellent</td>
+                    <td>✅ Universal</td>
+                    <td>✅ Good</td>
+                    <td>⚠️ Limited (needs transpiling)</td>
+                </tr>
+                <tr>
+                    <td><strong>Complexity</strong></td>
+                    <td>⚠️ Medium</td>
+                    <td>✅ Simple</td>
+                    <td>✅ Simple</td>
+                    <td>❌ Complex</td>
+                </tr>
+                <tr>
+                    <td><strong>Proxy Support</strong></td>
+                    <td>⚠️ Limited (firewalls can block)</td>
+                    <td>✅ Excellent</td>
+                    <td>✅ Good</td>
+                    <td>⚠️ Limited</td>
+                </tr>
+                <tr>
+                    <td><strong>Best Use Case</strong></td>
+                    <td>Chat, Gaming, Real-time Collab</td>
+                    <td>Simple updates (deprecated)</td>
+                    <td>Live feeds, notifications</td>
+                    <td>Microservices, RPC</td>
+                </tr>
+            </table>
+        </section>
+
+        <!-- 16. Troubleshooting Guide -->
+        <section>
+            <h2>🔧 16. Troubleshooting Common Issues</h2>
+
+            <h3>Connection Issues</h3>
+
+            <div class="info-box">
+                <strong>Problem: "WebSocket is closed with code 1006 (Abnormal Closure)"</strong><br>
+                <strong>Causes:</strong> Network interruption, server crash, timeout, proxy rejection<br>
+                <strong>Solution:</strong> Implement exponential backoff reconnection, check server logs, verify WSS certificate validity
+            </div>
+
+            <div class="info-box">
+                <strong>Problem: "WebSocket is already in CLOSING or CLOSED state"</strong><br>
+                <strong>Causes:</strong> Multiple close() calls, disconnect race conditions<br>
+                <strong>Solution:</strong> Check connection state before operations, use try-finally for cleanup
+            </div>
+
+            <div class="info-box">
+                <strong>Problem: "Connection timeout after 60 seconds"</strong><br>
+                <strong>Causes:</strong> No heartbeat, inactive connection, nginx timeout (default 60s)<br>
+                <strong>Solution:</strong> Implement ping/pong every 20-30 seconds, configure longer timeouts in nginx
+            </div>
+
+            <h3>Performance Issues</h3>
+
+            <div class="info-box">
+                <strong>Problem: "High memory usage with many connections"</strong><br>
+                <strong>Causes:</strong> Message buffers, connection objects not released, compression overhead<br>
+                <strong>Solution:</strong> Enable compression, reduce buffer sizes, profile with memory tools
+            </div>
+
+            <div class="info-box">
+                <strong>Problem: "Messages arriving out of order"</strong><br>
+                <strong>Causes:</strong> Multiple paths through Redis, broadcasting race conditions<br>
+                <strong>Solution:</strong> Add sequence numbers/timestamps, use message IDs for deduplication
+            </div>
+
+            <div class="info-box">
+                <strong>Problem: "Server at capacity, new connections refused"</strong><br>
+                <strong>Causes:</strong> Resource limits hit, file descriptor exhaustion<br>
+                <strong>Solution:</strong> Increase ulimit, use load balancing, implement connection pooling
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 WebSocket Study Material | Comprehensive Guide to Real-Time Communication</p>
+        <p style="font-size: 0.9rem; margin-top: 1rem; opacity: 0.8;">
+            FastAPI (80%) + Django (20%) | Python | Real-World Examples | Production-Ready Patterns
+        </p>
+    </footer>
+</body>
+</html>
