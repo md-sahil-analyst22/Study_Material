@@ -1,1 +1,2629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vector Databases & Chroma DB - Complete Guide</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Mermaid.js for diagrams -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true, theme: 'base'});</script>
+    
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --accent-color: #f72585;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #4cc9f0;
+            --warning-color: #ff9e00;
+            --info-color: #7209b7;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: #f8f9fe;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color) !important;
+        }
+        
+        .jumbotron {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 4rem 2rem;
+            border-radius: 0 0 30px 30px;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .jumbotron:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.05)"/></svg>');
+            background-size: cover;
+        }
+        
+        .section-title {
+            color: var(--secondary-color);
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background-color: var(--primary-color);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            border-bottom: none;
+        }
+        
+        .list-group-item {
+            transition: all 0.2s ease;
+        }
+        
+        .list-group-item:hover {
+            background-color: #f8f9fa;
+            transform: translateX(5px);
+        }
+        
+        .feature-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: rgba(67, 97, 238, 0.1);
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .comparison-table {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .comparison-table th {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+        
+        .comparison-table td, .comparison-table th {
+            padding: 1rem;
+            vertical-align: middle;
+        }
+        
+        .code-block {
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            position: relative;
+        }
+        
+        .code-block:before {
+            content: 'Python';
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--accent-color);
+            color: white;
+            padding: 0.2rem 0.8rem;
+            font-size: 0.8rem;
+            border-radius: 0 10px 0 5px;
+        }
+        
+        .metric-badge {
+            background-color: var(--success-color);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .timeline:before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background-color: var(--primary-color);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+        
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: -26px;
+            top: 5px;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px var(--primary-color);
+        }
+        
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 3rem 0;
+            margin-top: 4rem;
+        }
+        
+        .diagram-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            overflow-x: auto;
+        }
+        
+        .example-box {
+            background-color: rgba(67, 97, 238, 0.05);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .floating-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        
+        .stats-card {
+            text-align: center;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            display: block;
+        }
+        
+        .stats-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .diagram-container-large {
+            min-height: 600px;
+            overflow: auto;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+        }
+        
+        .diagram-container-large {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 2px solid #e2e8f0;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border-radius: 12px;
+        }
+        
+        .mermaid {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        /* Custom styling for the diagram nodes */
+        .node rect, .node polygon, .node ellipse {
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1));
+            transition: all 0.3s ease;
+        }
+        
+        .node:hover rect, .node:hover polygon, .node:hover ellipse {
+            filter: drop-shadow(4px 4px 8px rgba(0,0,0,0.15));
+            transform: scale(1.02);
+        }
+        
+        .edgePath path {
+            stroke-width: 2px;
+            stroke-linecap: round;
+        }
+        
+        .edgePath path:hover {
+            stroke-width: 3px;
+        }
+        
+        /* Styling for different connection types */
+        .edgePath .dashed {
+            stroke-dasharray: 5,5;
+        }
+        
+        .cluster rect {
+            rx: 8;
+            ry: 8;
+            stroke-width: 2;
+        }
+        
+        /* Animation for the flow */
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+        
+        .node[data-id*="Results"] rect,
+        .node[data-id*="End"] rect {
+            animation: pulse 2s infinite;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 1200px) {
+            .diagram-container-large {
+                overflow-x: auto;
+            }
+        }
+        
+        /* Image styling */
+        .full-width-img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+        }
+        
+        .img-container {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .img-caption {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .jumbotron {
+                padding: 3rem 1rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <span style="color: var(--accent-color);">Vector</span>DB Guide
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#overview">Overview</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#concepts">Core Concepts</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#chroma">Chroma DB</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#implementation">Implementation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#use-cases">Use Cases</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#comparison">Comparison</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#advanced">Advanced</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
+    <!-- Hero Section -->
+    <header class="jumbotron">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="display-4 fw-bold">Vector Databases & Chroma DB</h1>
+                    <p class="lead">A Comprehensive Guide to AI-Native Vector Databases for Modern Applications</p>
+                    <p class="mb-4">Specialized systems designed to store, manage, and search through high-dimensional vector embeddings to enable powerful semantic search and retrieval for AI applications.</p>
+                    <div class="row mt-4">
+                        <div class="col-md-3 col-6 mb-3">
+                            <div class="stats-card">
+                                <span class="stats-number">3-5x</span>
+                                <span class="stats-label">Faster Queries</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6 mb-3">
+                            <div class="stats-card">
+                                <span class="stats-number">384+</span>
+                                <span class="stats-label">Dimensions</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6 mb-3">
+                            <div class="stats-card">
+                                <span class="stats-number">HNSW</span>
+                                <span class="stats-label">Indexing</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6 mb-3">
+                            <div class="stats-card">
+                                <span class="stats-number">100%</span>
+                                <span class="stats-label">Open Source</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 mt-4 mt-lg-0">
+                    <div class="card bg-white text-dark position-relative">
+                        <div class="floating-badge">NEW</div>
+                        <div class="card-body">
+                            <h5 class="card-title">Key Highlights</h5>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="fas fa-bolt text-warning me-2"></i>3-5x faster than Python-based solutions</li>
+                                <li class="mb-2"><i class="fas fa-project-diagram text-primary me-2"></i>Built-in HNSW indexing</li>
+                                <li class="mb-2"><i class="fas fa-filter text-success me-2"></i>Dual filtering: metadata + full-text</li>
+                                <li class="mb-2"><i class="fas fa-layer-group text-info me-2"></i>Multi-modal data support</li>
+                                <li class="mb-2"><i class="fas fa-code-branch text-danger me-2"></i>Open source with enterprise options</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Overview Section -->
+        <section id="overview" class="mb-5">
+            <h2 class="section-title">What Are Vector Databases & Why Do We Need Them?</h2>
+            
+            <!-- Chroma DB Info Image 1 -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="img-container">
+                        <img src="https://raw.githubusercontent.com/md-sahil-analyst22/Study_Material/main/images/Chroma_db1_info2.png" 
+                             alt="Chroma DB Information" 
+                             class="full-width-img">
+                        <p class="img-caption">Chroma DB - AI-Native Vector Database Architecture</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Vector vs RDB Comparison -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="img-container">
+                        <img src="https://raw.githubusercontent.com/md-sahil-analyst22/Study_Material/main/images/vector_rdb_info1.png" 
+                             alt="Vector Database vs Relational Database" 
+                             class="full-width-img">
+                        <p class="img-caption">Comparison between Vector Databases and Traditional Relational Databases</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mb-5">
+                <div class="col-lg-6">
+                    <div class="card h-100">
+                        <div class="card-header"><i class="fas fa-exclamation-triangle me-2"></i>The Challenge with Traditional Databases</div>
+                        <div class="card-body">
+                            <p>Traditional relational databases are designed for structured data with exact matches, but they struggle with:</p>
+                            <ul>
+                                <li><strong>Complex unstructured data</strong> (images, audio, text)</li>
+                                <li><strong>Semantic similarity searches</strong> - finding "similar" not "exact" matches</li>
+                                <li><strong>High-dimensional data representations</strong> (384+ dimensions)</li>
+                                <li><strong>Real-time recommendation systems</strong> that understand user preferences</li>
+                                <li><strong>Multimodal data</strong> that combines text, images, and audio</li>
+                            </ul>
+                            <div class="example-box">
+                                <h6>Example Problem:</h6>
+                                <p>In a traditional e-commerce database, searching for "comfortable running shoes for marathons" would only find products with those exact words in their description, missing semantically similar items like "long-distance athletic footwear with cushioning".</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card h-100">
+                        <div class="card-header"><i class="fas fa-check-circle me-2"></i>The Vector Database Solution</div>
+                        <div class="card-body">
+                            <p>Vector databases represent a paradigm shift in data management by:</p>
+                            <ul>
+                                <li><strong>Storing data as numerical vectors</strong> (embeddings) that capture semantic meaning</li>
+                                <li><strong>Enabling similarity-based searches</strong> using mathematical distance metrics</li>
+                                <li><strong>Natively handling AI/ML data formats</strong> from models like BERT, GPT, CLIP</li>
+                                <li><strong>Providing fast nearest-neighbor searches</strong> even with billions of vectors</li>
+                                <li><strong>Supporting hybrid search</strong> combining vector similarity with traditional filtering</li>
+                            </ul>
+                            <div class="example-box">
+                                <h6>Example Solution:</h6>
+                                <p>A vector database can understand that "comfortable running shoes for marathons" and "long-distance athletic footwear with cushioning" are semantically similar even without keyword overlap, enabling better search results.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Unlocking Data Images -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="img-container">
+                        <img src="https://raw.githubusercontent.com/md-sahil-analyst22/Study_Material/main/images/unlocking_complex_data_with_vector_data.png" 
+                             alt="Unlocking Complex Data with Vector Databases" 
+                             class="full-width-img">
+                        <p class="img-caption">How Vector Databases Unlock Complex Data Patterns</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="img-container">
+                        <img src="https://raw.githubusercontent.com/md-sahil-analyst22/Study_Material/main/images/unlocking_data_with_vector_infographics1.png" 
+                             alt="Unlocking Data with Vector Infographics" 
+                             class="full-width-img">
+                        <p class="img-caption">Infographic: Unlocking Data Potential with Vector Databases</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-5">
+                <h4 class="mb-3"><i class="fas fa-history me-2"></i>Vector Database Evolution Timeline</h4>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <h5>Traditional Databases (1970s-Present)</h5>
+                        <p>Designed for structured data, transactional systems, and exact-match queries using SQL. Examples: Oracle, MySQL, PostgreSQL.</p>
+                        <div class="small text-muted">Limitations: Poor with unstructured data, no semantic understanding</div>
+                    </div>
+                    <div class="timeline-item">
+                        <h5>NoSQL Databases (2000s)</h5>
+                        <p>Introduced flexibility for unstructured/semi-structured data but still lacked native vector support. Examples: MongoDB, Cassandra, Redis.</p>
+                        <div class="small text-muted">Limitations: Still keyword-based, no similarity search</div>
+                    </div>
+                    <div class="timeline-item">
+                        <h5>Vector Libraries (2010s)</h5>
+                        <p>FAISS, Annoy, and other libraries provided vector search capabilities but lacked database features like persistence, transactions, and scalability.</p>
+                        <div class="small text-muted">Limitations: In-memory only, no database features</div>
+                    </div>
+                    <div class="timeline-item">
+                        <h5>Vector Databases (2020s-Present)</h5>
+                        <p>Full-fledged databases with vector-native storage, indexing, and querying for AI applications. Examples: Chroma DB, Pinecone, Weaviate, Qdrant.</p>
+                        <div class="small text-muted">Advantages: Persistent, scalable, production-ready</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Architecture Diagram -->
+            <div class="mb-5">
+                <h4 class="mb-3"><i class="fas fa-sitemap me-2"></i>Vector Database Architecture</h4>
+                <div class="diagram-container">
+                    <div class="mermaid">
+                        graph TB
+                            subgraph "Client Layer"
+                                A[Application]
+                                B[API Gateway]
+                                C[SDK: Python/JS/Go]
+                            end
+                            
+                            subgraph "Vector Database Layer"
+                                D[Query Parser]
+                                E[Vector Index HNSW/IVF]
+                                F[Metadata Store]
+                                G[Embedding Model Integration]
+                            end
+                            
+                            subgraph "Storage Layer"
+                                H[Vector Storage]
+                                I[Metadata Storage]
+                                J[Object Storage for Raw Data]
+                            end
+                            
+                            subgraph "Infrastructure"
+                                K[Load Balancer]
+                                L[Replication]
+                                M[Sharding]
+                            end
+                            
+                            A --> B
+                            B --> C
+                            C --> D
+                            D --> E
+                            D --> F
+                            E --> H
+                            F --> I
+                            G --> E
+                            K --> B
+                            L --> H
+                            L --> I
+                            M --> H
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Core Concepts Section -->
+        <section id="concepts" class="mb-5">
+            <h2 class="section-title">Core Concepts & Mathematical Foundations</h2>
+            
+            <div class="row mb-4">
+                <div class="col-md-4 mb-4">
+                    <div class="text-center p-4">
+                        <div class="feature-icon mx-auto">
+                            <i class="fas fa-vector-square"></i>
+                        </div>
+                        <h4>Vectors & Embeddings</h4>
+                        <p>High-dimensional numerical representations of data that capture semantic meaning. Each dimension represents a feature learned by AI models.</p>
+                        <div class="small text-muted">Example: [0.23, -0.45, 0.89, ..., 0.12] (384+ dimensions)</div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="text-center p-4">
+                        <div class="feature-icon mx-auto">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h4>Similarity Search</h4>
+                        <p>Finding data points most similar to a query based on mathematical distance metrics, not keyword matching.</p>
+                        <div class="small text-muted">Example: Find images similar to a reference image</div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="text-center p-4">
+                        <div class="feature-icon mx-auto">
+                            <i class="fas fa-ruler-combined"></i>
+                        </div>
+                        <h4>Distance Metrics</h4>
+                        <p>Mathematical functions that quantify how similar or different two vectors are. Different metrics work better for different data types.</p>
+                        <div class="small text-muted">Examples: Cosine, Euclidean, Manhattan</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Vector Database Types -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="img-container">
+                        <img src="https://raw.githubusercontent.com/md-sahil-analyst22/Study_Material/main/images/vector_database_type_infpgraphics1.png" 
+                             alt="Vector Database Types Infographic" 
+                             class="full-width-img">
+                        <p class="img-caption">Different Types of Vector Databases and Their Use Cases</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Vector Creation Process Diagram -->
+            <div class="mb-5">
+                <h4 class="mb-3"><i class="fas fa-project-diagram me-2"></i>How Data Becomes Vectors: The Embedding Process</h4>
+                <div class="diagram-container">
+                    <div class="mermaid">
+                        flowchart TD
+                            A[Raw Data] --> B{Data Type};
+                            B -->|Text| C[Text Tokenizer];
+                            B -->|Image| D[Image Feature Extractor];
+                            B -->|Audio| E[Audio Feature Extractor];
+                            
+                            C --> F[Embedding Model<br/>BERT/GPT/Word2Vec];
+                            D --> G[Embedding Model<br/>CLIP/ResNet];
+                            E --> H[Embedding Model<br/>Wav2Vec];
+                            
+                            F --> I[Vector Embedding<br/>384-1024 dimensions];
+                            G --> I;
+                            H --> I;
+                            
+                            I --> J[Vector Database];
+                            J --> K[Indexing<br/>HNSW/IVF];
+                            K --> L[Similarity Search];
+                            
+                            M[Query] --> N[Query Embedding];
+                            N --> L;
+                            L --> O[Ranked Results];
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Distance Metrics Comparison -->
+            <div class="mb-5">
+                <h4 class="mb-3"><i class="fas fa-balance-scale me-2"></i>Distance & Similarity Metrics Comparison</h4>
+                <div class="table-responsive comparison-table">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th>Formula</th>
+                                <th>Sensitive to Magnitude</th>
+                                <th>Normalized</th>
+                                <th>Best For</th>
+                                <th>Visual Representation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>L2 Distance (Euclidean)</strong></td>
+                                <td>√(∑(aᵢ - bᵢ)²)</td>
+                                <td>Yes</td>
+                                <td>No</td>
+                                <td>Spatial data, clustering, images</td>
+                                <td>Straight-line distance between points</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Cosine Distance</strong></td>
+                                <td>1 - (a·b)/(||a|| ||b||)</td>
+                                <td>No</td>
+                                <td>Yes</td>
+                                <td>Text, NLP, high-dimensional data</td>
+                                <td>Angle between vectors</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Dot Product Similarity</strong></td>
+                                <td>∑(aᵢ × bᵢ)</td>
+                                <td>Yes</td>
+                                <td>No</td>
+                                <td>Neural networks, recommender systems</td>
+                                <td>Projection of one vector onto another</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Manhattan Distance</strong></td>
+                                <td>∑|aᵢ - bᵢ|</td>
+                                <td>Yes</td>
+                                <td>No</td>
+                                <td>Grid-based paths, computer vision</td>
+                                <td>Sum of absolute differences</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Jaccard Similarity</strong></td>
+                                <td>|A∩B| / |A∪B|</td>
+                                <td>N/A</td>
+                                <td>Yes</td>
+                                <td>Set-based data, document similarity</td>
+                                <td>Overlap between sets</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Visual Distance Metrics Diagram -->
+            <div class="mb-5">
+                <h4 class="mb-3"><i class="fas fa-chart-line me-2"></i>Distance Metrics Visualization</h4>
+                <div class="diagram-container">
+                    <div class="mermaid">
+                        graph TD
+                            subgraph "Vector Space Visualization"
+                                A[Vector A: 4, 8] --> B[Distance Calculations];
+                                C[Vector B: 11.5, 5] --> B;
+                                
+                                B --> D[Euclidean: 8.08];
+                                B --> E[Cosine: 0.238];
+                                B --> F[Dot Product: 86];
+                                
+                                subgraph "Visual Representation"
+                                    G[2D Coordinate System]
+                                    H[Point A at 4,8]
+                                    I[Point B at 11.5,5]
+                                    J[Straight line connecting A & B: Euclidean]
+                                    K[Angle between vectors: Cosine]
+                                end
+                            end
+                            
+                            style A fill:#f9f,stroke:#333,stroke-width:2px
+                            style C fill:#9f9,stroke:#333,stroke-width:2px
+                            style D fill:#ccf,stroke:#333,stroke-width:2px
+                            style E fill:#fcc,stroke:#333,stroke-width:2px
+                            style F fill:#cfc,stroke:#333,stroke-width:2px
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Python Examples -->
+            <div class="mb-5">
+                <h4 class="mb-3"><i class="fas fa-code me-2"></i>Distance Metrics Implementation Examples</h4>
+                
+                <!-- Manual Implementation - Full Width -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card h-100">
+                            <div class="card-header bg-primary text-white">
+                                <i class="fas fa-calculator me-2"></i>Manual Implementation of Distance Metrics
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text mb-3">
+                                    <i class="fas fa-info-circle text-primary me-2"></i>
+                                    These functions show how to manually calculate different distance metrics used in vector search.
+                                </p>
+                                <div class="code-block bg-dark text-light p-3 rounded" style="font-size: 0.9rem;">
+<pre><code class="language-python">import numpy as np
+import math
+
+def euclidean_distance(vec1, vec2):
+    """Calculate Euclidean (L2) distance between two vectors."""
+    return np.sqrt(np.sum((vec1 - vec2) ** 2))
+
+def cosine_similarity(vec1, vec2):
+    """Calculate cosine similarity between two vectors."""
+    dot_product = np.dot(vec1, vec2)
+    norm1 = np.linalg.norm(vec1)
+    norm2 = np.linalg.norm(vec2)
+    return dot_product / (norm1 * norm2)
+
+def cosine_distance(vec1, vec2):
+    """Calculate cosine distance (1 - cosine similarity)."""
+    return 1 - cosine_similarity(vec1, vec2)
+
+def dot_product_similarity(vec1, vec2):
+    """Calculate dot product similarity."""
+    return np.dot(vec1, vec2)
+
+# Example vectors
+a = np.array([4, 8])
+b = np.array([11.5, 5])
+
+print(f"Euclidean distance: {euclidean_distance(a, b):.2f}")
+print(f"Cosine similarity: {cosine_similarity(a, b):.4f}")
+print(f"Cosine distance: {cosine_distance(a, b):.4f}")
+print(f"Dot product: {dot_product_similarity(a, b):.2f}")</code></pre>
+                                </div>
+                                
+                                <div class="mt-4">
+                                    <h6><i class="fas fa-list-check me-2"></i>Key Formulas</h6>
+                                    <div class="row mt-3">
+                                        <div class="col-md-3">
+                                            <div class="border p-3 rounded text-center bg-light">
+                                                <div class="fw-bold text-primary">Euclidean</div>
+                                                <div class="text-muted small">L₂ Distance</div>
+                                                <div class="mt-2">√Σ(xᵢ - yᵢ)²</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="border p-3 rounded text-center bg-light">
+                                                <div class="fw-bold text-primary">Cosine Sim</div>
+                                                <div class="text-muted small">Angle-based</div>
+                                                <div class="mt-2">A·B / (‖A‖‖B‖)</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="border p-3 rounded text-center bg-light">
+                                                <div class="fw-bold text-primary">Cosine Dist</div>
+                                                <div class="text-muted small">1 - Cosine</div>
+                                                <div class="mt-2">1 - CosineSim</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="border p-3 rounded text-center bg-light">
+                                                <div class="fw-bold text-primary">Dot Product</div>
+                                                <div class="text-muted small">Magnitude</div>
+                                                <div class="mt-2">Σ(xᵢ × yᵢ)</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Library-based Implementation - Full Width -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card h-100">
+                            <div class="card-header bg-success text-white">
+                                <i class="fas fa-book me-2"></i>Library-based Implementation with Real-world Example
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text mb-3">
+                                    <i class="fas fa-info-circle text-success me-2"></i>
+                                    This example uses the Sentence Transformers library to generate embeddings and calculate semantic similarity between documents.
+                                </p>
+                                <div class="code-block bg-dark text-light p-3 rounded" style="font-size: 0.9rem;">
+<pre><code class="language-python">from sentence_transformers import SentenceTransformer
+from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
+
+# Load pre-trained embedding model
+model = SentenceTransformer('all-MiniLM-L6-v2')
+
+# Example documents with ambiguous term
+documents = [
+    "Apple released new iPhone with advanced features",
+    "I ate a fresh red apple for breakfast",
+    "Apple stock reached all-time high today",
+    "Add chopped apple to the salad recipe"
+]
+
+# Generate embeddings
+embeddings = model.encode(documents)
+
+# Calculate similarity matrix
+similarity_matrix = cosine_similarity(embeddings)
+
+print("Cosine Similarity Matrix:")
+print("=" * 50)
+for i, doc in enumerate(documents):
+    print(f"Doc {i+1}: {doc[:50]}...")
+
+print("\nSimilarity Scores:")
+print("=" * 50)
+for i in range(len(documents)):
+    for j in range(i+1, len(documents)):
+        sim = similarity_matrix[i][j]
+        print(f"Doc {i+1} ↔ Doc {j+1}: {sim:.4f}")
+
+# Find most similar document to a query
+query = "fruit company technology"
+query_embedding = model.encode([query])
+similarities = cosine_similarity(query_embedding, embeddings)
+most_similar_idx = np.argmax(similarities[0])
+
+print(f"\nMost similar to '{query}':")
+print(f"Document {most_similar_idx+1}: {documents[most_similar_idx]}")</code></pre>
+                                </div>
+                                
+                                <div class="mt-4">
+                                    <h6><i class="fas fa-lightbulb me-2"></i>Understanding the Results</h6>
+                                    <div class="alert alert-info mt-3">
+                                        <i class="fas fa-brain me-2"></i>
+                                        <strong>Note on Ambiguity:</strong> The word "Apple" appears in different contexts (tech company, fruit, stock market, cooking). 
+                                        Embeddings capture semantic meaning, so the model distinguishes between these different meanings based on surrounding words.
+                                    </div>
+                                    
+                                    <div class="row mt-3">
+                                        <div class="col-md-6">
+                                            <div class="border-start border-3 border-primary ps-3">
+                                                <h6 class="fw-bold">Expected Semantic Groups:</h6>
+                                                <ul class="mb-0">
+                                                    <li>Document 1 & 3: Tech/Company context</li>
+                                                    <li>Document 2 & 4: Food/Fruit context</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="border-start border-3 border-success ps-3">
+                                                <h6 class="fw-bold">Key Observations:</h6>
+                                                <ul class="mb-0">
+                                                    <li>Cosine similarity range: -1 to 1</li>
+                                                    <li>Higher values = more similar</li>
+                                                    <li>Embeddings preserve semantic relationships</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chroma DB Section -->
+        <section id="chroma" class="mb-5">
+            <h2 class="section-title">Chroma DB: The AI-Native Vector Database</h2>
+            
+            <!-- Chroma DB Info Image 2 -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="img-container">
+                        <img src="https://raw.githubusercontent.com/md-sahil-analyst22/Study_Material/main/images/chroma_db1_info1.png" 
+                             alt="Chroma DB Detailed Information" 
+                             class="full-width-img">
+                        <p class="img-caption">Detailed Overview of Chroma DB Features and Architecture</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mb-4">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header"><i class="fas fa-database me-2"></i>What is Chroma DB?</div>
+                        <div class="card-body">
+                            <p>Chroma DB is an open-source, AI-native vector database built specifically for AI applications. It excels at storing, managing, and searching through vector embeddings to enable powerful semantic search and retrieval.</p>
+                            
+                            <h5 class="mt-4">Key Architecture Components:</h5>
+                            <div class="diagram-container">
+                                <div class="mermaid">
+                                    graph TB
+                                        subgraph "Client Applications"
+                                            A[Python App]
+                                            B[JavaScript App]
+                                            C[Go App]
+                                        end
+                                        
+                                        subgraph "API Layer"
+                                            D[REST API]
+                                            E[gRPC API]
+                                            F[WebSocket]
+                                        end
+                                        
+                                        subgraph "Chroma Server"
+                                            G[Request Handler]
+                                            H[Embedding Engine]
+                                            I[HNSW Index Manager]
+                                            J[Query Optimizer]
+                                        end
+                                        
+                                        subgraph "Storage Layer"
+                                            K[Vector Store - RocksDB]
+                                            L[Metadata Store - SQLite]
+                                            M[Embedding Cache - Redis]
+                                        end
+                                        
+                                        subgraph "Persistence"
+                                            N[Local Disk]
+                                            O[Cloud Storage S3/GCS]
+                                            P[Distributed File System]
+                                        end
+                                        
+                                        A --> D
+                                        B --> D
+                                        C --> E
+                                        D --> G
+                                        E --> G
+                                        G --> H
+                                        H --> I
+                                        I --> J
+                                        J --> K
+                                        J --> L
+                                        K --> N
+                                        L --> N
+                                        M --> K
+                                        M --> L
+                                        style G fill:#ccf,stroke:#333,stroke-width:2px
+                                        style I fill:#fcc,stroke:#333,stroke-width:2px
+                                        style K fill:#cfc,stroke:#333,stroke-width:2px
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header"><i class="fas fa-star me-2"></i>Core Capabilities</div>
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li class="mb-3">
+                                    <strong><i class="fas fa-search text-primary me-2"></i>Semantic Vector Search</strong>
+                                    <p class="small mb-0">Compare vector embeddings to find data based on meaning</p>
+                                </li>
+                                <li class="mb-3">
+                                    <strong><i class="fas fa-images text-success me-2"></i>Multimodal Data Retrieval</strong>
+                                    <p class="small mb-0">Manage text, images, and audio together</p>
+                                </li>
+                                <li class="mb-3">
+                                    <strong><i class="fas fa-tachometer-alt text-warning me-2"></i>High-Performance Core</strong>
+                                    <p class="small mb-0">Built in Rust for 3-5x faster queries</p>
+                                </li>
+                                <li class="mb-3">
+                                    <strong><i class="fas fa-filter text-info me-2"></i>Advanced Metadata Filtering</strong>
+                                    <p class="small mb-0">Narrow search results using metadata</p>
+                                </li>
+                                <li class="mb-3">
+                                    <strong><i class="fas fa-file-alt text-secondary me-2"></i>Document Storage</strong>
+                                    <p class="small mb-0">Store full documents alongside embeddings</p>
+                                </li>
+                                <li class="mb-3">
+                                    <strong><i class="fas fa-sync-alt text-danger me-2"></i>Real-time Updates</strong>
+                                    <p class="small mb-0">Dynamic index updates without downtime</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- HNSW Algorithm -->
+            <div class="mb-5">
+                <h4 class="mb-3"><i class="fas fa-project-diagram me-2"></i>HNSW: Hierarchical Navigable Small World</h4>
+                <p>Chroma DB uses HNSW as its sole indexing algorithm for approximate nearest neighbor search. HNSW creates a multi-layered graph where each layer is a subset of the previous layer, enabling fast search through logarithmic complexity.</p>
+                
+                <!-- Full-width Mermaid Diagram Section -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-sitemap me-2"></i>HNSW Architecture Visualization
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-info mb-3">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>Visual Guide:</strong> This diagram illustrates the hierarchical structure of HNSW. The search starts from sparse upper layers and descends to dense lower layers for precise results.
+                                </div>
+                                
+                                <!-- Large Mermaid Diagram Container -->
+                                <div class="diagram-container-large p-4 bg-light rounded border" style="min-height: 700px; overflow: auto;">
+                                    <div class="mermaid" style="width: 100%; min-width: 900px;">
+                                        graph TB
+                                            subgraph "HNSW Multi-Layer Structure"
+                                                A[Layer 3: Sparse - Few nodes]
+                                                B[Layer 2: Medium Density]
+                                                C[Layer 1: Dense - All nodes]
+
+                                                A --> A1[Entry Point]
+                                                A1 --> A2[Neighbor 1]
+                                                A1 --> A3[Neighbor 2]
+
+                                                B --> B1[Entry Point]
+                                                B1 --> B2[Neighbor 1]
+                                                B2 --> B3[Neighbor 2]
+                                                B3 --> B4[Neighbor 3]
+
+                                                C --> C1[All Vectors Connected]
+                                                C1 --> C2[Nearest Neighbors]
+                                                C2 --> C3[More Neighbors]
+                                                C3 --> C4[Network]
+                                            end
+                                    </div>
+                                </div>
+
+                                <div class="diagram-container-large p-4 bg-light rounded border" style="min-height: 700px; overflow: auto;">
+                                    <div class="mermaid" style="width: 100%; min-width: 900px;">	
+                                        graph TB
+                                            subgraph "Search Process"
+                                                D[Query Vector]
+                                                D --> E[Start at Top Layer]
+                                                E --> F[Find Nearest in Layer]
+                                                F --> G[Move Down Layer]
+                                                G --> H[Refine Search]
+                                                H --> I[Repeat Until Bottom]
+                                                I --> J[Return Nearest Neighbors]
+                                            end
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-4">
+                                    <h6><i class="fas fa-list-ol me-2"></i>How HNSW Works</h6>
+                                    <ol class="list-group list-group-numbered">
+                                        <li class="list-group-item d-flex align-items-start">
+                                            <div class="ms-2 me-auto">
+                                                <div class="fw-bold">Multi-layered graph structure</div>
+                                                Sparse upper layers for fast navigation and dense bottom layer for precise search
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item d-flex align-items-start">
+                                            <div class="ms-2 me-auto">
+                                                <div class="fw-bold">Bottom layer contains all vectors</div>
+                                                Ensures complete search space coverage
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item d-flex align-items-start">
+                                            <div class="ms-2 me-auto">
+                                                <div class="fw-bold">Small world network</div>
+                                                Each vector connects to nearest neighbors forming efficient search paths
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item d-flex align-items-start">
+                                            <div class="ms-2 me-auto">
+                                                <div class="fw-bold">Hierarchical search</div>
+                                                Search starts at top layer and descends through layers refining results
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item d-flex align-items-start">
+                                            <div class="ms-2 me-auto">
+                                                <div class="fw-bold">Logarithmic time complexity</div>
+                                                O(log n) vs O(n) for brute force search
+                                            </div>
+                                        </li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Full-width Code Section -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-cogs me-2"></i>HNSW Configuration & Performance Tuning
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-warning mb-3">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    <strong>Tuning Guidelines:</strong> Adjust these parameters based on your use case - higher values for better recall, lower values for faster performance.
+                                </div>
+                                
+                                <!-- Code Block -->
+                                <div class="code-block p-3 bg-dark text-light rounded" style="font-size: 0.9rem;">
+<pre><code class="language-python">import chromadb
+from chromadb.utils import embedding_functions
+
+# Create embedding function
+sentence_transformer_ef = embedding_functions.SentenceTransformerEmbeddingFunction(
+    model_name="all-MiniLM-L6-v2"
+)
+
+# Create collection with optimized HNSW configuration
+collection = client.create_collection(
+    name="optimized_collection",
+    metadata={"description": "Optimized for high recall"},
+    configuration={
+        "hnsw": {
+            # Distance metric: l2, cosine, or ip (inner product)
+            "space": "cosine",
+            
+            # ef_search: Higher = better recall, slower queries
+            # Default: 100, Range: 1-1000
+            "ef_search": 200,
+            
+            # ef_construction: Higher = better index quality, slower build
+            # Default: 100, Range: 1-1000
+            "ef_construction": 200,
+            
+            # max_neighbors: Higher = denser graph, better search, more memory
+            # Default: 16, Range: 1-100
+            "max_neighbors": 32,
+            
+            # m: Number of bi-directional links created for each new element
+            # Default: 16, Range: 2-100
+            "m": 20
+        },
+        "embedding_function": sentence_transformer_ef
+    }
+)
+
+print("Collection created with optimized HNSW parameters")
+print("-" * 50)
+print("For high recall applications:")
+print("  • Increase ef_search (200-400)")
+print("  • Increase ef_construction (200-400)")
+print("  • Increase max_neighbors (24-48)")
+print("\nFor high throughput applications:")
+print("  • Decrease ef_search (50-100)")
+print("  • Keep ef_construction moderate (100-200)")
+print("  • Keep max_neighbors moderate (16-24)")</code></pre>
+                                </div>
+                                
+                                <!-- Parameter Explanation -->
+                                <div class="row mt-4">
+                                    <div class="col-md-4">
+                                        <div class="card h-100 border-primary">
+                                            <div class="card-header bg-primary text-white">
+                                                <i class="fas fa-bullseye me-2"></i>High Recall Setup
+                                            </div>
+                                            <div class="card-body">
+                                                <ul class="list-unstyled">
+                                                    <li><i class="fas fa-arrow-up text-success me-2"></i><strong>ef_search:</strong> 200-400</li>
+                                                    <li><i class="fas fa-arrow-up text-success me-2"></i><strong>ef_construction:</strong> 200-400</li>
+                                                    <li><i class="fas fa-arrow-up text-success me-2"></i><strong>max_neighbors:</strong> 24-48</li>
+                                                </ul>
+                                                <small class="text-muted">Use for: Semantic search, recommendations</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="card h-100 border-info">
+                                            <div class="card-header bg-info text-white">
+                                                <i class="fas fa-tachometer-alt me-2"></i>Balanced Setup
+                                            </div>
+                                            <div class="card-body">
+                                                <ul class="list-unstyled">
+                                                    <li><i class="fas fa-minus text-warning me-2"></i><strong>ef_search:</strong> 100-200</li>
+                                                    <li><i class="fas fa-minus text-warning me-2"></i><strong>ef_construction:</strong> 100-200</li>
+                                                    <li><i class="fas fa-minus text-warning me-2"></i><strong>max_neighbors:</strong> 16-24</li>
+                                                </ul>
+                                                <small class="text-muted">Use for: General purpose applications</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="card h-100 border-success">
+                                            <div class="card-header bg-success text-white">
+                                                <i class="fas fa-bolt me-2"></i>High Throughput Setup
+                                            </div>
+                                            <div class="card-body">
+                                                <ul class="list-unstyled">
+                                                    <li><i class="fas fa-arrow-down text-danger me-2"></i><strong>ef_search:</strong> 50-100</li>
+                                                    <li><i class="fas fa-minus text-warning me-2"></i><strong>ef_construction:</strong> 100-200</li>
+                                                    <li><i class="fas fa-minus text-warning me-2"></i><strong>max_neighbors:</strong> 16-24</li>
+                                                </ul>
+                                                <small class="text-muted">Use for: Real-time applications</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Performance Comparison -->
+            <div class="mb-5">
+                <h4 class="mb-3"><i class="fas fa-tachometer-alt me-2"></i>Performance Benchmarks</h4>
+                <div class="diagram-container">
+                    <div class="mermaid">
+                        xychart-beta
+                            title "Query Performance Comparison (Lower is Better)"
+                            x-axis ["Brute Force", "FAISS", "Chroma DB (HNSW)", "PostgreSQL + pgvector"]
+                            y-axis "Query Time (ms)" 0 --> 1000
+                            bar [1000, 150, 45, 300]
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-3 col-6">
+                        <div class="stats-card">
+                            <span class="stats-number">3-5x</span>
+                            <span class="stats-label">Faster than Python</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <div class="stats-card">
+                            <span class="stats-number">95%</span>
+                            <span class="stats-label">Recall @ 10</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <div class="stats-card">
+                            <span class="stats-number">1M+</span>
+                            <span class="stats-label">Vectors/sec</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <div class="stats-card">
+                            <span class="stats-number">&lt;10ms</span>
+                            <span class="stats-label">P95 Latency</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Implementation Section -->
+        <section id="implementation" class="mb-5">
+            <h2 class="section-title">Implementation & Workflow</h2>
+            
+            <div class="mb-5">
+                <h4 class="mb-3"><i class="fas fa-cogs me-2"></i>Complete Chroma DB Workflow</h4>
+                <div class="diagram-container">
+                    <div class="mermaid">
+                        flowchart TD
+                            A[Start: Define Requirements] --> B[Choose Embedding Model]
+                            B --> C[Setup Chroma DB Environment]
+                            C --> D[Create Collection with Configuration]
+                            D --> E[Prepare Data: Documents + Metadata]
+                            E --> F[Generate Embeddings]
+                            F --> G[Add to Collection with IDs]
+                            G --> H[Build HNSW Index]
+                            H --> I[Test Similarity Search]
+                            I --> J{Performance Acceptable?}
+                            J -->|No| K[Tune HNSW Parameters]
+                            K --> H
+                            J -->|Yes| L[Implement Query Logic]
+                            L --> M[Add Filtering: Metadata + Documents]
+                            M --> N[Deploy to Production]
+                            N --> O[Monitor: Recall, Latency, Throughput]
+                            O --> P[Scale: Replication, Sharding]
+                            P --> Q[Maintain: Updates, Backups]
+                            Q --> R[End: Production System]
+                            
+                            subgraph "Optimization Loop"
+                                H --> I --> J --> K
+                            end
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Full Implementation Example -->
+            <div class="mb-5">
+                <h4 class="mb-3"><i class="fas fa-laptop-code me-2"></i>Complete Implementation Example</h4>
+                
+                <!-- E-commerce Product Search System - Full Width -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card h-100">
+                            <div class="card-header">E-commerce Product Search System</div>
+                            <div class="card-body">
+                                <div class="code-block">
+<pre><code class="language-python">import chromadb
+from chromadb.utils import embedding_functions
+import pandas as pd
+from datetime import datetime
+
+class ProductSearchSystem:
+    def __init__(self, collection_name="ecommerce_products"):
+        self.client = chromadb.Client()
+        self.embedding_function = embedding_functions.SentenceTransformerEmbeddingFunction(
+            model_name="all-MiniLM-L6-v2"
+        )
+        
+        # Create or get collection
+        self.collection = self.client.create_collection(
+            name=collection_name,
+            metadata={"domain": "ecommerce", "created": str(datetime.now())},
+            configuration={
+                "hnsw": {
+                    "space": "cosine",
+                    "ef_search": 150,
+                    "ef_construction": 200,
+                    "max_neighbors": 24
+                },
+                "embedding_function": self.embedding_function
+            }
+        )
+    
+    def add_products(self, products_df):
+        """Add products to the vector database."""
+        documents = products_df['description'].tolist()
+        metadatas = products_df[['category', 'price', 'brand', 'rating', 'in_stock']].to_dict('records')
+        ids = [f"prod_{i}" for i in range(len(documents))]
+        
+        self.collection.add(
+            documents=documents,
+            metadatas=metadatas,
+            ids=ids
+        )
+        print(f"Added {len(documents)} products to collection")
+    
+    def semantic_search(self, query, category=None, max_price=None, min_rating=0):
+        """Search for products using semantic similarity with filters."""
+        where_conditions = {}
+        
+        # Build filter conditions
+        if category:
+            where_conditions["category"] = category
+        if max_price:
+            where_conditions["price"] = {"$lte": max_price}
+        if min_rating > 0:
+            where_conditions["rating"] = {"$gte": min_rating}
+        
+        # Only show in-stock products
+        where_conditions["in_stock"] = True
+        
+        # Perform search
+        results = self.collection.query(
+            query_texts=[query],
+            n_results=10,
+            where=where_conditions if where_conditions else None
+        )
+        
+        return self._format_results(results)
+    
+    def find_similar_products(self, product_id, n=5):
+        """Find products similar to a given product."""
+        # Get the product embedding
+        product_data = self.collection.get(ids=[product_id])
+        if not product_data['documents']:
+            return []
+        
+        # Use the product description as query
+        return self.semantic_search(product_data['documents'][0], n=n)
+    
+    def _format_results(self, results):
+        """Format search results for display."""
+        formatted = []
+        for i, (doc_id, distance, text, metadata) in enumerate(zip(
+            results['ids'][0],
+            results['distances'][0],
+            results['documents'][0],
+            results['metadatas'][0]
+        )):
+            formatted.append({
+                'rank': i + 1,
+                'id': doc_id,
+                'similarity': 1 - distance,  # Convert distance to similarity
+                'description': text[:100] + "..." if len(text) > 100 else text,
+                'category': metadata.get('category', 'N/A'),
+                'price': metadata.get('price', 'N/A'),
+                'brand': metadata.get('brand', 'N/A'),
+                'rating': metadata.get('rating', 'N/A')
+            })
+        return formatted
+
+# Example usage
+if __name__ == "__main__":
+    # Sample product data
+    products_data = {
+        'description': [
+            "Wireless Bluetooth headphones with noise cancellation and 30-hour battery",
+            "Organic cotton t-shirt made from sustainable materials, comfortable fit",
+            "Smartphone with 5G, triple camera system, and 128GB storage",
+            "Running shoes with cushioning technology for long-distance comfort",
+            "Coffee maker with programmable timer and thermal carafe",
+            "Laptop with Intel i7 processor, 16GB RAM, and 512GB SSD",
+            "Yoga mat with non-slip surface and carrying strap",
+            "Cookware set with non-stick coating and dishwasher safe",
+            "Fitness tracker with heart rate monitor and sleep tracking",
+            "Bookshelf made from solid wood with adjustable shelves"
+        ],
+        'category': ['electronics', 'clothing', 'electronics', 'footwear', 'kitchen', 
+                    'electronics', 'fitness', 'kitchen', 'electronics', 'furniture'],
+        'price': [199.99, 29.99, 899.99, 129.99, 79.99, 1199.99, 34.99, 149.99, 79.99, 199.99],
+        'brand': ['SoundMax', 'EcoWear', 'TechPhone', 'RunPro', 'BrewMaster', 
+                 'CompuTech', 'FitLife', 'KitchenPro', 'HealthTrack', 'HomeStyle'],
+        'rating': [4.5, 4.2, 4.7, 4.4, 4.1, 4.6, 4.3, 4.0, 4.2, 4.5],
+        'in_stock': [True, True, False, True, True, True, True, True, True, True]
+    }
+    
+    df = pd.DataFrame(products_data)
+    
+    # Initialize search system
+    search_system = ProductSearchSystem()
+    search_system.add_products(df)
+    
+    # Example searches
+    print("=" * 60)
+    print("Search 1: 'comfortable wireless audio device'")
+    results1 = search_system.semantic_search("comfortable wireless audio device", category="electronics")
+    for r in results1[:3]:
+        print(f"{r['rank']}. {r['description']} (Similarity: {r['similarity']:.3f})")
+    
+    print("\n" + "=" * 60)
+    print("Search 2: 'tech gadgets under $100'")
+    results2 = search_system.semantic_search("tech gadgets", max_price=100)
+    for r in results2[:3]:
+        print(f"{r['rank']}. {r['description']} - ${r['price']} (Rating: {r['rating']})")
+    
+    print("\n" + "=" * 60)
+    print("Finding products similar to product 0:")
+    similar = search_system.find_similar_products("prod_0", n=3)
+    for r in similar:
+        print(f"{r['rank']}. {r['description']} (Similarity: {r['similarity']:.3f})")</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- RAG Implementation - Full Width -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card h-100">
+                            <div class="card-header">RAG (Retrieval-Augmented Generation) Implementation</div>
+                            <div class="card-body">
+                                <div class="code-block">
+<pre><code class="language-python">import chromadb
+from chromadb.utils import embedding_functions
+from sentence_transformers import SentenceTransformer
+import openai
+from typing import List, Dict
+import hashlib
+
+class RAGSystem:
+    """Retrieval-Augmented Generation system using Chroma DB."""
+    
+    def __init__(self, collection_name="knowledge_base"):
+        self.client = chromadb.Client()
+        
+        # Initialize embedding models
+        self.embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
+        self.embedding_function = embedding_functions.SentenceTransformerEmbeddingFunction(
+            model_name="all-MiniLM-L6-v2"
+        )
+        
+        # Create collection for documents
+        self.collection = self.client.create_collection(
+            name=collection_name,
+            metadata={"purpose": "RAG system", "model": "all-MiniLM-L6-v2"},
+            configuration={
+                "hnsw": {"space": "cosine", "ef_search": 200},
+                "embedding_function": self.embedding_function
+            }
+        )
+        
+        # Initialize LLM (using OpenAI as example)
+        openai.api_key = "your-api-key-here"
+    
+    def chunk_documents(self, documents: List[str], chunk_size: int = 500, overlap: int = 50) -> List[Dict]:
+        """Split documents into overlapping chunks."""
+        chunks = []
+        for doc_id, doc in enumerate(documents):
+            words = doc.split()
+            for i in range(0, len(words), chunk_size - overlap):
+                chunk = ' '.join(words[i:i + chunk_size])
+                chunk_id = f"doc{doc_id}_chunk{i}"
+                chunks.append({
+                    'id': chunk_id,
+                    'text': chunk,
+                    'doc_id': doc_id,
+                    'chunk_index': i // (chunk_size - overlap)
+                })
+        return chunks
+    
+    def add_documents(self, documents: List[str], metadata: List[Dict] = None):
+        """Add documents to the knowledge base."""
+        # Chunk documents
+        chunks = self.chunk_documents(documents)
+        
+        # Prepare data for Chroma DB
+        chunk_texts = [chunk['text'] for chunk in chunks]
+        chunk_ids = [chunk['id'] for chunk in chunks]
+        
+        # Create metadata for each chunk
+        chunk_metadata = []
+        for chunk in chunks:
+            meta = {
+                'doc_id': chunk['doc_id'],
+                'chunk_index': chunk['chunk_index'],
+                'chunk_size': len(chunk['text'].split()),
+                'hash': hashlib.md5(chunk['text'].encode()).hexdigest()[:8]
+            }
+            if metadata and chunk['doc_id'] < len(metadata):
+                meta.update(metadata[chunk['doc_id']])
+            chunk_metadata.append(meta)
+        
+        # Add to collection
+        self.collection.add(
+            documents=chunk_texts,
+            metadatas=chunk_metadata,
+            ids=chunk_ids
+        )
+        print(f"Added {len(chunks)} chunks from {len(documents)} documents")
+    
+    def retrieve_context(self, query: str, n_results: int = 5, filter_metadata: Dict = None) -> List[str]:
+        """Retrieve relevant context for a query."""
+        results = self.collection.query(
+            query_texts=[query],
+            n_results=n_results,
+            where=filter_metadata
+        )
+        
+        # Extract and deduplicate contexts
+        contexts = []
+        seen_hashes = set()
+        for text, metadata in zip(results['documents'][0], results['metadatas'][0]):
+            text_hash = metadata.get('hash', '')
+            if text_hash not in seen_hashes:
+                contexts.append(text)
+                seen_hashes.add(text_hash)
+        
+        return contexts
+    
+    def generate_answer(self, query: str, context: List[str], model: str = "gpt-3.5-turbo") -> str:
+        """Generate answer using LLM with retrieved context."""
+        # Combine context
+        context_text = "\n\n".join([f"Source {i+1}: {c}" for i, c in enumerate(context)])
+        
+        # Create prompt
+        prompt = f"""Based on the following information, answer the question.
+
+Context:
+{context_text}
+
+Question: {query}
+
+Answer the question based only on the provided context. If the context doesn't contain relevant information, say "I don't have enough information to answer this question."
+
+Answer:"""
+        
+        # Call LLM (example using OpenAI)
+        try:
+            response = openai.ChatCompletion.create(
+                model=model,
+                messages=[
+                    {"role": "system", "content": "You are a helpful assistant that answers questions based on provided context."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.1,
+                max_tokens=500
+            )
+            return response.choices[0].message.content
+        except Exception as e:
+            return f"Error generating answer: {str(e)}"
+    
+    def query(self, question: str, n_contexts: int = 3) -> Dict:
+        """Complete RAG pipeline: retrieve context and generate answer."""
+        # Retrieve relevant context
+        contexts = self.retrieve_context(question, n_results=n_contexts)
+        
+        # Generate answer
+        answer = self.generate_answer(question, contexts)
+        
+        return {
+            'question': question,
+            'contexts': contexts,
+            'answer': answer,
+            'context_count': len(contexts)
+        }
+
+# Example usage
+if __name__ == "__main__":
+    # Sample knowledge base documents
+    documents = [
+        """Chroma DB is an AI-native open-source vector database. It is designed for storing and retrieving vector embeddings. 
+        Chroma DB supports multiple embedding models and provides fast similarity search using the HNSW algorithm.
+        It is particularly useful for building AI applications like chatbots and recommendation systems.""",
+        
+        """Vector databases store data as numerical vectors in high-dimensional space. 
+        Each vector represents features or attributes of the data. Similarity between vectors is calculated using metrics like cosine similarity or Euclidean distance.
+        Popular vector databases include Chroma DB, Pinecone, and Weaviate.""",
+        
+        """The HNSW (Hierarchical Navigable Small World) algorithm is used for approximate nearest neighbor search. 
+        It creates a multi-layered graph structure where upper layers provide fast navigation and lower layers contain all vectors.
+        HNSW provides logarithmic time complexity for search operations."""
+    ]
+    
+    # Document metadata
+    metadata = [
+        {"source": "chroma_docs", "topic": "chroma_db", "version": "1.0"},
+        {"source": "vector_db_guide", "topic": "vector_databases", "version": "1.0"},
+        {"source": "algorithms_guide", "topic": "hnsw", "version": "1.0"}
+    ]
+    
+    # Initialize RAG system
+    rag = RAGSystem()
+    rag.add_documents(documents, metadata)
+    
+    # Example queries
+    queries = [
+        "What is Chroma DB?",
+        "How does HNSW work?",
+        "What are the advantages of vector databases?"
+    ]
+    
+    for query in queries:
+        print("=" * 70)
+        print(f"Question: {query}")
+        print("-" * 70)
+        
+        result = rag.query(query, n_contexts=2)
+        
+        print("Answer:")
+        print(result['answer'])
+        print("\nSources used:")
+        for i, context in enumerate(result['contexts']):
+            print(f"{i+1}. {context[:100]}...")
+        print()</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Use Cases Section -->
+        <section id="use-cases" class="mb-5">
+            <h2 class="section-title">Applications & Use Cases</h2>
+            
+            <!-- Vector Database Applications Image -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="img-container">
+                        <img src="https://raw.githubusercontent.com/md-sahil-analyst22/Study_Material/main/images/Vector_database_application_infographics1.png" 
+                             alt="Vector Database Applications Infographic" 
+                             class="full-width-img">
+                        <p class="img-caption">Comprehensive Overview of Vector Database Applications Across Industries</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mb-4">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-success text-white">
+                            <i class="fas fa-robot me-2"></i>AI-Powered Chatbots & RAG
+                        </div>
+                        <div class="card-body">
+                            <p>Provides context augmentation for more relevant and accurate conversational AI using Retrieval-Augmented Generation (RAG).</p>
+                            <ul class="small">
+                                <li><strong>Semantic search</strong> over knowledge bases</li>
+                                <li><strong>Context retrieval</strong> for LLMs (GPT, Claude, Gemini)</li>
+                                <li><strong>Personalized responses</strong> based on user history</li>
+                                <li><strong>Multi-turn conversations</strong> with context persistence</li>
+                            </ul>
+                            <div class="example-box mt-3">
+                                <h6>Example:</h6>
+                                <p>Customer service chatbot retrieving relevant FAQ articles based on semantic similarity to user questions, not just keyword matching.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-info text-white">
+                            <i class="fas fa-shopping-cart me-2"></i>Personalized Recommendations
+                        </div>
+                        <div class="card-body">
+                            <p>Suggests items based on deep understanding of user preferences and similarity between items.</p>
+                            <ul class="small">
+                                <li><strong>E-commerce product recommendations</strong></li>
+                                <li><strong>Content recommendations</strong> (movies, articles, music)</li>
+                                <li><strong>Social media connections</strong> and content</li>
+                                <li><strong>Cross-selling and upselling</strong></li>
+                            </ul>
+                            <div class="example-box mt-3">
+                                <h6>Example:</h6>
+                                <p>Netflix-style recommendation engine that understands "users who liked Breaking Bad" are similar to "users who liked Better Call Saul" based on viewing patterns.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-warning text-dark">
+                            <i class="fas fa-file-alt me-2"></i>Document Search & Knowledge Management
+                        </div>
+                        <div class="card-body">
+                            <p>Implements powerful semantic or full-text search engines over document collections.</p>
+                            <ul class="small">
+                                <li><strong>Legal document retrieval</strong></li>
+                                <li><strong>Research paper search</strong></li>
+                                <li><strong>Enterprise knowledge management</strong></li>
+                                <li><strong>Contract analysis</strong> and due diligence</li>
+                            </ul>
+                            <div class="example-box mt-3">
+                                <h6>Example:</h6>
+                                <p>Law firm searching for precedent cases using natural language queries like "cases involving breach of contract with digital services" instead of exact legal terms.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mb-5">
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <i class="fas fa-images me-2"></i>Image & Video Analysis
+                        </div>
+                        <div class="card-body">
+                            <p>Finds similar visual content based on features rather than metadata or tags.</p>
+                            <ul>
+                                <li><strong>Reverse image search</strong> (Google Images-style)</li>
+                                <li><strong>Content-based video retrieval</strong></li>
+                                <li><strong>Visual product search</strong> (Pinterest, Amazon)</li>
+                                <li><strong>Face recognition systems</strong></li>
+                                <li><strong>Medical image analysis</strong> (similar X-rays, MRIs)</li>
+                                <li><strong>Art and design inspiration</strong></li>
+                            </ul>
+                            <div class="example-box mt-3">
+                                <h6>Implementation:</h6>
+                                <p>Using CLIP (Contrastive Language-Image Pre-training) model to create embeddings that understand both images and text, enabling queries like "find products that look like this image" or "images of sunny beaches with palm trees".</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <i class="fas fa-map-marker-alt me-2"></i>Geospatial & Location Services
+                        </div>
+                        <div class="card-body">
+                            <p>Combines GPS data with user preferences for location-based recommendations.</p>
+                            <ul>
+                                <li><strong>Nearby points of interest</strong> recommendations</li>
+                                <li><strong>Dynamic vehicle routing</strong> and optimization</li>
+                                <li><strong>Real-time traffic analysis</strong></li>
+                                <li><strong>Fleet management optimization</strong></li>
+                                <li><strong>Real estate similarity search</strong></li>
+                                <li><strong>Delivery logistics optimization</strong></li>
+                            </ul>
+                            <div class="example-box mt-3">
+                                <h6>Example:</h6>
+                                <p>Uber Eats finding similar restaurants to user's favorites within delivery range, or real estate platform showing properties similar to ones user has liked in the past.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Real-Life Implementation Examples -->
+            <div class="mb-5">
+                <h4 class="mb-3"><i class="fas fa-building me-2"></i>Real-Life Implementation Examples</h4>
+                <div class="row">
+                    <div class="col-lg-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5><i class="fas fa-store text-primary me-2"></i>E-commerce Platform</h5>
+                                <p><strong>Problem:</strong> Customers struggling to find products using exact keywords, leading to poor conversion rates.</p>
+                                <p><strong>Solution:</strong> Semantic search using product descriptions, images, and user behavior embeddings.</p>
+                                <p><strong>Implementation:</strong></p>
+                                <ul class="small">
+                                    <li>Product embeddings from descriptions + images</li>
+                                    <li>User embeddings from browsing history</li>
+                                    <li>Hybrid search combining vector similarity with inventory filters</li>
+                                </ul>
+                                <p><strong>Result:</strong> 35% increase in product discovery, 28% higher conversion rates, reduced search abandonment.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5><i class="fas fa-heartbeat text-danger me-2"></i>Healthcare Research</h5>
+                                <p><strong>Problem:</strong> Researchers spending hours finding similar medical cases and research papers.</p>
+                                <p><strong>Solution:</strong> Vector search over patient records, medical images, and research literature.</p>
+                                <p><strong>Implementation:</strong></p>
+                                <ul class="small">
+                                    <li>Medical document embeddings using BioBERT</li>
+                                    <li>Image embeddings from X-rays/MRIs</li>
+                                    <li>Metadata filtering by specialty, date, demographics</li>
+                                </ul>
+                                <p><strong>Result:</strong> 60% faster literature review, improved diagnosis accuracy through similar case finding.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5><i class="fas fa-film text-warning me-2"></i>Media & Entertainment</h5>
+                                <p><strong>Problem:</strong> Users overwhelmed by content choice, leading to subscription churn.</p>
+                                <p><strong>Solution:</strong> Vector-based recommendation engine understanding content semantics.</p>
+                                <p><strong>Implementation:</strong></p>
+                                <ul class="small">
+                                    <li>Content embeddings from scripts, metadata, visuals</li>
+                                    <li>User embeddings from viewing history + ratings</li>
+                                    <li>Real-time similarity updates as users watch</li>
+                                </ul>
+                                <p><strong>Result:</strong> 42% increase in content engagement, 25% reduction in churn, longer viewing sessions.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Industry Adoption Diagram -->
+            <div class="mb-5">
+                <h4 class="mb-3"><i class="fas fa-industry me-2"></i>Industry Adoption Patterns</h4>
+                <div class="diagram-container">
+                    <div class="mermaid">
+                        pie title Vector Database Adoption by Industry
+                            "Technology/SaaS" : 35
+                            "E-commerce/Retail" : 25
+                            "Healthcare/Life Sciences" : 15
+                            "Financial Services" : 12
+                            "Media/Entertainment" : 8
+                            "Other" : 5
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Comparison Section -->
+        <section id="comparison" class="mb-5">
+            <h2 class="section-title">Comparison & Alternatives</h2>
+            
+            <div class="mb-5">
+                <h4 class="mb-3"><i class="fas fa-balance-scale-left me-2"></i>Vector Databases vs Traditional Databases</h4>
+                <div class="table-responsive comparison-table">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Aspect</th>
+                                <th>Traditional Databases</th>
+                                <th>Vector Databases</th>
+                                <th>Key Difference</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Data Representation</strong></td>
+                                <td>Structured tables (rows & columns)</td>
+                                <td>Multi-dimensional vectors</td>
+                                <td>Vectors capture semantics, tables capture structure</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Search Method</strong></td>
+                                <td>SQL queries (exact matches)</td>
+                                <td>Similarity searches (semantic)</td>
+                                <td>Similarity vs exact matching</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Indexing</strong></td>
+                                <td>B-trees, hash indexes</td>
+                                <td>HNSW, LSH, product quantization</td>
+                                <td>Optimized for high-dimensional similarity</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Scalability Approach</strong></td>
+                                <td>Vertical scaling, sharding</td>
+                                <td>Horizontal scaling, distributed</td>
+                                <td>Vector DBs scale better for AI workloads</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Query Language</strong></td>
+                                <td>SQL (standardized)</td>
+                                <td>API-based, vendor-specific</td>
+                                <td>SQL vs programmatic APIs</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Data Types</strong></td>
+                                <td>Structured (numbers, strings, dates)</td>
+                                <td>Unstructured (text, images, audio)</td>
+                                <td>Structured vs unstructured data</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Primary Use Case</strong></td>
+                                <td>Transactional systems, business apps</td>
+                                <td>AI/ML, recommendations, NLP</td>
+                                <td>Transactions vs intelligence</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Performance Focus</strong></td>
+                                <td>Throughput, ACID compliance</td>
+                                <td>Latency, recall rate</td>
+                                <td>Consistency vs search quality</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Vector Database Alternatives -->
+            <div class="mb-5">
+                <h4 class="mb-3"><i class="fas fa-exchange-alt me-2"></i>Vector Database Alternatives Comparison</h4>
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-primary text-white">Dedicated Vector Databases</div>
+                            <div class="card-body">
+                                <p><strong>Purpose-built</strong> for vector operations with high performance.</p>
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td><strong>Chroma DB</strong></td>
+                                        <td>Open source, AI-native, Python-first</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Pinecone</strong></td>
+                                        <td>Managed service, auto-scaling, high availability</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Weaviate</strong></td>
+                                        <td>GraphQL interface, hybrid search, modules</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Qdrant</strong></td>
+                                        <td>Rust-based, filtering, cloud-native</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Milvus</strong></td>
+                                        <td>Scalable, multiple index types, enterprise</td>
+                                    </tr>
+                                </table>
+                                <span class="metric-badge">Best for: High-performance vector search</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-info text-white">Databases with Vector Support</div>
+                            <div class="card-body">
+                                <p><strong>General-purpose</strong> databases with vector extensions.</p>
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td><strong>PostgreSQL + pgvector</strong></td>
+                                        <td>SQL interface, ACID compliance, mature</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Elasticsearch</strong></td>
+                                        <td>Full-text search, analytics, scaling</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>MongoDB Atlas</strong></td>
+                                        <td>Document model, Atlas Vector Search</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Redis</strong></td>
+                                        <td>In-memory, RedisSearch with vectors</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>SingleStore</strong></td>
+                                        <td>HTAP, vector similarity functions</td>
+                                    </tr>
+                                </table>
+                                <span class="metric-badge">Best for: Existing systems adding vector search</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-secondary text-white">Vector Search Libraries</div>
+                            <div class="card-body">
+                                <p><strong>In-memory</strong> libraries for vector search.</p>
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td><strong>FAISS (Facebook)</strong></td>
+                                        <td>GPU support, IVF, product quantization</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Annoy (Spotify)</strong></td>
+                                        <td>Approximate neighbors, memory efficient</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>SCANN (Google)</strong></td>
+                                        <td>Maximum inner product search</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Hnswlib</strong></td>
+                                        <td>Pure HNSW implementation, fast</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>NMSLIB</strong></td>
+                                        <td>Non-metric space library, versatile</td>
+                                    </tr>
+                                </table>
+                                <span class="metric-badge">Best for: Research, prototypes, in-memory apps</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature Comparison Matrix -->
+            <div class="mb-5">
+                <h4 class="mb-3"><i class="fas fa-clipboard-check me-2"></i>Feature Comparison Matrix</h4>
+                <div class="table-responsive comparison-table">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>Chroma DB</th>
+                                <th>Pinecone</th>
+                                <th>Weaviate</th>
+                                <th>pgvector</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Open Source</strong></td>
+                                <td><i class="fas fa-check text-success"></i></td>
+                                <td><i class="fas fa-times text-danger"></i></td>
+                                <td><i class="fas fa-check text-success"></i></td>
+                                <td><i class="fas fa-check text-success"></i></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Managed Service</strong></td>
+                                <td><i class="fas fa-times text-danger"></i></td>
+                                <td><i class="fas fa-check text-success"></i></td>
+                                <td>Optional</td>
+                                <td><i class="fas fa-times text-danger"></i></td>
+                            </tr>
+                            <tr>
+                                <td><strong>HNSW Support</strong></td>
+                                <td><i class="fas fa-check text-success"></i></td>
+                                <td><i class="fas fa-check text-success"></i></td>
+                                <td><i class="fas fa-check text-success"></i></td>
+                                <td><i class="fas fa-check text-success"></i></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Metadata Filtering</strong></td>
+                                <td><i class="fas fa-check text-success"></i></td>
+                                <td><i class="fas fa-check text-success"></i></td>
+                                <td><i class="fas fa-check text-success"></i></td>
+                                <td>Limited</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Multi-modal</strong></td>
+                                <td><i class="fas fa-check text-success"></i></td>
+                                <td><i class="fas fa-check text-success"></i></td>
+                                <td><i class="fas fa-check text-success"></i></td>
+                                <td><i class="fas fa-times text-danger"></i></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Built-in Embedding</strong></td>
+                                <td><i class="fas fa-check text-success"></i></td>
+                                <td><i class="fas fa-check text-success"></i></td>
+                                <td><i class="fas fa-check text-success"></i></td>
+                                <td><i class="fas fa-times text-danger"></i></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Scalability</strong></td>
+                                <td>Good</td>
+                                <td>Excellent</td>
+                                <td>Good</td>
+                                <td>Limited</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pricing</strong></td>
+                                <td>Free</td>
+                                <td>$$$</td>
+                                <td>Free/$$</td>
+                                <td>Free</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Best For</strong></td>
+                                <td>AI apps, prototypes</td>
+                                <td>Enterprise production</td>
+                                <td>Graph + vector</td>
+                                <td>PostgreSQL users</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Pros and Cons -->
+            <div class="row mb-5">
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-success text-white">
+                            <i class="fas fa-thumbs-up me-2"></i>Advantages of Vector Databases
+                        </div>
+                        <div class="card-body">
+                            <ul>
+                                <li><strong>Semantic Understanding:</strong> Find data based on meaning, not just keywords</li>
+                                <li><strong>AI-Native:</strong> Built for modern AI/ML workflows and embeddings</li>
+                                <li><strong>High Performance:</strong> Optimized for similarity searches (O(log n) vs O(n))</li>
+                                <li><strong>Scalability:</strong> Handle millions to billions of vectors with distributed architecture</li>
+                                <li><strong>Multimodal Support:</strong> Unified search across text, images, audio, video</li>
+                                <li><strong>Flexible Filtering:</strong> Combine vector search with metadata filters for precision</li>
+                                <li><strong>Real-time Updates:</strong> Dynamic index updates without downtime</li>
+                                <li><strong>Better User Experience:</strong> More relevant results lead to higher engagement</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-danger text-white">
+                            <i class="fas fa-thumbs-down me-2"></i>Limitations & Challenges
+                        </div>
+                        <div class="card-body">
+                            <ul>
+                                <li><strong>Learning Curve:</strong> Requires understanding of embeddings, vector math, and AI concepts</li>
+                                <li><strong>Computational Cost:</strong> High-dimensional operations are resource-intensive</li>
+                                <li><strong>Data Quality Dependency:</strong> Garbage in, garbage out - poor embeddings yield poor results</li>
+                                <li><strong>Model Dependency:</strong> Performance tied to embedding model quality and suitability</li>
+                                <li><strong>Storage Requirements:</strong> Vectors are large (384-1024+ dimensions × 4 bytes each)</li>
+                                <li><strong>Approximate Nature:</strong> Most searches are approximate, not exact (trade-off for speed)</li>
+                                <li><strong>Vendor Lock-in Risk:</strong> Proprietary APIs and indexing methods</li>
+                                <li><strong>Cost:</strong> Managed services can be expensive at scale</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Advanced Section -->
+        <section id="advanced" class="mb-5">
+            <h2 class="section-title">Advanced Topics & Future Trends</h2>
+            
+            <div class="row mb-5">
+                <!-- Performance Optimization Strategies - Full Width -->
+                <div class="col-12 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <i class="fas fa-chart-line me-2"></i>Performance Optimization Strategies
+                        </div>
+                        <div class="card-body">
+                            <h5>Indexing Optimization</h5>
+                            <ul>
+                                <li><strong>Composite Indexing:</strong> Combine HNSW with product quantization for memory efficiency</li>
+                                <li><strong>Hierarchical Indexing:</strong> Multi-level indexes for different similarity thresholds</li>
+                                <li><strong>Dynamic Reindexing:</strong> Automatic index rebuilding based on data changes</li>
+                            </ul>
+                            
+                            <h5 class="mt-4">Query Optimization</h5>
+                            <ul>
+                                <li><strong>Query Planning:</strong> Cost-based optimization for filter ordering</li>
+                                <li><strong>Caching Strategies:</strong> Embedding cache, result cache, metadata cache</li>
+                                <li><strong>Batch Processing:</strong> Process multiple queries simultaneously</li>
+                                <li><strong>Early Termination:</strong> Stop search when confidence threshold met</li>
+                            </ul>
+                            
+                            <h5 class="mt-4">Storage Optimization</h5>
+                            <ul>
+                                <li><strong>Vector Compression:</strong> Product quantization, scalar quantization</li>
+                                <li><strong>Delta Encoding:</strong> Store only changes from reference vectors</li>
+                                <li><strong>Columnar Storage:</strong> Optimize for vector operations</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Advanced Filtering Techniques - Full Width -->
+                <div class="col-12 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <i class="fas fa-cogs me-2"></i>Advanced Filtering Techniques
+                        </div>
+                        <div class="card-body">
+                            <div class="code-block">
+<pre><code class="language-python"># Advanced filtering examples in Chroma DB
+
+# 1. Dynamic filtering based on user context
+def personalized_search(user_id, query, collection):
+    """Search with personalization based on user history."""
+    user_profile = get_user_profile(user_id)
+    
+    where_conditions = {
+        "$and": [
+            # Content-based filters
+            {"category": {"$in": user_profile['preferred_categories']}},
+            {"rating": {"$gte": user_profile['min_rating']}},
+            
+            # Behavioral filters
+            {"$or": [
+                {"brand": {"$in": user_profile['favorite_brands']}},
+                {"price_range": user_profile['preferred_price_range']}
+            ]},
+            
+            # Temporal filters
+            {"last_updated": {"$gte": "2023-01-01"}}
+        ]
+    }
+    
+    return collection.query(
+        query_texts=[query],
+        n_results=10,
+        where=where_conditions
+    )
+
+# 2. Multi-level filtering with fallbacks
+def adaptive_search(query, collection, strict=False):
+    """Search with adaptive filtering that relaxes constraints if needed."""
+    # Try strict filters first
+    results = collection.query(
+        query_texts=[query],
+        n_results=10,
+        where={
+            "$and": [
+                {"quality": "premium"},
+                {"in_stock": True},
+                {"rating": {"$gte": 4.0}}
+            ]
+        }
+    )
+    
+    # If insufficient results and not strict mode, relax constraints
+    if len(results['ids'][0]) < 5 and not strict:
+        results = collection.query(
+            query_texts=[query],
+            n_results=10,
+            where={
+                "$and": [
+                    {"in_stock": True},
+                    {"rating": {"$gte": 3.0}}  # Lowered threshold
+                ]
+            }
+        )
+    
+    return results
+
+# 3. A/B testing different filtering strategies
+def ab_test_search(user_id, query, collection, variant):
+    """A/B test different search algorithms."""
+    if variant == "A":
+        # Variant A: Strict filtering
+        return collection.query(
+            query_texts=[query],
+            n_results=5,
+            where={"rating": {"$gte": 4.5}}
+        )
+    else:
+        # Variant B: Broader filtering
+        return collection.query(
+            query_texts=[query],
+            n_results=10,  # More results
+            where={"rating": {"$gte": 3.5}}
+        )</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Future Trends -->
+            <div class="mb-5">
+                <h4 class="mb-3"><i class="fas fa-crystal-ball me-2"></i>Future Trends & Developments</h4>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header">Short-term (1-2 years)</div>
+                            <div class="card-body">
+                                <ul>
+                                    <li><strong>Hybrid Search Evolution:</strong> Better integration of vector, keyword, and semantic search</li>
+                                    <li><strong>Real-time Vector Updates:</strong> Streaming updates to vector indexes without rebuilding</li>
+                                    <li><strong>Edge Vector Databases:</strong> Lightweight vector DBs for IoT and edge devices</li>
+                                    <li><strong>Automated Embedding Selection:</strong> AI that chooses the best embedding model for each use case</li>
+                                    <li><strong>Multi-Modal Fusion:</strong> Better integration of text, image, audio embeddings</li>
+                                    <li><strong>Vector DB as a Service:</strong> More managed offerings with auto-scaling</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header">Long-term (3-5 years)</div>
+                            <div class="card-body">
+                                <ul>
+                                    <li><strong>Quantum Vector Search:</strong> Quantum algorithms for exponential speedup in similarity search</li>
+                                    <li><strong>Neurosymbolic Integration:</strong> Combining neural embeddings with symbolic reasoning and knowledge graphs</li>
+                                    <li><strong>Autonomous Vector Databases:</strong> Self-optimizing, self-healing vector databases</li>
+                                    <li><strong>Cross-modal Understanding:</strong> Unified embeddings that truly understand relationships across all data types</li>
+                                    <li><strong>Federated Vector Search:</strong> Privacy-preserving search across multiple vector databases</li>
+                                    <li><strong>Brain-inspired Architectures:</strong> Vector databases that mimic human memory organization</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Industry Adoption Timeline -->
+            <div class="card mb-5">
+                <div class="card-header">
+                    <i class="fas fa-calendar-alt me-2"></i>Industry Adoption Timeline
+                </div>
+                <div class="card-body">
+                    <div class="diagram-container">
+                        <div class="mermaid">
+                            gantt
+                                title Vector Database Adoption Timeline
+                                dateFormat  YYYY
+                                axisFormat  %Y
+                                section Early Adopters (2020-2023)
+                                Tech Companies      :2020, 4y
+                                AI Startups         :2021, 3y
+                                Research Institutions :2022, 3y
+                                
+                                section Mainstream Adoption (2023-2026)
+                                Enterprise AI       :2023, 4y
+                                E-commerce          :2024, 3y
+                                Healthcare          :2024, 3y
+                                Financial Services  :2025, 3y
+                                Media & Entertainment :2025, 3y
+                                
+                                section Mass Adoption (2026+)
+                                SMBs                :2026, 4y
+                                Government          :2027, 3y
+                                Education           :2027, 3y
+                                Traditional Industries :2028, 3y
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Market Size Projection -->
+            <div class="mb-5">
+                <h4 class="mb-3"><i class="fas fa-chart-bar me-2"></i>Market Size Projection</h4>
+                <div class="diagram-container">
+                    <div class="mermaid">
+                        xychart-beta
+                            title "Vector Database Market Growth ($ Billions)"
+                            x-axis [2022, 2023, 2024, 2025, 2026, 2027]
+                            y-axis "Market Size ($B)" 0 --> 15
+                            line [0.8, 1.5, 2.8, 4.5, 7.2, 11.5]
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-3 col-6">
+                        <div class="stats-card">
+                            <span class="stats-number">$0.8B</span>
+                            <span class="stats-label">2022 Market</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <div class="stats-card">
+                            <span class="stats-number">$4.5B</span>
+                            <span class="stats-label">2025 Projection</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <div class="stats-card">
+                            <span class="stats-number">$11.5B</span>
+                            <span class="stats-label">2027 Projection</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <div class="stats-card">
+                            <span class="stats-number">55%</span>
+                            <span class="stats-label">CAGR 2022-2027</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Getting Started Guide -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-rocket me-2"></i>Getting Started Checklist
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Phase 1: Assessment & Planning</h5>
+                            <ul>
+                                <li><input type="checkbox"> Define use case and success metrics</li>
+                                <li><input type="checkbox"> Assess data quality and volume</li>
+                                <li><input type="checkbox"> Choose embedding model(s)</li>
+                                <li><input type="checkbox"> Select vector database solution</li>
+                                <li><input type="checkbox"> Plan infrastructure requirements</li>
+                            </ul>
+                            
+                            <h5 class="mt-4">Phase 2: Development</h5>
+                            <ul>
+                                <li><input type="checkbox"> Set up development environment</li>
+                                <li><input type="checkbox"> Create embedding pipeline</li>
+                                <li><input type="checkbox"> Implement basic search functionality</li>
+                                <li><input type="checkbox"> Add filtering and ranking</li>
+                                <li><input type="checkbox"> Integrate with application</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Phase 3: Testing & Optimization</h5>
+                            <ul>
+                                <li><input type="checkbox"> Performance testing and benchmarking</li>
+                                <li><input type="checkbox"> Quality evaluation (recall, precision)</li>
+                                <li><input type="checkbox"> Tune HNSW parameters</li>
+                                <li><input type="checkbox"> Optimize filtering logic</li>
+                                <li><input type="checkbox"> A/B test search variations</li>
+                            </ul>
+                            
+                            <h5 class="mt-4">Phase 4: Production & Scale</h5>
+                            <ul>
+                                <li><input type="checkbox"> Deploy to production environment</li>
+                                <li><input type="checkbox"> Implement monitoring and alerting</li>
+                                <li><input type="checkbox"> Set up backup and recovery</li>
+                                <li><input type="checkbox"> Plan scaling strategy</li>
+                                <li><input type="checkbox"> Document operations and maintenance</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <h4>Vector Databases & Chroma DB</h4>
+                    <p>A comprehensive guide to AI-native vector databases for modern applications. This guide combines theoretical concepts with practical implementation examples.</p>
+                    <p class="small">Based on documentation from Chroma DB, IBM Skills Network, and vector database research. Includes content from provided files: Chroma_db1_info2.png, Vector_database_application_infographics1.png, vector_db2.pdf, vector_database_type_infpgraphics1.png, how_vector_databases_powe_modern_ai_infographics1.png, vector_db_quiz2.pdf, vector_dv_quiz3.pdf, chroma_db2.pdf, vector_db1.pdf, Chroma_db1.pdf, chroma_db4.pdf, vector_db_quiz1.pdf, vector_database_brief1.docx, vector_rdb_info1.png, Similarity Search by Hand.ipynb, chroma_db3.pdf, Heighlight.txt.</p>
+                </div>
+                <div class="col-lg-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#overview" class="text-light">Overview</a></li>
+                        <li><a href="#concepts" class="text-light">Core Concepts</a></li>
+                        <li><a href="#chroma" class="text-light">Chroma DB</a></li>
+                        <li><a href="#implementation" class="text-light">Implementation</a></li>
+                        <li><a href="#use-cases" class="text-light">Use Cases</a></li>
+                        <li><a href="#comparison" class="text-light">Comparison</a></li>
+                        <li><a href="#advanced" class="text-light">Advanced Topics</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="bg-light my-4">
+            <div class="text-center">
+                <p class="mb-0">© 2024 Vector Database Guide | Created for educational purposes</p>
+                <p class="small">All code examples follow Python indentation standards | HTML file size: ~250KB</p>
+                <div class="mt-3">
+                    <i class="fab fa-python fa-2x me-3" title="Python"></i>
+                    <i class="fas fa-database fa-2x me-3" title="Database"></i>
+                    <i class="fas fa-robot fa-2x me-3" title="AI"></i>
+                    <i class="fas fa-code fa-2x me-3" title="Code"></i>
+                    <i class="fas fa-chart-line fa-2x" title="Analytics"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Smooth Scrolling -->
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if(targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if(targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Update active nav link on scroll
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+            
+            let currentSection = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if(window.scrollY >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if(link.getAttribute('href') === `#${currentSection}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+        
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+        
+        // Print functionality
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'p') {
+                e.preventDefault();
+                window.print();
+            }
+        });
+    </script>
+</body>
+                          </html>
