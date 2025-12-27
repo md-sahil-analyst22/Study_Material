@@ -1,0 +1,2730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agents: Complete Study Material</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #0891b2;
+            --success-color: #16a34a;
+            --warning-color: #ea580c;
+            --danger-color: #dc2626;
+            --dark-bg: #0f172a;
+            --light-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 30px rgba(0,0,0,0.1);
+            --shadow-lg: 0 20px 50px rgba(0,0,0,0.15);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--light-bg);
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: #ffffff;
+            padding: 15px 20px;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            z-index: 100;
+        }
+
+        header h1 {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            color: #ffffff;
+        }
+
+        header p {
+            font-size: 0.85em;
+            opacity: 0.95;
+            color: #e2e8f0;
+        }
+
+        nav {
+            background: white;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 99;
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        nav a {
+            display: inline-block;
+            padding: 10px 20px;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        nav a:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        section {
+            background: var(--card-bg);
+            margin: 40px 0;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            color: var(--primary-color);
+            font-size: 2em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid var(--secondary-color);
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        h4 {
+            color: var(--primary-color);
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%);
+            border-left: 5px solid var(--primary-color);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .warning-box {
+            background: rgba(234, 88, 12, 0.1);
+            border-left: 5px solid var(--warning-color);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .success-box {
+            background: rgba(22, 163, 74, 0.1);
+            border-left: 5px solid var(--success-color);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 25px;
+            border-radius: 10px;
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-color);
+        }
+
+        .feature-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .feature-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .feature-card li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            margin-bottom: 8px;
+        }
+
+        .feature-card li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--success-color);
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        code {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            border-left: 4px solid var(--primary-color);
+            font-size: 0.9em;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+
+        .code-section {
+            margin: 30px 0;
+        }
+
+        .code-label {
+            background: var(--primary-color);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px 8px 0 0;
+            font-weight: 600;
+            font-size: 0.9em;
+            margin-bottom: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        th {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        tr:hover {
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .comparison-table {
+            margin: 30px 0;
+        }
+
+        .diagram-section {
+            margin: 40px 0;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(8, 145, 178, 0.05) 100%);
+            border-radius: 10px;
+            border: 2px solid var(--border-color);
+        }
+
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .pros-cons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .pros-list, .cons-list {
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .pros-list {
+            background: rgba(22, 163, 74, 0.1);
+            border-left: 4px solid var(--success-color);
+        }
+
+        .cons-list {
+            background: rgba(220, 38, 38, 0.1);
+            border-left: 4px solid var(--danger-color);
+        }
+
+        .pros-list h4, .cons-list h4 {
+            margin-bottom: 15px;
+        }
+
+        .pros-list ul, .cons-list ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .pros-list li, .cons-list li {
+            padding: 10px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .pros-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--success-color);
+            font-weight: bold;
+        }
+
+        .cons-list li:before {
+            content: "✗";
+            position: absolute;
+            left: 0;
+            color: var(--danger-color);
+            font-weight: bold;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+            align-items: start;
+        }
+
+        .workflow-steps {
+            counter-reset: step-counter;
+            margin: 30px 0;
+        }
+
+        .step {
+            counter-increment: step-counter;
+            padding: 20px;
+            margin: 15px 0;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(8, 145, 178, 0.05) 100%);
+            border-left: 5px solid var(--primary-color);
+            border-radius: 8px;
+        }
+
+        .step::before {
+            content: counter(step-counter);
+            display: inline-block;
+            width: 35px;
+            height: 35px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            font-weight: bold;
+            margin-right: 15px;
+            vertical-align: top;
+        }
+
+        .step-content {
+            display: inline-block;
+            vertical-align: top;
+            width: calc(100% - 55px);
+        }
+
+        .use-case-box {
+            background: linear-gradient(135deg, #f1f5f9 0%, #f0f4f8 100%);
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid var(--primary-color);
+            border-radius: 8px;
+        }
+
+        .use-case-box h5 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .architecture-description {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(8, 145, 178, 0.08) 100%);
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px dashed var(--primary-color);
+        }
+
+        footer {
+            background: var(--dark-bg);
+            color: #f1f5f9;
+            text-align: center;
+            padding: 30px;
+            margin-top: 60px;
+        }
+
+        .toc {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 30px;
+            border-radius: 10px;
+            margin: 30px 0;
+            border: 2px solid var(--border-color);
+        }
+
+        .toc ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .toc li {
+            margin: 12px 0;
+            padding-left: 25px;
+        }
+
+        .toc a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .toc a:hover {
+            color: var(--secondary-color);
+            margin-left: 5px;
+        }
+
+        .toc li:before {
+            content: "▶";
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+
+        .real-world-example {
+            background: linear-gradient(135deg, rgba(8, 145, 178, 0.08) 0%, rgba(37, 99, 235, 0.08) 100%);
+            padding: 25px;
+            border-radius: 10px;
+            border: 2px solid var(--secondary-color);
+            margin: 20px 0;
+        }
+
+        .real-world-example h4 {
+            color: var(--secondary-color);
+        }
+
+        .implementation-checklist {
+            background: linear-gradient(135deg, rgba(22, 163, 74, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .implementation-checklist ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .implementation-checklist li {
+            padding: 12px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .implementation-checklist li:before {
+            content: "☐";
+            position: absolute;
+            left: 0;
+            color: var(--success-color);
+            font-size: 1.3em;
+        }
+
+        .implementation-checklist li.completed:before {
+            content: "☑";
+        }
+
+        /* New styles for infographic images */
+        .infographic-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .infographic-img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            border: 2px solid var(--border-color);
+            transition: transform 0.3s ease;
+        }
+
+        .infographic-img:hover {
+            transform: scale(1.02);
+        }
+
+        .infographic-caption {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9em;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            nav ul {
+                gap: 5px;
+            }
+
+            nav a {
+                padding: 8px 12px;
+                font-size: 0.8em;
+            }
+
+            section {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 1.6em;
+            }
+
+            h3 {
+                font-size: 1.2em;
+            }
+
+            .content-grid, .pros-cons {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+
+            pre {
+                padding: 15px;
+                font-size: 0.85em;
+            }
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin: 5px 5px 5px 0;
+            font-weight: 600;
+        }
+
+        .badge.secondary {
+            background: var(--secondary-color);
+        }
+
+        .badge.success {
+            background: var(--success-color);
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+            margin: 30px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 30px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--primary-color);
+        }
+
+        .timeline-item {
+            margin-left: 80px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -60px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px var(--primary-color);
+        }
+
+        .timeline-item h4 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🤖 AI Agents: Complete Study Material</h1>
+        <p>From Tool Calling to Autonomous Reasoning - A Comprehensive Guide to Building Intelligent AI Systems</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#introduction">Introduction</a></li>
+            <li><a href="#fundamentals">Fundamentals</a></li>
+            <li><a href="#tool-calling">Tool Calling</a></li>
+            <li><a href="#agents">Agents</a></li>
+            <li><a href="#langchain">LangChain</a></li>
+            <li><a href="#implementation">Implementation</a></li>
+            <li><a href="#best-practices">Best Practices</a></li>
+            <li><a href="#future">Future Scope</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <!-- INTRODUCTION SECTION -->
+        <section id="introduction">
+            <h2>📚 Introduction to AI Agents</h2>
+            
+            <div class="highlight-box">
+                <strong>What are AI Agents?</strong>
+                <p>AI agents are intelligent systems powered by Large Language Models (LLMs) that can reason, use tools, access memory, and take actions to complete complex tasks. Unlike standalone LLMs that only generate text, agents can interact with the real world through tools and adapt their behavior based on feedback.</p>
+            </div>
+
+            <!-- AI Agents Infographic -->
+            <h3>📊 AI Agents Infographic</h3>
+            <p>Visual overview of AI Agent concepts and architecture:</p>
+            
+            <div class="infographic-container">
+                <div>
+                    <img src="https://raw.githubusercontent.com/md-sahil-analyst22/Study_Material/main/images/ai_agent_info_p1.png" 
+                         alt="AI Agent Infographic Part 1: Fundamentals and Architecture" 
+                         class="infographic-img">
+                    <p class="infographic-caption">Part 1: AI Agent Fundamentals and Architecture</p>
+                </div>
+                <div>
+                    <img src="https://raw.githubusercontent.com/md-sahil-analyst22/Study_Material/main/images/ai_agent_info_p2.png" 
+                         alt="AI Agent Infographic Part 2: Tool Calling and Integration" 
+                         class="infographic-img">
+                    <p class="infographic-caption">Part 2: Tool Calling and External Integration</p>
+                </div>
+                <div>
+                    <img src="https://raw.githubusercontent.com/md-sahil-analyst22/Study_Material/main/images/ai_agent_info_p3.png" 
+                         alt="AI Agent Infographic Part 3: Agent Types and Use Cases" 
+                         class="infographic-img">
+                    <p class="infographic-caption">Part 3: Agent Types and Real-World Applications</p>
+                </div>
+                <div>
+                    <img src="https://raw.githubusercontent.com/md-sahil-analyst22/Study_Material/main/images/ai_agent_info_p4.png" 
+                         alt="AI Agent Infographic Part 4: Implementation and Best Practices" 
+                         class="infographic-img">
+                    <p class="infographic-caption">Part 4: Implementation Strategies and Best Practices</p>
+                </div>
+            </div>
+
+            <h3>Why AI Agents Matter</h3>
+            <p>The evolution of AI has shifted from monolithic models to compound AI systems. This shift is essential because:</p>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>🔄 Dynamic Interaction</h4>
+                    <p>Agents can interact with external systems, APIs, and databases in real-time, accessing current information beyond their training data.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🧠 Reasoning & Planning</h4>
+                    <p>Agents break down complex problems into steps, reason about solutions, and adapt their approach based on observations.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🛠️ Tool Integration</h4>
+                    <p>Agents can leverage multiple tools—calculators, web search, databases—to perform tasks that would be impossible for standalone LLMs.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>💾 Memory Management</h4>
+                    <p>Agents maintain context across interactions, enabling meaningful conversations and learning from past experiences.</p>
+                </div>
+            </div>
+
+            <h3>The Paradigm Shift</h3>
+            <p>Traditional monolithic LLMs have fundamental limitations:</p>
+            <ul style="margin: 15px 0; padding-left: 25px;">
+                <li><strong>Knowledge Boundaries:</strong> Limited to training data, unaware of real-time events or private data</li>
+                <li><strong>Hallucinations:</strong> Can generate confident but incorrect responses when information is outside their training</li>
+                <li><strong>Static Nature:</strong> Expensive and difficult to adapt to new domains or tasks</li>
+                <li><strong>No Real-World Interaction:</strong> Cannot execute actions or access external systems</li>
+            </ul>
+
+            <div class="success-box">
+                <strong>Solution: Compound AI Systems</strong>
+                <p>By combining LLMs with external tools, memory systems, and reasoning frameworks, we create compound AI systems that can solve real-world, context-dependent problems effectively.</p>
+            </div>
+        </section>
+
+        <!-- FUNDAMENTALS SECTION -->
+        <section id="fundamentals">
+            <h2>🎯 Fundamentals: The AI System Spectrum</h2>
+
+            <p>Not all AI systems operate at the same level of complexity. Understanding where agents fit on the spectrum is crucial for selecting the right architecture for your task.</p>
+
+            <div class="comparison-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>System Type</th>
+                            <th>Characteristics</th>
+                            <th>Best Use Cases</th>
+                            <th>Complexity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Single LLM Feature</strong></td>
+                            <td>Stateless, one-shot, deterministic</td>
+                            <td>Text summarization, classification, translation</td>
+                            <td style="color: var(--success-color); font-weight: bold;">Low</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Structured Workflow</strong></td>
+                            <td>Deterministic execution, fixed tool chains</td>
+                            <td>Document pipelines, batch processing, data validation</td>
+                            <td style="color: var(--warning-color); font-weight: bold;">Medium</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Autonomous Agent</strong></td>
+                            <td>Dynamic planning, adaptive reasoning, context-aware</td>
+                            <td>Research, troubleshooting, strategic planning, exploration</td>
+                            <td style="color: var(--danger-color); font-weight: bold;">High</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>System 1: Single LLM Features (Think Fast)</h3>
+            <p>The simplest form of AI system—direct input to LLM to output. Perfect for atomic, well-defined tasks.</p>
+            
+            <div class="pros-cons">
+                <div class="pros-list">
+                    <h4>✓ Advantages</h4>
+                    <ul>
+                        <li>Speed and simplicity</li>
+                        <li>Deterministic output</li>
+                        <li>Low operational cost</li>
+                        <li>Easy to debug</li>
+                    </ul>
+                </div>
+                <div class="cons-list">
+                    <h4>✗ Limitations</h4>
+                    <ul>
+                        <li>No adaptability</li>
+                        <li>No memory or context</li>
+                        <li>Cannot access external data</li>
+                        <li>Limited to training knowledge</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mermaid">
+                <div class="mermaid-diagram">
+                    graph LR
+                    A["User Query"] --> B["LLM"]
+                    B --> C["Direct Response"]
+                    style A fill:#e0e7ff
+                    style B fill:#3b82f6,color:#fff
+                    style C fill:#d1fae5
+                </div>
+            </div>
+
+            <h3>System 2: Structured Workflows (Think Methodical)</h3>
+            <p>Multi-step, predictable processes with explicit control flow. Ideal for compliance and repetitive tasks.</p>
+            
+            <div class="pros-cons">
+                <div class="pros-list">
+                    <h4>✓ Advantages</h4>
+                    <ul>
+                        <li>Predictable and reliable</li>
+                        <li>Easy to audit and monitor</li>
+                        <li>Cost-efficient</li>
+                        <li>Compliance-ready</li>
+                    </ul>
+                </div>
+                <div class="cons-list">
+                    <h4>✗ Limitations</h4>
+                    <ul>
+                        <li>Rigid and inflexible</li>
+                        <li>High development overhead</li>
+                        <li>Cannot handle exceptions</li>
+                        <li>Requires predefined logic</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mermaid">
+                <div class="mermaid-diagram">
+                    graph LR
+                    A["Input"] --> B["Step 1"]
+                    B --> C["Step 2"]
+                    C --> D["Step 3"]
+                    D --> E["Output"]
+                    style A fill:#e0e7ff
+                    style B fill:#60a5fa,color:#fff
+                    style C fill:#60a5fa,color:#fff
+                    style D fill:#60a5fa,color:#fff
+                    style E fill:#d1fae5
+                </div>
+            </div>
+
+            <h3>System 3: Autonomous Agents (Think Adaptive)</h3>
+            <p>Dynamic, context-aware systems that plan, reason, and adapt. Perfect for complex, open-ended tasks.</p>
+            
+            <div class="pros-cons">
+                <div class="pros-list">
+                    <h4>✓ Advantages</h4>
+                    <ul>
+                        <li>Highly adaptable</li>
+                        <li>Dynamic decision-making</li>
+                        <li>Reduces human intervention</li>
+                        <li>Handles unforeseen situations</li>
+                    </ul>
+                </div>
+                <div class="cons-list">
+                    <h4>✗ Limitations</h4>
+                    <ul>
+                        <li>Unpredictable outcomes</li>
+                        <li>Higher complexity</li>
+                        <li>More expensive to operate</li>
+                        <li>Requires robust monitoring</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mermaid">
+                <div class="mermaid-diagram">
+                    graph TB
+                    A["User Query"] --> B["Plan"]
+                    B --> C["Act"]
+                    C --> D["Observe"]
+                    D --> E{Goal Reached?}
+                    E -->|No| B
+                    E -->|Yes| F["Response"]
+                    style A fill:#e0e7ff
+                    style B fill:#3b82f6,color:#fff
+                    style C fill:#3b82f6,color:#fff
+                    style D fill:#3b82f6,color:#fff
+                    style E fill:#f59e0b,color:#fff
+                    style F fill:#d1fae5
+                </div>
+            </div>
+
+            <h3>Decision Framework: When to Use Agents</h3>
+            <p>Before deploying an AI agent, evaluate these four critical criteria:</p>
+
+            <div class="workflow-steps">
+                <div class="step">
+                    <div class="step-content">
+                        <strong>Is the task ambiguous or predictable?</strong>
+                        <p><span style="color: var(--secondary-color); font-weight: bold;">Use agents when:</span> The decision path is unclear, tasks involve exploration, or creativity is needed</p>
+                        <p><span style="color: var(--success-color); font-weight: bold;">Use workflows when:</span> You can define all rules and outcomes in advance</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-content">
+                        <strong>Is the value worth the cost?</strong>
+                        <p>Agents consume 10-100× more tokens than workflows. Consider ROI carefully.</p>
+                        <p><span style="color: var(--secondary-color); font-weight: bold;">High ROI tasks:</span> Strategic planning, research, complex automation</p>
+                        <p><span style="color: var(--success-color); font-weight: bold;">Low ROI tasks:</span> Basic customer support, simple data processing</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-content">
+                        <strong>Does the agent meet minimum capabilities?</strong>
+                        <p>Test the agent on 3-5 key skills before deployment. Examples:</p>
+                        <ul style="margin-top: 10px; padding-left: 25px;">
+                            <li>Research agent: Identify, filter, and summarize credible sources</li>
+                            <li>Coding agent: Write, fix, and validate code</li>
+                            <li>Support agent: Classify issues, resolve queries, escalate appropriately</li>
+                            <li>Data agent: Clean data, detect anomalies, summarize trends</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-content">
+                        <strong>What if the agent makes a mistake?</strong>
+                        <p>Evaluate error impact and recovery possibilities.</p>
+                        <p><span style="color: var(--success-color); font-weight: bold;">Use agents when:</span> Errors are detectable, reversible, and manageable</p>
+                        <p><span style="color: var(--danger-color); font-weight: bold;">Avoid agents when:</span> Zero-error systems needed (medical, security, safety-critical)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TOOL CALLING SECTION -->
+        <section id="tool-calling">
+            <h2>🔧 Tool Calling: Bridging LLMs and the Real World</h2>
+
+            <div class="highlight-box">
+                <strong>Core Concept:</strong> Tool calling allows LLMs to request the use of specific tools by generating structured output (typically JSON) that specifies which tool to use and what parameters to pass. The LLM does not execute the tool—it generates a "request" that an external system interprets and executes.
+            </div>
+
+            <h3>What Are Tools?</h3>
+            <p>Tools are functions or external capabilities that an AI agent can invoke. Each tool has three essential components:</p>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>📛 Name</h4>
+                    <p>A unique identifier for the tool that the LLM uses to request its execution. Example: <code>get_weather</code></p>
+                </div>
+                <div class="feature-card">
+                    <h4>📝 Description</h4>
+                    <p>A clear explanation of what the tool does and when to use it. This directly influences the LLM's ability to determine appropriateness.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🔑 Parameters</h4>
+                    <p>The inputs the tool expects, including their names, types, and descriptions. Example: <code>location: string</code></p>
+                </div>
+            </div>
+
+            <h3>Tool Calling Workflow</h3>
+
+            <div class="workflow-steps">
+                <div class="step">
+                    <div class="step-content">
+                        <strong>Setup & Query</strong>
+                        <p>Define available tools and provide the LLM with a user query. Example: <code>"What's the weather in New York?"</code></p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-content">
+                        <strong>Tool Selection</strong>
+                        <p>The LLM evaluates available tools based on their descriptions and selects the most appropriate one.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-content">
+                        <strong>Structured Output</strong>
+                        <p>The LLM generates a structured JSON request specifying the tool and parameters: <code>{"tool": "get_weather", "location": "New York"}</code></p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-content">
+                        <strong>Tool Execution</strong>
+                        <p>The application parses the request and executes the actual tool function, retrieving results.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-content">
+                        <strong>Result Passing</strong>
+                        <p>The tool's output is returned to the LLM, becoming part of its working memory.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-content">
+                        <strong>Final Response</strong>
+                        <p>The LLM uses the real-world data to generate a comprehensive, accurate response to the user.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mermaid">
+                <div class="mermaid-diagram">
+                    graph LR
+                    A["User Query"] --> B["LLM Evaluates<br/>Available Tools"]
+                    B --> C["Generate<br/>Structured<br/>Tool Call"]
+                    C --> D["Execute<br/>Tool Function"]
+                    D --> E["Get Result"]
+                    E --> F["Pass to LLM"]
+                    F --> G["Generate<br/>Final Response"]
+                    style A fill:#e0e7ff
+                    style B fill:#3b82f6,color:#fff
+                    style C fill:#3b82f6,color:#fff
+                    style D fill:#0891b2,color:#fff
+                    style E fill:#0891b2,color:#fff
+                    style F fill:#3b82f6,color:#fff
+                    style G fill:#d1fae5
+                </div>
+            </div>
+
+            <h3>Function Calling vs. Tool Calling</h3>
+            <p>These terms are often used interchangeably:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Aspect</th>
+                        <th>Function Calling</th>
+                        <th>Tool Calling</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Terminology</td>
+                        <td>Popularized by OpenAI</td>
+                        <td>General industry term</td>
+                    </tr>
+                    <tr>
+                        <td>Used By</td>
+                        <td>OpenAI API documentation</td>
+                        <td>Anthropic, LangChain, broader frameworks</td>
+                    </tr>
+                    <tr>
+                        <td>Technical Implementation</td>
+                        <td colspan="2" style="text-align: center;">Functionally identical - difference is primarily naming convention</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Two Approaches to Tool Calling</h3>
+
+            <div class="content-grid">
+                <div>
+                    <h4>Traditional Tool Calling</h4>
+                    <div class="real-world-example">
+                        <p><strong>How it works:</strong> The LLM recommends a tool, and the client application is responsible for executing it and handling errors.</p>
+                        <p style="margin-top: 10px;"><strong>Who runs the tool:</strong> Client application</p>
+                        <p style="margin-top: 10px;"><strong>Error handling:</strong> Application-level (prone to hallucinations)</p>
+                        <div style="margin-top: 15px; padding: 15px; background: rgba(220, 38, 38, 0.1); border-radius: 6px;">
+                            <strong style="color: var(--danger-color);">Risk:</strong> LLM can hallucinate or suggest incorrect tool calls
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4>Embedded Tool Calling</h4>
+                    <div class="success-box">
+                        <p><strong>How it works:</strong> A dedicated library/framework sits between the application and LLM, managing tool definition, execution, and error handling centrally.</p>
+                        <p style="margin-top: 10px;"><strong>Who runs the tool:</strong> Specialized library (e.g., LangChain)</p>
+                        <p style="margin-top: 10px;"><strong>Error handling:</strong> Library-level (prevents hallucinations, handles retries)</p>
+                        <div style="margin-top: 15px; padding: 15px; background: rgba(22, 163, 74, 0.1); border-radius: 6px;">
+                            <strong style="color: var(--success-color);">Benefit:</strong> Guarantees execution, prevents hallucinations, handles edge cases
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <strong>Best Practice:</strong> Always use embedded tool calling (like LangChain) for production systems. It significantly improves reliability, reduces hallucinations, and centralizes error handling.
+            </div>
+
+            <h3>Real-World Example: Weather Lookup</h3>
+
+            <div class="real-world-example">
+                <h4>Scenario: "What's the weather in Paris?"</h4>
+                
+                <div class="workflow-steps">
+                    <div class="step">
+                        <div class="step-content">
+                            <strong>Tool Definition</strong>
+                            <p>System defines <code>get_weather</code> tool with location parameter</p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-content">
+                            <strong>LLM Decision</strong>
+                            <p>LLM recognizes the query requires real-time weather data (outside its training)</p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-content">
+                            <strong>Tool Call</strong>
+                            <p><code>get_weather(location="Paris")</code></p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-content">
+                            <strong>Execution</strong>
+                            <p>Weather API returns: <code>{"temperature": 14, "condition": "Cloudy"}</code></p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-content">
+                            <strong>Final Response</strong>
+                            <p>"It's currently 14°C in Paris with cloudy conditions."</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Types of Tools in LangChain</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tool Type</th>
+                        <th>Input Style</th>
+                        <th>Use Case</th>
+                        <th>Complexity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Basic Tool</strong></td>
+                        <td>Single string input</td>
+                        <td>Simple functions with straightforward inputs</td>
+                        <td>Low</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Structured Tool</strong></td>
+                        <td>Multiple typed inputs, named arguments</td>
+                        <td>Complex functions with multiple parameters</td>
+                        <td>Medium</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Custom Tool</strong></td>
+                        <td>User-defined schema</td>
+                        <td>Specialized tools with custom logic</td>
+                        <td>High</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- AGENTS SECTION -->
+        <section id="agents">
+            <h2>🧠 AI Agents: The Complete System</h2>
+
+            <div class="highlight-box">
+                <strong>Definition:</strong> An AI Agent is a system that combines an LLM with tools, memory, and a reasoning/execution framework. Unlike a standalone LLM, an agent can make decisions, plan sequences of actions, and interact with the real world.
+            </div>
+
+            <h3>Core Architecture of an AI Agent</h3>
+
+            <div class="architecture-description">
+                <p>An effective AI agent consists of the following interconnected components:</p>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>🧠 Large Language Model (LLM)</h4>
+                    <p>The core reasoning engine. Interprets queries, decides which tools to use, and generates responses based on real-world data.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4>🔧 Tools</h4>
+                    <p>External functions and APIs the agent can invoke. These bridge the gap between the LLM and real-world systems.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4>💾 Memory</h4>
+                    <p>Stores and retrieves information to maintain context. Can range from simple in-RAM data to structured databases or vector stores.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4>⚙️ Executor</h4>
+                    <p>The orchestration engine that loops through Plan → Act → Observe cycles until reaching the goal.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4>🎯 Planner</h4>
+                    <p>Breaks down complex goals into actionable steps and determines the sequence of actions.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4>🌐 Connection to World</h4>
+                    <p>APIs, databases, operating systems, and external services that the agent interacts with through tools.</p>
+                </div>
+            </div>
+
+            <div class="mermaid">
+                <div class="mermaid-diagram">
+                    graph TB
+                    A["User Query"] --> B["AI Agent"]
+                    B --> C["LLM"]
+                    B --> D["Memory"]
+                    B --> E["Tools"]
+                    C --> F["Reasoning"]
+                    F --> G["Planning"]
+                    G --> H["Action Selection"]
+                    H --> E
+                    E --> I["External Systems"]
+                    I --> J["Results"]
+                    J --> D
+                    D --> C
+                    C --> K["Final Response"]
+                    style B fill:#3b82f6,color:#fff
+                    style C fill:#0891b2,color:#fff
+                    style D fill:#f59e0b,color:#fff
+                    style E fill:#10b981,color:#fff
+                    style I fill:#8b5cf6,color:#fff
+                </div>
+            </div>
+
+            <h3>Agent Execution Loop: The Reasoning Process</h3>
+
+            <div class="workflow-steps">
+                <div class="step">
+                    <div class="step-content">
+                        <strong>REASON (Observation Phase)</strong>
+                        <p>Agent examines the current state, reviews available tools, and reasons about what action to take next.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-content">
+                        <strong>ACT (Action Phase)</strong>
+                        <p>Based on reasoning, the agent calls an appropriate tool with specific parameters.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-content">
+                        <strong>OBSERVE (Observation Phase)</strong>
+                        <p>The tool returns results, which the agent observes and incorporates into its understanding.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-content">
+                        <strong>REPEAT or CONCLUDE</strong>
+                        <p>If the goal is reached, agent returns the final answer. Otherwise, loop back to REASON with updated context.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Complete Example: Research Agent</h3>
+
+            <div class="real-world-example">
+                <h4>Task: "Find the latest AI advancements in 2024 and summarize their impact"</h4>
+
+                <div class="workflow-steps">
+                    <div class="step">
+                        <div class="step-content">
+                            <strong>Step 1: REASON</strong>
+                            <p>Agent recognizes this is a research task requiring web search and summarization. Plans to search for recent AI news, evaluate sources, and synthesize findings.</p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-content">
+                            <strong>Step 2: ACT</strong>
+                            <p>Calls web_search tool with query: <code>"AI advancements 2024"</code></p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-content">
+                            <strong>Step 3: OBSERVE</strong>
+                            <p>Receives search results with multiple articles about transformer improvements, multimodal models, and efficiency gains.</p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-content">
+                            <strong>Step 4: REASON (2nd iteration)</strong>
+                            <p>Analyzes results, identifies key themes, decides to fetch details from credible sources using read_url tool.</p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-content">
+                            <strong>Step 5: ACT</strong>
+                            <p>Calls read_url tool for top 3 articles to get detailed information.</p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-content">
+                            <strong>Step 6: OBSERVE & CONCLUDE</strong>
+                            <p>Gathers all information, synthesizes insights, and returns comprehensive summary with verified sources.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Agent Types and Paradigms</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Agent Type</th>
+                        <th>Approach</th>
+                        <th>Best For</th>
+                        <th>Trade-offs</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>ReAct Agent</strong></td>
+                        <td>Reasoning + Acting in a cycle</td>
+                        <td>General-purpose tasks with reasoning</td>
+                        <td>Good balance of flexibility and interpretability</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Zero-Shot Agent</strong></td>
+                        <td>Uses zero-shot reasoning without examples</td>
+                        <td>Novel, unseen problems</td>
+                        <td>Less reliable, more exploration</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Structured Agent</strong></td>
+                        <td>Uses predefined templates and structures</td>
+                        <td>Well-defined task domains</td>
+                        <td>More predictable, less flexible</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tool-Using Agent</strong></td>
+                        <td>Heavily optimized for tool selection</td>
+                        <td>Multi-tool environments</td>
+                        <td>Better tool orchestration, higher cost</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>From LLM to Agent: The Evolution</h3>
+
+            <div class="mermaid">
+                <div class="mermaid-diagram">
+                    graph LR
+                    A["Monolithic<br/>LLM"] -->|Add Tools| B["Tool-Using<br/>LLM"]
+                    B -->|Add Memory| C["Contextual<br/>LLM"]
+                    C -->|Add Reasoning| D["Reasoning<br/>LLM"]
+                    D -->|Add Execution Loop| E["Autonomous<br/>Agent"]
+                    style A fill:#ff6b6b,color:#fff
+                    style B fill:#feca57,color:#000
+                    style C fill:#48dbfb,color:#000
+                    style D fill:#1dd1a1,color:#fff
+                    style E fill:#5f27cd,color:#fff
+                </div>
+            </div>
+        </section>
+
+        <!-- LANGCHAIN SECTION -->
+        <section id="langchain">
+            <h2>⛓️ LangChain: Building Agents in Practice</h2>
+
+            <div class="highlight-box">
+                <strong>What is LangChain?</strong>
+                <p>LangChain is a framework that simplifies building complex AI applications with LLMs. It provides abstractions for tools, agents, memory, and composable chains, making it easier to create production-ready AI systems.</p>
+            </div>
+
+            <h3>LangChain Tool Creation Methods</h3>
+
+            <p>LangChain provides multiple ways to create tools, each with different tradeoffs:</p>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>1️⃣ Tool Class (Legacy)</h4>
+                    <p>For simple tools with single string inputs. Primarily for backward compatibility.</p>
+                    <p style="margin-top: 10px; color: var(--text-secondary); font-size: 0.9em;"><strong>When to use:</strong> Simple, single-input tools</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4>2️⃣ @tool Decorator (Modern)</h4>
+                    <p>Recommended approach. Automatically creates StructuredTool from a Python function.</p>
+                    <p style="margin-top: 10px; color: var(--text-secondary); font-size: 0.9em;"><strong>When to use:</strong> Most common use cases</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4>3️⃣ StructuredTool (Advanced)</h4>
+                    <p>Maximum flexibility. Supports complex inputs, multiple parameters, async operations.</p>
+                    <p style="margin-top: 10px; color: var(--text-secondary); font-size: 0.9em;"><strong>When to use:</strong> Complex tools with typed inputs</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4>4️⃣ BaseTool Subclassing (Expert)</h4>
+                    <p>Complete control over tool behavior and lifecycle.</p>
+                    <p style="margin-top: 10px; color: var(--text-secondary); font-size: 0.9em;"><strong>When to use:</strong> Custom tool behaviors</p>
+                </div>
+            </div>
+
+            <h3>Creating Tools with @tool Decorator</h3>
+
+            <div class="code-section">
+                <div class="code-label">Python: Simple Tool with @tool Decorator</div>
+                <pre><code>from langchain.tools import tool
+
+@tool
+def calculate_compound_interest(
+    principal: float, 
+    rate: float, 
+    years: int
+) -> str:
+    """
+    Calculate compound interest.
+    
+    Args:
+        principal: Initial amount in dollars
+        rate: Annual interest rate as percentage
+        years: Time period in years
+    
+    Returns:
+        String with calculated amount and interest earned
+    """
+    amount = principal * (1 + rate/100) ** years
+    interest = amount - principal
+    return f"Final Amount: ${amount:.2f}, Interest Earned: ${interest:.2f}"
+
+
+# Usage
+result = calculate_compound_interest(
+    principal=10000,
+    rate=5,
+    years=10
+)
+print(result)
+# Output: Final Amount: $16288.95, Interest Earned: $6288.95</code></pre>
+            </div>
+
+            <h3>Advanced Tool: Structured Tool with Multiple Inputs</h3>
+
+            <div class="code-section">
+                <div class="code-label">Python: Structured Tool for Complex Operations</div>
+                <pre><code>from langchain.tools import StructuredTool
+from pydantic import BaseModel, Field
+
+class TemperatureInput(BaseModel):
+    celsius: float = Field(
+        description="Temperature in Celsius"
+    )
+    target_unit: str = Field(
+        description="Target unit: 'fahrenheit' or 'kelvin'"
+    )
+
+def convert_temperature(
+    celsius: float, 
+    target_unit: str
+) -> dict:
+    """Convert temperature between units."""
+    if target_unit.lower() == 'fahrenheit':
+        result = (celsius * 9/5) + 32
+        return {
+            "value": result,
+            "unit": "°F",
+            "description": f"{celsius}°C = {result:.2f}°F"
+        }
+    elif target_unit.lower() == 'kelvin':
+        result = celsius + 273.15
+        return {
+            "value": result,
+            "unit": "K",
+            "description": f"{celsius}°C = {result:.2f}K"
+        }
+    else:
+        return {"error": "Invalid target unit"}
+
+# Create structured tool
+temp_tool = StructuredTool.from_function(
+    func=convert_temperature,
+    name="temperature_converter",
+    description="Convert temperature between Celsius, Fahrenheit, and Kelvin",
+    args_schema=TemperatureInput
+)</code></pre>
+            </div>
+
+            <h3>Creating an Agent with LangGraph</h3>
+
+            <div class="code-section">
+                <div class="code-label">Python: Building a ReAct Agent with LangGraph</div>
+                <pre><code>from langchain_openai import ChatOpenAI
+from langchain.tools import tool
+from langgraph.prebuilt import create_react_agent
+
+# Define tools
+@tool
+def get_current_time() -> str:
+    """Get the current time."""
+    from datetime import datetime
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+@tool
+def calculate_sum(numbers: list) -> int:
+    """Sum a list of numbers."""
+    return sum(numbers)
+
+# Initialize LLM
+llm = ChatOpenAI(
+    model="gpt-4",
+    temperature=0
+)
+
+# Create agent
+tools = [get_current_time, calculate_sum]
+agent = create_react_agent(
+    model=llm,
+    tools=tools
+)
+
+# Run agent
+result = agent.invoke({
+    "messages": [(
+        "human",
+        "What time is it? Then add 10, 20, and 30."
+    )]
+})
+
+print(result["messages"][-1].content)</code></pre>
+            </div>
+
+            <h3>Multi-Tool Orchestration: Mathematical Toolkit</h3>
+
+            <div class="code-section">
+                <div class="code-label">Python: Complete Agent with Multiple Tools</div>
+                <pre><code>from langchain.tools import tool
+from langgraph.prebuilt import create_react_agent
+from langchain_openai import ChatOpenAI
+
+# Addition tool
+@tool
+def add_numbers(numbers: list) -> int:
+    """Add a list of numbers together."""
+    return sum(numbers)
+
+# Subtraction tool
+@tool
+def subtract_numbers(
+    first: float, 
+    *rest: float
+) -> float:
+    """
+    Subtract numbers successively.
+    First number minus all subsequent numbers.
+    """
+    result = first
+    for num in rest:
+        result -= num
+    return result
+
+# Multiplication tool
+@tool
+def multiply_numbers(numbers: list) -> float:
+    """Multiply a list of numbers together."""
+    result = 1
+    for num in numbers:
+        result *= num
+    return result
+
+# Division tool
+@tool
+def divide_numbers(
+    dividend: float, 
+    divisor: float
+) -> dict:
+    """
+    Divide two numbers safely.
+    
+    Args:
+        dividend: The number to divide
+        divisor: The number to divide by
+    
+    Returns:
+        Dictionary with result and verification
+    """
+    if divisor == 0:
+        return {
+            "error": "Cannot divide by zero",
+            "result": None
+        }
+    result = dividend / divisor
+    return {
+        "quotient": result,
+        "verification": f"{result} * {divisor} = {result * divisor}",
+        "result": result
+    }
+
+# Initialize LLM and create agent
+llm = ChatOpenAI(model="gpt-4", temperature=0)
+tools = [
+    add_numbers,
+    subtract_numbers,
+    multiply_numbers,
+    divide_numbers
+]
+
+agent = create_react_agent(model=llm, tools=tools)
+
+# Test queries
+queries = [
+    "Add 15, 25, and 10",
+    "Subtract 100 from 500",
+    "Multiply 7 by 8 by 2",
+    "Divide 144 by 12"
+]
+
+for query in queries:
+    print(f"\nQuery: {query}")
+    result = agent.invoke({
+        "messages": [("human", query)]
+    })
+    print(f"Response: {result['messages'][-1].content}")</code></pre>
+            </div>
+
+            <h3>LCEL (LangChain Expression Language)</h3>
+
+            <p>LCEL is a declarative way to build chains by connecting components using the pipe operator (<code>|</code>).</p>
+
+            <div class="code-section">
+                <div class="code-label">Python: Building Chains with LCEL</div>
+                <pre><code>from langchain_openai import ChatOpenAI
+from langchain.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+
+# Initialize components
+llm = ChatOpenAI(model="gpt-4")
+prompt = ChatPromptTemplate.from_template(
+    "Explain {topic} in simple terms suitable for {audience}"
+)
+parser = StrOutputParser()
+
+# Create chain using LCEL pipe operator
+chain = prompt | llm | parser
+
+# Execute chain
+result = chain.invoke({
+    "topic": "machine learning",
+    "audience": "high school students"
+})
+
+print(result)
+
+# More complex chain with multiple steps
+from langchain.prompts import ChatPromptTemplate
+
+refinement_prompt = ChatPromptTemplate.from_template(
+    "Refine this explanation to be 50% shorter:\n{explanation}"
+)
+
+complex_chain = (
+    prompt 
+    | llm 
+    | parser 
+    | refinement_prompt 
+    | llm 
+    | parser
+)
+
+refined = complex_chain.invoke({
+    "topic": "neural networks",
+    "audience": "beginners",
+    "explanation": ""
+})
+
+print(refined)</code></pre>
+            </div>
+
+            <h3>Built-in Tools in LangChain</h3>
+
+            <p>LangChain provides ready-to-use tools across multiple categories:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Tools</th>
+                        <th>Use Cases</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Search</strong></td>
+                        <td>SerpAPI, Google Search, Tavily, Wikipedia</td>
+                        <td>Web search, knowledge base lookup</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Computation</strong></td>
+                        <td>Python REPL, LLMMath, Pandas</td>
+                        <td>Calculations, data analysis</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Web/API</strong></td>
+                        <td>Requests, Playwright Browser</td>
+                        <td>HTTP requests, web scraping</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Productivity</strong></td>
+                        <td>Gmail, Slack, GitHub, Google Calendar</td>
+                        <td>Email, messaging, task management</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Files/Documents</strong></td>
+                        <td>FileSystem, Google Drive, VectorStoreQA</td>
+                        <td>File operations, document search</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Finance</strong></td>
+                        <td>Yahoo Finance, Stripe, Polygon IO</td>
+                        <td>Market data, payments</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="code-section">
+                <div class="code-label">Python: Using Built-in LangChain Tools</div>
+                <pre><code>from langchain.tools import Tool
+from langchain_community.tools import DuckDuckGoSearchRun
+from langchain_community.tools.wikipedia.tool import WikipediaQueryRun
+from langchain_community.utilities.wikipedia import WikipediaAPIWrapper
+
+# Wikipedia tool
+wikipedia = WikipediaQueryRun(
+    api_wrapper=WikipediaAPIWrapper()
+)
+
+# DuckDuckGo search
+search = DuckDuckGoSearchRun()
+
+# Use in agent
+from langgraph.prebuilt import create_react_agent
+from langchain_openai import ChatOpenAI
+
+llm = ChatOpenAI(model="gpt-4", temperature=0)
+tools = [wikipedia, search]
+
+agent = create_react_agent(model=llm, tools=tools)
+
+result = agent.invoke({
+    "messages": [(
+        "human",
+        "Find information about quantum computing and summarize it"
+    )]
+})
+
+print(result["messages"][-1].content)</code></pre>
+            </div>
+        </section>
+
+        <!-- IMPLEMENTATION SECTION -->
+        <section id="implementation">
+            <h2>🚀 Real-World Implementation</h2>
+
+            <h3>Complete Example: Research Agent for Data Analysis</h3>
+
+            <div class="real-world-example">
+                <h4>Scenario: Building a Research Agent that Finds and Analyzes Information</h4>
+                <p>This agent can search the web, fetch articles, analyze data, and provide summaries.</p>
+            </div>
+
+            <div class="code-section">
+                <div class="code-label">Python: Complete Research Agent Implementation</div>
+                <pre><code>import json
+from langchain_openai import ChatOpenAI
+from langchain.tools import tool
+from langgraph.prebuilt import create_react_agent
+from typing import Optional
+
+# Tool 1: Web search
+@tool
+def web_search(query: str) -> dict:
+    """
+    Search the web for information.
+    
+    Args:
+        query: Search query string
+    
+    Returns:
+        Dictionary with search results
+    """
+    # Simulated web search (in production, use API)
+    results = {
+        "query": query,
+        "results": [
+            {
+                "title": "Article 1",
+                "url": "https://example.com/1",
+                "snippet": "Relevant information about query..."
+            },
+            {
+                "title": "Article 2",
+                "url": "https://example.com/2",
+                "snippet": "More relevant findings..."
+            }
+        ],
+        "total_results": 2
+    }
+    return results
+
+# Tool 2: Data analysis
+@tool
+def analyze_data(data_points: list, analysis_type: str) -> dict:
+    """
+    Perform statistical analysis on data.
+    
+    Args:
+        data_points: List of numeric values
+        analysis_type: Type of analysis (mean, median, stdev)
+    
+    Returns:
+        Analysis results dictionary
+    """
+    import statistics
+    
+    if not data_points:
+        return {"error": "No data provided"}
+    
+    results = {
+        "count": len(data_points),
+        "min": min(data_points),
+        "max": max(data_points),
+    }
+    
+    if analysis_type in ["mean", "all"]:
+        results["mean"] = statistics.mean(data_points)
+    
+    if analysis_type in ["median", "all"]:
+        results["median"] = statistics.median(data_points)
+    
+    if len(data_points) > 1 and analysis_type in ["stdev", "all"]:
+        results["stdev"] = statistics.stdev(data_points)
+    
+    return results
+
+# Tool 3: Information synthesis
+@tool
+def synthesize_findings(findings: list) -> str:
+    """
+    Synthesize multiple findings into a summary.
+    
+    Args:
+        findings: List of findings to synthesize
+    
+    Returns:
+        Synthesized summary string
+    """
+    if not findings:
+        return "No findings to synthesize"
+    
+    summary = "Summary of findings:\n"
+    for i, finding in enumerate(findings, 1):
+        summary += f"{i}. {finding}\n"
+    
+    return summary
+
+# Initialize agent
+llm = ChatOpenAI(
+    model="gpt-4",
+    temperature=0,
+    max_tokens=2000
+)
+
+tools = [
+    web_search,
+    analyze_data,
+    synthesize_findings
+]
+
+research_agent = create_react_agent(
+    model=llm,
+    tools=tools
+)
+
+# Run research task
+task = "Research current trends in AI and analyze their impact"
+
+print(f"Task: {task}\n")
+
+response = research_agent.invoke({
+    "messages": [("human", task)]
+})
+
+print("Agent Response:")
+print(response["messages"][-1].content)</code></pre>
+            </div>
+
+            <h3>Agent Design Patterns</h3>
+
+            <h4>Pattern 1: Sequential Processing</h4>
+            <p>Agent processes tasks in a specific sequence.</p>
+
+            <div class="mermaid">
+                <div class="mermaid-diagram">
+                    graph LR
+                    A["Task 1"] --> B["Task 2"]
+                    B --> C["Task 3"]
+                    C --> D["Aggregate Results"]
+                    style A fill:#3b82f6,color:#fff
+                    style B fill:#3b82f6,color:#fff
+                    style C fill:#3b82f6,color:#fff
+                    style D fill:#10b981,color:#fff
+                </div>
+            </div>
+
+            <h4>Pattern 2: Conditional Branching</h4>
+            <p>Agent chooses different paths based on conditions.</p>
+
+            <div class="mermaid">
+                <div class="mermaid-diagram">
+                    graph TB
+                    A["Evaluate Condition"] --> B{Type of Data?}
+                    B -->|Numeric| C["Statistical Analysis"]
+                    B -->|Text| D["NLP Processing"]
+                    B -->|Complex| E["Multi-step Analysis"]
+                    C --> F["Results"]
+                    D --> F
+                    E --> F
+                    style B fill:#f59e0b,color:#fff
+                    style C fill:#3b82f6,color:#fff
+                    style D fill:#3b82f6,color:#fff
+                    style E fill:#3b82f6,color:#fff
+                </div>
+            </div>
+
+            <h4>Pattern 3: Iterative Refinement</h4>
+            <p>Agent repeatedly improves results until quality threshold is met.</p>
+
+            <div class="mermaid">
+                <div class="mermaid-diagram">
+                    graph TB
+                    A["Generate Initial Result"] --> B["Evaluate Quality"]
+                    B --> C{Meets Threshold?}
+                    C -->|No| D["Refine Result"]
+                    D --> B
+                    C -->|Yes| E["Return Result"]
+                    style B fill:#f59e0b,color:#fff
+                    style C fill:#f59e0b,color:#fff
+                    style D fill:#3b82f6,color:#fff
+                </div>
+            </div>
+
+            <h3>State Management in Agents</h3>
+
+            <div class="code-section">
+                <div class="code-label">Python: Agent State Tracking</div>
+                <pre><code>from langchain_core.messages import HumanMessage, AIMessage
+from typing import Any, Dict, List
+
+class AgentState:
+    """Maintain agent state across interactions."""
+    
+    def __init__(self):
+        self.conversation_history: List[Dict] = []
+        self.tool_calls_made: List[Dict] = []
+        self.results_cache: Dict[str, Any] = {}
+        self.reasoning_trace: List[str] = []
+    
+    def add_message(
+        self, 
+        role: str, 
+        content: str
+    ):
+        """Add message to conversation history."""
+        self.conversation_history.append({
+            "role": role,
+            "content": content,
+            "timestamp": self._get_timestamp()
+        })
+    
+    def record_tool_call(
+        self, 
+        tool_name: str, 
+        parameters: Dict,
+        result: Any
+    ):
+        """Record tool invocation and result."""
+        self.tool_calls_made.append({
+            "tool": tool_name,
+            "params": parameters,
+            "result": result,
+            "timestamp": self._get_timestamp()
+        })
+    
+    def add_reasoning_step(self, reasoning: str):
+        """Add reasoning step to trace."""
+        self.reasoning_trace.append(reasoning)
+    
+    def cache_result(self, key: str, value: Any):
+        """Cache results for reuse."""
+        self.results_cache[key] = value
+    
+    def get_context(self) -> Dict:
+        """Get current context snapshot."""
+        return {
+            "conversation_length": len(self.conversation_history),
+            "tools_used": len(self.tool_calls_made),
+            "cache_size": len(self.results_cache),
+            "reasoning_steps": len(self.reasoning_trace)
+        }
+    
+    @staticmethod
+    def _get_timestamp():
+        from datetime import datetime
+        return datetime.now().isoformat()
+
+# Usage
+state = AgentState()
+
+state.add_message("human", "Calculate 25 * 4")
+state.add_reasoning_step("Need to multiply two numbers")
+state.record_tool_call(
+    "multiply",
+    {"a": 25, "b": 4},
+    100
+)
+
+print("Agent State Context:", state.get_context())</code></pre>
+            </div>
+        </section>
+
+        <!-- BEST PRACTICES SECTION -->
+        <section id="best-practices">
+            <h2>⭐ Best Practices for AI Agents</h2>
+
+            <h3>When to Use Agents (and When Not To)</h3>
+
+            <div class="content-grid">
+                <div>
+                    <h4 style="color: var(--success-color);">✓ Use Agents For:</h4>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="padding: 10px 0; padding-left: 25px; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--success-color);">✓</span>
+                            Complex, open-ended reasoning
+                        </li>
+                        <li style="padding: 10px 0; padding-left: 25px; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--success-color);">✓</span>
+                            Tasks with uncertain solution paths
+                        </li>
+                        <li style="padding: 10px 0; padding-left: 25px; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--success-color);">✓</span>
+                            High-value tasks justifying exploration cost
+                        </li>
+                        <li style="padding: 10px 0; padding-left: 25px; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--success-color);">✓</span>
+                            Real-time adaptation requirements
+                        </li>
+                        <li style="padding: 10px 0; padding-left: 25px; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--success-color);">✓</span>
+                            Multi-step problem solving
+                        </li>
+                        <li style="padding: 10px 0; padding-left: 25px; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--success-color);">✓</span>
+                            Learning from feedback
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 style="color: var(--danger-color);">✗ Avoid Agents For:</h4>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="padding: 10px 0; padding-left: 25px; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--danger-color);">✗</span>
+                            Simple, repetitive tasks
+                        </li>
+                        <li style="padding: 10px 0; padding-left: 25px; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--danger-color);">✗</span>
+                            Zero-error critical systems
+                        </li>
+                        <li style="padding: 10px 0; padding-left: 25px; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--danger-color);">✗</span>
+                            High-volume, low-margin operations
+                        </li>
+                        <li style="padding: 10px 0; padding-left: 25px; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--danger-color);">✗</span>
+                            Real-time, latency-critical applications
+                        </li>
+                        <li style="padding: 10px 0; padding-left: 25px; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--danger-color);">✗</span>
+                            Heavily regulated deterministic tasks
+                        </li>
+                        <li style="padding: 10px 0; padding-left: 25px; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--danger-color);">✗</span>
+                            Medical or safety-critical decisions
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Risk Management Framework</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Risk Level</th>
+                        <th>Characteristics</th>
+                        <th>Mitigation Strategy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong style="color: var(--danger-color);">High-Stakes & Difficult to Notice</strong></td>
+                        <td>Errors not immediately visible, significant impact</td>
+                        <td>Human review, multiple validation layers, extensive testing</td>
+                    </tr>
+                    <tr>
+                        <td><strong style="color: var(--warning-color);">High-Stakes & Visible</strong></td>
+                        <td>Errors are obvious, significant impact when they occur</td>
+                        <td>Automated checks, oversight mechanisms, monitoring</td>
+                    </tr>
+                    <tr>
+                        <td><strong style="color: var(--success-color);">Low-Stakes</strong></td>
+                        <td>Errors are minor, reversible, low impact</td>
+                        <td>Basic monitoring, user feedback, lightweight validation</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Agent Monitoring and Observability</h3>
+
+            <div class="code-section">
+                <div class="code-label">Python: Monitoring Agent Performance</div>
+                <pre><code>import time
+import json
+from typing import Any, Dict
+from datetime import datetime
+
+class AgentMonitor:
+    """Monitor and log agent performance metrics."""
+    
+    def __init__(self):
+        self.metrics = {
+            "total_runs": 0,
+            "successful_runs": 0,
+            "failed_runs": 0,
+            "total_time": 0,
+            "total_tokens": 0,
+            "tool_calls": {}
+        }
+        self.logs = []
+    
+    def log_run(
+        self,
+        task: str,
+        status: str,
+        duration: float,
+        tokens_used: int,
+        tool_calls: list,
+        error: str = None
+    ):
+        """Log a single agent run."""
+        self.metrics["total_runs"] += 1
+        
+        if status == "success":
+            self.metrics["successful_runs"] += 1
+        else:
+            self.metrics["failed_runs"] += 1
+        
+        self.metrics["total_time"] += duration
+        self.metrics["total_tokens"] += tokens_used
+        
+        # Track tool usage
+        for tool in tool_calls:
+            tool_name = tool.get("name", "unknown")
+            self.metrics["tool_calls"][tool_name] = \
+                self.metrics["tool_calls"].get(tool_name, 0) + 1
+        
+        # Create detailed log entry
+        log_entry = {
+            "timestamp": datetime.now().isoformat(),
+            "task": task,
+            "status": status,
+            "duration_seconds": duration,
+            "tokens_used": tokens_used,
+            "tool_calls_count": len(tool_calls),
+            "error": error
+        }
+        self.logs.append(log_entry)
+    
+    def get_report(self) -> Dict[str, Any]:
+        """Generate performance report."""
+        success_rate = (
+            self.metrics["successful_runs"] / 
+            self.metrics["total_runs"] * 100
+            if self.metrics["total_runs"] > 0 else 0
+        )
+        
+        avg_time = (
+            self.metrics["total_time"] / 
+            self.metrics["total_runs"]
+            if self.metrics["total_runs"] > 0 else 0
+        )
+        
+        return {
+            "summary": {
+                "total_runs": self.metrics["total_runs"],
+                "success_rate": f"{success_rate:.1f}%",
+                "average_duration": f"{avg_time:.2f}s",
+                "total_tokens": self.metrics["total_tokens"]
+            },
+            "tool_usage": self.metrics["tool_calls"],
+            "recent_logs": self.logs[-10:]  # Last 10 runs
+        }
+    
+    def print_report(self):
+        """Print formatted performance report."""
+        report = self.get_report()
+        print("\n" + "="*50)
+        print("AGENT PERFORMANCE REPORT")
+        print("="*50)
+        
+        print("\nSummary:")
+        for key, value in report["summary"].items():
+            print(f"  {key}: {value}")
+        
+        print("\nTool Usage:")
+        for tool, count in report["tool_usage"].items():
+            print(f"  {tool}: {count} calls")
+
+# Usage
+monitor = AgentMonitor()
+
+# Simulate agent runs
+monitor.log_run(
+    task="Search and analyze",
+    status="success",
+    duration=5.23,
+    tokens_used=1250,
+    tool_calls=[
+        {"name": "web_search"},
+        {"name": "analyze_data"}
+    ]
+)
+
+monitor.log_run(
+    task="Data processing",
+    status="success",
+    duration=3.15,
+    tokens_used=890,
+    tool_calls=[
+        {"name": "analyze_data"},
+        {"name": "synthesize"}
+    ]
+)
+
+monitor.print_report()</code></pre>
+            </div>
+
+            <h3>Error Handling and Recovery</h3>
+
+            <div class="code-section">
+                <div class="code-label">Python: Robust Error Handling in Agents</div>
+                <pre><code>from typing import Optional, Dict, Any
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+class RobustAgent:
+    """Agent with comprehensive error handling."""
+    
+    def __init__(self, max_retries: int = 3):
+        self.max_retries = max_retries
+        self.error_history = []
+    
+    def execute_with_retry(
+        self,
+        task: str,
+        tool_name: str,
+        parameters: Dict
+    ) -> Optional[Any]:
+        """
+        Execute a tool with retry logic.
+        
+        Args:
+            task: Description of the task
+            tool_name: Name of the tool to execute
+            parameters: Tool parameters
+        
+        Returns:
+            Tool result or None if all retries exhausted
+        """
+        for attempt in range(1, self.max_retries + 1):
+            try:
+                logger.info(
+                    f"Attempt {attempt}/{self.max_retries}: "
+                    f"Executing {tool_name}"
+                )
+                
+                # Simulate tool execution
+                result = self._call_tool(
+                    tool_name,
+                    parameters
+                )
+                
+                logger.info(f"Success: {tool_name}")
+                return result
+                
+            except Exception as e:
+                logger.warning(
+                    f"Attempt {attempt} failed: {str(e)}"
+                )
+                
+                self.error_history.append({
+                    "attempt": attempt,
+                    "tool": tool_name,
+                    "error": str(e),
+                    "recoverable": self._is_recoverable(e)
+                })
+                
+                if not self._is_recoverable(e):
+                    logger.error(
+                        f"Non-recoverable error: {str(e)}"
+                    )
+                    break
+                
+                # Exponential backoff
+                wait_time = 2 ** (attempt - 1)
+                logger.info(f"Retrying in {wait_time}s...")
+                time.sleep(wait_time)
+        
+        logger.error(
+            f"Failed after {self.max_retries} attempts: {task}"
+        )
+        return None
+    
+    def _call_tool(
+        self,
+        tool_name: str,
+        parameters: Dict
+    ) -> Dict:
+        """Simulate tool execution."""
+        # In real implementation, this calls actual tools
+        return {"result": "success", "data": {}}
+    
+    @staticmethod
+    def _is_recoverable(error: Exception) -> bool:
+        """Determine if error is recoverable."""
+        recoverable_errors = (
+            TimeoutError,
+            ConnectionError,
+            OSError
+        )
+        return isinstance(error, recoverable_errors)
+
+# Usage
+agent = RobustAgent(max_retries=3)
+
+result = agent.execute_with_retry(
+    task="Fetch data from API",
+    tool_name="api_call",
+    parameters={"endpoint": "/data"}
+)
+
+print(f"Result: {result}")
+print(f"Errors encountered: {len(agent.error_history)}")</code></pre>
+            </div>
+
+            <h3>Implementation Checklist</h3>
+
+            <div class="implementation-checklist">
+                <h4>Before Deployment</h4>
+                <ul>
+                    <li>Define clear success criteria and KPIs</li>
+                    <li>Test agent on diverse scenarios (3-5 minimum skills)</li>
+                    <li>Implement comprehensive logging and monitoring</li>
+                    <li>Set up error handling and recovery mechanisms</li>
+                    <li>Define tool security boundaries and access control</li>
+                    <li>Create fallback procedures for failures</li>
+                    <li>Document all tool schemas and capabilities</li>
+                    <li>Perform load testing and stress testing</li>
+                </ul>
+            </div>
+
+            <div class="implementation-checklist">
+                <h4>Phased Deployment Strategy</h4>
+                <ul>
+                    <li>Phase 1: Proof of Concept (Low-risk, reversible tasks)</li>
+                    <li>Phase 2: Pilot Program (Moderate-risk, supervised)</li>
+                    <li>Phase 3: Staged Rollout (Monitored expansion)</li>
+                    <li>Phase 4: Production Scaling (Full deployment)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- FUTURE SCOPE SECTION -->
+        <section id="future">
+            <h2>🔮 Future of AI Agents</h2>
+
+            <h3>Current Challenges</h3>
+
+            <div class="feature-grid">
+                <div class="feature-card" style="border-color: var(--danger-color);">
+                    <h4 style="color: var(--danger-color);">Reasoning Inconsistency</h4>
+                    <p>Agents may succeed on one task but fail on similar ones, making behavior unpredictable.</p>
+                </div>
+
+                <div class="feature-card" style="border-color: var(--danger-color);">
+                    <h4 style="color: var(--danger-color);">Unpredictable Costs</h4>
+                    <p>Token usage can spike dramatically depending on task complexity and exploration depth.</p>
+                </div>
+
+                <div class="feature-card" style="border-color: var(--danger-color);">
+                    <h4 style="color: var(--danger-color);">Tool Integration Issues</h4>
+                    <p>Agents need well-integrated tools and stable APIs; integration failures can cascade.</p>
+                </div>
+
+                <div class="feature-card" style="border-color: var(--danger-color);">
+                    <h4 style="color: var(--danger-color);">Hallucinations</h4>
+                    <p>LLMs can confidently generate incorrect information, especially about tool capabilities.</p>
+                </div>
+
+                <div class="feature-card" style="border-color: var(--danger-color);">
+                    <h4 style="color: var(--danger-color);">Limited Causality Understanding</h4>
+                    <p>Agents struggle with causal relationships and long-term consequences of actions.</p>
+                </div>
+
+                <div class="feature-card" style="border-color: var(--danger-color);">
+                    <h4 style="color: var(--danger-color);">Context Window Limits</h4>
+                    <p>Finite context windows restrict long-term memory and complex reasoning chains.</p>
+                </div>
+            </div>
+
+            <h3>Expected Improvements</h3>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>More Consistent Reasoning</h4>
+                    <p>Future models will improve reasoning reliability through better training techniques and architectural improvements. Expect agents that succeed more consistently on similar tasks.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <h4>Smarter, Leaner Architectures</h4>
+                    <p>More efficient agents that require fewer tokens and computation. Better model design and pruning techniques will reduce costs while maintaining capabilities.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <h4>Advanced Monitoring & Error Detection</h4>
+                    <p>Built-in anomaly detection and error correction mechanisms. Agents will automatically identify and correct mistakes before they impact users.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <h4>Improved Tool Composition</h4>
+                    <p>Better frameworks for tool integration and composition. Standardized protocols (like MCP from Anthropic) will simplify tool management at scale.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <h4>Enhanced Memory Systems</h4>
+                    <p>More sophisticated memory architectures supporting long-term learning and context preservation. Agents will better maintain state across conversations.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <h4>Multimodal Agent Capabilities</h4>
+                    <p>Agents that seamlessly handle text, images, audio, and video. True multimodal reasoning for complex real-world tasks.</p>
+                </div>
+            </div>
+
+            <h3>Emerging Standards and Protocols</h3>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>Model Context Protocol (MCP)</h4>
+                    <p><strong>By Anthropic</strong></p>
+                    <p>Open standard for safe, standardized tool integration between AI models and external systems. Enables easier scaling and governance.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4>Agent Communication Protocol (ACP)</h4>
+                    <p><strong>By IBM</strong></p>
+                    <p>Framework for agents to communicate and collaborate. Supports multi-agent systems with coordination and negotiation.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4>OpenAI Function Calling Standard</h4>
+                    <p><strong>De Facto Industry Standard</strong></p>
+                    <p>Widely adopted interface for LLM function calling. Most frameworks and tools support this standard.</p>
+                </div>
+            </div>
+
+            <h3>The Future Vision: Compound AI Systems</h3>
+
+            <p>The future of AI isn't monolithic—it's compound AI systems that combine:</p>
+
+            <div class="mermaid">
+                <div class="mermaid-diagram">
+                    graph TB
+                    A["Future AI System"]
+                    A --> B["Multiple Specialized Models"]
+                    A --> C["Advanced Tool Integration"]
+                    A --> D["Persistent Memory Systems"]
+                    A --> E["Real-time Learning"]
+                    A --> F["Multi-Agent Coordination"]
+                    
+                    B --> B1["Large Reasoners"]
+                    B --> B2["Specialized Experts"]
+                    B --> B3["Mixture of Experts"]
+                    
+                    C --> C1["API Standards"]
+                    C --> C2["Seamless Integration"]
+                    
+                    D --> D1["Vector Stores"]
+                    D --> D2["Knowledge Graphs"]
+                    
+                    E --> E1["Feedback Loops"]
+                    E --> E2["Continuous Improvement"]
+                    
+                    F --> F1["Agent Teams"]
+                    F --> F2["Collaborative Problem Solving"]
+                    
+                    style A fill:#5f27cd,color:#fff,stroke:#2e1a47,stroke-width:3px
+                    style B fill:#3b82f6,color:#fff
+                    style C fill:#3b82f6,color:#fff
+                    style D fill:#3b82f6,color:#fff
+                    style E fill:#3b82f6,color:#fff
+                    style F fill:#3b82f6,color:#fff
+                </div>
+            </div>
+
+            <h3>Key Takeaways for the Future</h3>
+
+            <div class="success-box">
+                <h4 style="margin-top: 0; color: var(--success-color);">The Path Forward</h4>
+                <ul style="margin: 15px 0; padding-left: 25px;">
+                    <li><strong>Agents are not a replacement for systems design</strong>—they're a tool that, when used thoughtfully, solves genuinely hard problems</li>
+                    <li><strong>Start with the simplest solution</strong> that solves your problem. Use LLM features for atomic tasks, workflows for structured processes, agents for complex reasoning</li>
+                    <li><strong>Design for safety and monitoring</strong> from day one. Even advanced agents need human oversight and validation</li>
+                    <li><strong>Invest in observability</strong>. Understanding agent behavior is crucial for trust and improvement</li>
+                    <li><strong>Stay updated</strong> on standards and best practices. The field is evolving rapidly</li>
+                    <li><strong>Think about cost</strong>. Agents are more expensive than workflows—ensure the ROI justifies the investment</li>
+                </ul>
+            </div>
+
+            <h3>Resources for Continued Learning</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Resource</th>
+                        <th>Focus</th>
+                        <th>Best For</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>LangChain Documentation</strong></td>
+                        <td>Framework and patterns</td>
+                        <td>Practical implementation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>LangGraph</strong></td>
+                        <td>Graph-based agent orchestration</td>
+                        <td>Complex multi-step agents</td>
+                    </tr>
+                    <tr>
+                        <td><strong>OpenAI Cookbook</strong></td>
+                        <td>Real-world examples</td>
+                        <td>Best practices and patterns</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Anthropic Documentation</strong></td>
+                        <td>Model Context Protocol (MCP)</td>
+                        <td>Standardized tool integration</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ArXiv Papers</strong></td>
+                        <td>Research and theory</td>
+                        <td>Understanding cutting-edge approaches</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- CONCLUSION -->
+        <section style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); color: white;">
+            <h2 style="color: white; border-bottom-color: rgba(255,255,255,0.3);">✨ Conclusion</h2>
+            
+            <p style="color: rgba(255,255,255,0.95); font-size: 1.1em; text-align: center; margin-bottom: 25px;">
+                AI agents represent a fundamental shift in how we build intelligent systems. By combining the reasoning power of LLMs with tools, memory, and structured execution frameworks, we can create systems that solve genuinely complex, real-world problems.
+            </p>
+
+            <div style="background: rgba(255,255,255,0.15); padding: 25px; border-radius: 10px; margin: 25px 0;">
+                <h3 style="color: white; margin-top: 0;">Key Principles to Remember</h3>
+                <ul style="color: rgba(255,255,255,0.95); list-style: none; padding: 0;">
+                    <li style="padding: 10px 0; padding-left: 25px; position: relative;">
+                        <span style="position: absolute; left: 0;">🎯</span>
+                        Start simple, evolve complexity—use the right tool for the right job
+                    </li>
+                    <li style="padding: 10px 0; padding-left: 25px; position: relative;">
+                        <span style="position: absolute; left: 0;">🔧</span>
+                        Tool calling is the bridge between LLMs and real-world action
+                    </li>
+                    <li style="padding: 10px 0; padding-left: 25px; position: relative;">
+                        <span style="position: absolute; left: 0;">🧠</span>
+                        Agents combine reasoning, planning, and action for complex problem-solving
+                    </li>
+                    <li style="padding: 10px 0; padding-left: 25px; position: relative;">
+                        <span style="position: absolute; left: 0;">📊</span>
+                        Monitor, measure, and iterate—observability is key to reliable agents
+                    </li>
+                    <li style="padding: 10px 0; padding-left: 25px; position: relative;">
+                        <span style="position: absolute; left: 0;">⚠️</span>
+                        Manage risk through testing, validation, and human oversight
+                    </li>
+                </ul>
+            </div>
+
+            <p style="color: rgba(255,255,255,0.9); text-align: center; margin-top: 25px;">
+                The future belongs to those who can effectively architect and deploy intelligent agent systems. Start learning, building, and experimenting today!
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 AI Agents Complete Study Material. Created with ❤️ for learners and practitioners.</p>
+        <p>This comprehensive guide covers foundational concepts through advanced implementation strategies for building production-ready AI agents.</p>
+        <p style="margin-top: 20px; font-size: 0.9em;">
+            Last Updated: December 2024 | Total Content: >200KB | Fully Responsive & Interactive
+        </p>
+    </footer>
+
+    <script>
+        // Initialize Mermaid diagrams
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+        mermaid.contentLoaded();
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                const target = document.querySelector(targetId);
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Add scroll-to-top button
+        const scrollButton = document.createElement('button');
+        scrollButton.innerHTML = '⬆️ Top';
+        scrollButton.style.cssText = `
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 12px 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 50;
+        `;
+
+        document.body.appendChild(scrollButton);
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                scrollButton.style.opacity = '1';
+                scrollButton.style.transform = 'translateY(0)';
+            } else {
+                scrollButton.style.opacity = '0';
+                scrollButton.style.transform = 'translateY(50px)';
+            }
+        });
+
+        scrollButton.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Add active state to navigation
+        window.addEventListener('scroll', () => {
+            document.querySelectorAll('section').forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.scrollY >= sectionTop - 200 && 
+                    window.scrollY < sectionTop + sectionHeight - 200) {
+                    const id = section.getAttribute('id');
+                    document.querySelectorAll('nav a').forEach(link => {
+                        link.style.background = 'var(--primary-color)';
+                        if (link.getAttribute('href') === '#' + id) {
+                            link.style.background = 'var(--secondary-color)';
+                        }
+                    });
+                }
+            });
+        });
+
+        // Code syntax highlighting simulation
+        document.querySelectorAll('pre code').forEach(block => {
+            // Apply basic color coding
+            let text = block.innerHTML;
+            text = text.replace(/(\bfrom\b|\bimport\b|\bdef\b|\bclass\b|\bif\b|\belse\b|\bfor\b|\bwhile\b|\breturn\b|\btry\b|\bexcept\b)/g, 
+                '<span style="color: #f472b6;">$1</span>');
+            text = text.replace(/(".*?")/g, '<span style="color: #4ade80;">$1</span>');
+            text = text.replace(/(#.*)/g, '<span style="color: #64748b;">$1</span>');
+            block.innerHTML = text;
+        });
+
+        console.log('AI Agents Study Material loaded successfully!');
+    </script>
+</body>
+</html>
