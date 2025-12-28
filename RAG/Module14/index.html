@@ -1,0 +1,3081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Tools & Agents: Complete Developer's Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --accent-color: #06b6d4;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --light-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --border-color: #e2e8f0;
+            --code-bg: #1e293b;
+            --code-text: #e2e8f0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: var(--text-dark);
+            background-color: var(--light-bg);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        nav h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: opacity 0.3s;
+            font-size: 0.95rem;
+        }
+
+        nav a:hover {
+            opacity: 0.8;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            margin-top: 2rem;
+            border-radius: 12px;
+            margin-bottom: 3rem;
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            max-width: 800px;
+            margin: 0 auto;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Section Styles */
+        section {
+            margin: 3rem 0;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        h4 {
+            font-size: 1.2rem;
+            color: var(--text-dark);
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+
+        /* Cards Layout */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-color: var(--accent-color);
+        }
+
+        .card h4 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        table th {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        table tr:hover {
+            background-color: rgba(37, 99, 235, 0.05);
+        }
+
+        table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 2rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .code-block code {
+            display: block;
+        }
+
+        /* List Styles */
+        ul, ol {
+            margin: 1.5rem 0 1.5rem 2rem;
+        }
+
+        li {
+            margin-bottom: 0.8rem;
+            color: var(--text-light);
+        }
+
+        li strong {
+            color: var(--text-dark);
+        }
+
+        /* Info Box */
+        .info-box {
+            background: rgba(6, 182, 212, 0.1);
+            border-left: 4px solid var(--accent-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+
+        .info-box h4 {
+            color: var(--accent-color);
+            margin-top: 0;
+        }
+
+        /* Warning Box */
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--warning-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+
+        .warning-box h4 {
+            color: var(--warning-color);
+            margin-top: 0;
+        }
+
+        /* Success Box */
+        .success-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--success-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+
+        .success-box h4 {
+            color: var(--success-color);
+            margin-top: 0;
+        }
+
+        /* Diagram Container */
+        .diagram-container {
+            background: var(--card-bg);
+            border: 2px dashed var(--border-color);
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+        }
+
+        .diagram-container svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Mermaid Diagram */
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Comparison Table */
+        .comparison {
+            margin: 2rem 0;
+        }
+
+        .comparison-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .comparison-item {
+            padding: 1.5rem;
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .comparison-item h4 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+
+        /* Features List */
+        .features-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature-item {
+            padding: 1.5rem;
+            background: var(--card-bg);
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .feature-item h5 {
+            color: var(--primary-color);
+            margin: 0 0 0.5rem 0;
+            font-size: 1rem;
+        }
+
+        .feature-item p {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background: var(--accent-color);
+        }
+
+        .timeline-item {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .timeline-item:nth-child(odd) {
+            padding-right: 52%;
+            text-align: right;
+        }
+
+        .timeline-item:nth-child(even) {
+            padding-left: 52%;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 12px;
+            background: var(--primary-color);
+            border: 3px solid var(--light-bg);
+            border-radius: 50%;
+            top: 0;
+        }
+
+        .timeline-content {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav ul {
+                gap: 1rem;
+            }
+
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .timeline::before {
+                left: 0;
+            }
+
+            .timeline-item {
+                padding-left: 2rem !important;
+                padding-right: 0 !important;
+                text-align: left !important;
+            }
+
+            .timeline-item::before {
+                left: 0;
+            }
+
+            .comparison-row {
+                grid-template-columns: 1fr;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .code-block {
+                font-size: 0.85rem;
+                padding: 1rem;
+            }
+
+            table {
+                font-size: 0.9rem;
+            }
+
+            table th, table td {
+                padding: 0.75rem;
+            }
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: #ffffff;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+            border-radius: 8px 8px 0 0;
+        }
+
+        footer p, footer strong {
+            color: #ffffff;
+        }
+
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .badge-primary {
+            background: var(--primary-color);
+        }
+
+        .badge-success {
+            background: var(--success-color);
+        }
+
+        .badge-warning {
+            background: var(--warning-color);
+        }
+
+        /* ToC */
+        .toc {
+            background: var(--card-bg);
+            border: 2px solid var(--accent-color);
+            padding: 2rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+
+        .toc h3 {
+            margin-top: 0;
+            color: var(--accent-color);
+        }
+
+        .toc ul {
+            margin: 1rem 0;
+        }
+
+        .toc a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .toc a:hover {
+            color: var(--accent-color);
+        }
+
+        /* Section divider */
+        .section-divider {
+            height: 2px;
+            background: linear-gradient(to right, transparent, var(--accent-color), transparent);
+            margin: 3rem 0;
+        }
+
+        /* Flex layout for code sections */
+        .full-width-code {
+            width: 100%;
+            margin: 2rem 0;
+        }
+
+        /* Callout box */
+        .callout {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+
+        .callout strong {
+            color: var(--primary-color);
+        }
+
+        /* Skill Level Badge */
+        .skill-level {
+            display: inline-block;
+            padding: 0.3rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .skill-beginner {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .skill-intermediate {
+            background: #fef08a;
+            color: #713f12;
+        }
+
+        .skill-advanced {
+            background: #fee2e2;
+            color: #7f1d1d;
+        }
+
+        /* Responsive image */
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            display: block;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-container {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .image-container img {
+            margin: 0 auto;
+        }
+
+        .image-caption {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+
+        /* Button styles */
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--accent-color);
+        }
+
+        .btn-secondary:hover {
+            background: #0891b2;
+        }
+
+        /* Back to top button */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 999;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background: var(--secondary-color);
+            transform: translateY(-4px);
+        }
+
+        /* Highlight text */
+        .highlight {
+            background: #fef3c7;
+            padding: 0 0.4rem;
+            border-radius: 3px;
+        }
+
+        /* Code inline */
+        code {
+            background: rgba(37, 99, 235, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            color: var(--primary-color);
+            font-family: 'Courier New', monospace;
+        }
+
+        .code-block code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <h1>🤖 LLM Agents & Tools</h1>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+
+        <div class="container">
+            <!-- Table of Contents -->
+            <section class="toc">
+                <h3>📚 Table of Contents</h3>
+                <ul>
+                    <li><a href="#introduction">1. Introduction & Overview</a></li>
+                    <li><a href="#what-is">2. What Are LLM Tools & Agents?</a></li>
+                    <li><a href="#why-important">3. Why This Matters</a></li>
+                    <li><a href="#core-concepts">4. Core Concepts</a></li>
+                    <li><a href="#lcel">5. LCEL - The Foundation</a></li>
+                    <li><a href="#structured-outputs">6. Structured Outputs</a></li>
+                    <li><a href="#tools">7. Building Tools</a></li>
+                    <li><a href="#agents">8. Creating Agents</a></li>
+                    <li><a href="#manual-vs-auto">9. Manual vs Automatic Invocation</a></li>
+                    <li><a href="#lifecycle">10. Tool-Calling Lifecycle</a></li>
+                    <li><a href="#examples">11. Practical Examples</a></li>
+                    <li><a href="#use-cases">12. Real-World Use Cases</a></li>
+                    <li><a href="#features">13. Features & Benefits</a></li>
+                    <li><a href="#architecture">14. System Architecture</a></li>
+                    <li><a href="#pros-cons">15. Pros & Cons Analysis</a></li>
+                    <li><a href="#alternatives">16. Alternatives & Comparison</a></li>
+                    <li><a href="#future">17. Future & Evolution</a></li>
+                </ul>
+            </section>
+
+            <!-- Introduction -->
+            <section id="introduction">
+                <h2>1️⃣ Introduction & Overview</h2>
+                <p>
+                    Modern applications powered by Large Language Models (LLMs) have evolved far beyond simple question-answering. Today, developers are tasked with creating complex, interactive, and reliable systems that can reason, act, and communicate with precision.
+                </p>
+                
+                <div class="image-container">
+                    <img src="https://raw.githubusercontent.com/md-sahil-analyst22/Study_Material/main/images/llm_apps_info.png" alt="LLM Applications Overview">
+                    <p class="image-caption">Figure 1: Modern LLM applications architecture and components</p>
+                </div>
+                
+                <div class="info-box">
+                    <h4>🎯 What You'll Learn</h4>
+                    <p>This comprehensive guide covers three essential pillars of advanced LLM development:</p>
+                    <ul>
+                        <li><strong>LangChain Expression Language (LCEL):</strong> Declarative foundation for building modular, high-performance data pipelines</li>
+                        <li><strong>Structured Outputs:</strong> Ensuring consistent, predictable, machine-readable LLM responses</li>
+                        <li><strong>LLM Agents & Tools:</strong> Empowering models to take action and interact with external systems</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="section-divider"></div>
+
+            <!-- What Are Tools and Agents -->
+            <section id="what-is">
+                <h2>2️⃣ What Are LLM Tools & Agents?</h2>
+                <p>
+                    A standard LLM is a passive text generator—it responds to queries but cannot interact with the outside world. An LLM agent is fundamentally different. It's a system that uses an LLM as its reasoning engine to determine a sequence of actions to take.
+                </p>
+
+                <h3>Understanding the Transformation</h3>
+                <div class="comparison-row">
+                    <div class="comparison-item">
+                        <h4>📄 Standard LLM</h4>
+                        <ul>
+                            <li>Passive responder</li>
+                            <li>Generates text only</li>
+                            <li>No external interaction</li>
+                            <li>Limited to training data</li>
+                            <li>Cannot perform actions</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-item">
+                        <h4>🤖 LLM Agent with Tools</h4>
+                        <ul>
+                            <li>Active decision-maker</li>
+                            <li>Can execute functions</li>
+                            <li>Interacts with systems</li>
+                            <li>Access to real-time data</li>
+                            <li>Performs complex tasks</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>The Tool Concept</h3>
+                <p>
+                    A "tool" is simply a function that the LLM can call. By giving an LLM access to a set of tools, we transform it from a passive responder into an interactive agent capable of performing real-world tasks.
+                </p>
+
+                <div class="success-box">
+                    <h4>✨ Key Insight</h4>
+                    <p>
+                        Tools are the bridge between the LLM's reasoning capabilities and the real world. They enable agents to fetch data, perform calculations, update databases, send notifications, and much more.
+                    </p>
+                </div>
+            </section>
+
+            <div class="section-divider"></div>
+
+            <!-- Why Important -->
+            <section id="why-important">
+                <h2>3️⃣ Why This Matters</h2>
+
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-icon">🔓</div>
+                        <h4>Access to Real-Time Data</h4>
+                        <p>LLMs can now fetch current information, market data, weather, news, and more—breaking free from static training data limitations.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">⚙️</div>
+                        <h4>Autonomous Action</h4>
+                        <p>Systems can perform tasks autonomously based on reasoning, updating databases, sending emails, or triggering workflows without human intervention.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">🎯</div>
+                        <h4>Intelligent Decision Making</h4>
+                        <p>Agents can analyze situations, choose appropriate actions, and combine multiple tools to solve complex problems intelligently.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">🏢</div>
+                        <h4>Enterprise Integration</h4>
+                        <p>Connect LLMs to existing business systems, APIs, and databases to create seamless enterprise AI solutions.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">💰</div>
+                        <h4>Cost Efficiency</h4>
+                        <p>Agents can optimize API calls and resource usage by reasoning about what actually needs to be executed.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">🔒</div>
+                        <h4>Controlled Execution</h4>
+                        <p>Manual invocation ensures safety, prevents unintended actions, and provides oversight over critical operations.</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="section-divider"></div>
+
+            <!-- Core Concepts -->
+            <section id="core-concepts">
+                <h2>4️⃣ Core Concepts & Terminology</h2>
+
+                <h3>Essential Terms</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Concept</th>
+                            <th>Definition</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Tool</strong></td>
+                            <td>A callable function that an LLM can invoke to perform a specific action</td>
+                            <td>get_weather(), calculate_mortgage(), fetch_data()</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Agent</strong></td>
+                            <td>A system using an LLM as a reasoning engine to decide which tools to call and when</td>
+                            <td>A customer service bot that can access databases and call APIs</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tool Calling</strong></td>
+                            <td>The process where an LLM analyzes a query and decides to invoke a tool</td>
+                            <td>User asks "What's 3+2?", LLM calls add(3, 2)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Runnable</strong></td>
+                            <td>Any component in LangChain that adheres to a standard interface (invoke, batch, stream)</td>
+                            <td>ChatModel, PromptTemplate, Tool, Chain</td>
+                        </tr>
+                        <tr>
+                            <td><strong>LCEL</strong></td>
+                            <td>LangChain Expression Language - declarative syntax for building chains</td>
+                            <td>prompt | model | output_parser</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Binding</strong></td>
+                            <td>Connecting tools to an LLM so it knows about their existence and capabilities</td>
+                            <td>llm.bind_tools([add, subtract, multiply])</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Schema</strong></td>
+                            <td>The structure/format that an LLM output should conform to</td>
+                            <td>Pydantic models, JSON structures</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tool Message</strong></td>
+                            <td>The response from executing a tool, passed back to the LLM for context</td>
+                            <td>Tool execution result with tool_call_id</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <div class="section-divider"></div>
+
+            <!-- LCEL Foundation -->
+            <section id="lcel">
+                <h2>5️⃣ LCEL: The Foundation of LLM Applications</h2>
+
+                <p>
+                    The LangChain Expression Language (LCEL) represents a strategic shift from traditional imperative coding to a declarative approach for building LLM applications.
+                </p>
+                
+                <div class="image-container">
+                    <img src="https://raw.githubusercontent.com/md-sahil-analyst22/Study_Material/main/images/lcel_info_p1.png" alt="LCEL Information">
+                    <p class="image-caption">Figure 2: LangChain Expression Language (LCEL) components and workflow</p>
+                </div>
+
+                <h3>What is LCEL?</h3>
+                <div class="info-box">
+                    <h4>📖 Definition</h4>
+                    <p>
+                        LCEL is a declarative method for assembling chains from modular components. Instead of writing step-by-step instructions, you define the desired workflow, and LCEL handles the underlying execution and optimization.
+                    </p>
+                </div>
+
+                <h3>Core Capabilities of LCEL</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Capability</th>
+                            <th>Benefit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Parallel Execution</strong></td>
+                            <td>Runs components concurrently, reducing latency and improving performance</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Async Support</strong></td>
+                            <td>Enables smooth, non-blocking workflows with guaranteed async support</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Streaming</strong></td>
+                            <td>Delivers outputs incrementally, lowering perceived latency and enabling progress monitoring</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Automatic Tracing</strong></td>
+                            <td>Complete visibility into chain behavior with LangSmith for debugging and monitoring</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Unified API</strong></td>
+                            <td>All chains accessible through a shared interface (invoke, batch, stream)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Deployment Ready</strong></td>
+                            <td>Deploy chains with LangServe with minimal overhead</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>The Runnable Interface</h3>
+                <p>
+                    At the heart of LCEL is the Runnable interface. Every component in a LangChain pipeline adheres to this standardized interface, ensuring interoperability and seamless chaining.
+                </p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Runnable Type</th>
+                            <th>Description</th>
+                            <th>Use Case</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>ChatModel</strong></td>
+                            <td>Interface with LLM APIs for conversational interactions</td>
+                            <td>Generate conversational responses</td>
+                        </tr>
+                        <tr>
+                            <td><strong>PromptTemplate</strong></td>
+                            <td>Creates formatted prompts from input variables</td>
+                            <td>Prepare structured inputs for LLMs</td>
+                        </tr>
+                        <tr>
+                            <td><strong>OutputParser</strong></td>
+                            <td>Converts raw LLM outputs into structured data format</td>
+                            <td>Extract structured data from LLM responses</td>
+                        </tr>
+                        <tr>
+                            <td><strong>RunnableLambda</strong></td>
+                            <td>Wraps custom Python functions for use in chains</td>
+                            <td>Implement custom business logic or transformations</td>
+                        </tr>
+                        <tr>
+                            <td><strong>RunnableSequence</strong></td>
+                            <td>Chains multiple components in linear flow</td>
+                            <td>Create multi-step processing pipelines</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Common LCEL Patterns</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Use Case</th>
+                            <th>Component Workflow</th>
+                            <th>Summary</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Question Answering</strong></td>
+                            <td>PromptTemplate → ChatModel → StrOutputParser</td>
+                            <td>Format question, send to LLM, return text response</td>
+                        </tr>
+                        <tr>
+                            <td><strong>RAG</strong></td>
+                            <td>Retriever → PromptTemplate → ChatModel → OutputParser</td>
+                            <td>Find documents, combine with prompt, generate response</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Function Calling</strong></td>
+                            <td>PromptTemplate → ChatModel → Tool</td>
+                            <td>Format prompt, generate function call, extract params, execute</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Structured Output</strong></td>
+                            <td>PromptTemplate → ChatModel → JsonOutputParser</td>
+                            <td>Format prompt, generate response, parse to JSON object</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>LCEL Function Reference</h3>
+                <p><strong>Basic Operations:</strong></p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Function</th>
+                            <th>Description</th>
+                            <th>Usage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>invoke()</code> / <code>ainvoke()</code></td>
+                            <td>Execute a Runnable with single input</td>
+                            <td>Process one input and get one output</td>
+                        </tr>
+                        <tr>
+                            <td><code>batch()</code> / <code>abatch()</code></td>
+                            <td>Process multiple inputs efficiently in parallel</td>
+                            <td>Run same operation on multiple inputs at once</td>
+                        </tr>
+                        <tr>
+                            <td><code>stream()</code> / <code>astream()</code></td>
+                            <td>Return incremental results as they're generated</td>
+                            <td>Show partial responses to user as they're created</td>
+                        </tr>
+                        <tr>
+                            <td><code>RunnableParallel</code></td>
+                            <td>Execute multiple Runnables concurrently</td>
+                            <td>Process same input in different ways simultaneously</td>
+                        </tr>
+                        <tr>
+                            <td><code>RunnableLambda</code></td>
+                            <td>Convert Python functions into Runnables</td>
+                            <td>Add custom logic or transformations within a chain</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p><strong>Advanced Patterns:</strong></p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Function</th>
+                            <th>Description</th>
+                            <th>Usage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>.bind()</code></td>
+                            <td>Set default parameter values for a Runnable</td>
+                            <td>Fix certain parameters while leaving others configurable</td>
+                        </tr>
+                        <tr>
+                            <td><code>.with_fallbacks()</code></td>
+                            <td>Try alternative Runnables if primary one fails</td>
+                            <td>Handle errors gracefully by providing backup components</td>
+                        </tr>
+                        <tr>
+                            <td><code>.with_retry()</code></td>
+                            <td>Add automatic retry capability to operation</td>
+                            <td>Automatically retry on transient failures</td>
+                        </tr>
+                        <tr>
+                            <td><code>.pick()</code></td>
+                            <td>Select specific keys from dictionary output</td>
+                            <td>Filter output to return only needed fields</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>LCEL Syntax Example</h3>
+                <div class="code-block">
+<pre>from langchain_core.prompts import ChatPromptTemplate
+from langchain_openai import ChatOpenAI
+from langchain_core.output_parsers import StrOutputParser
+
+# Define the prompt template
+prompt = ChatPromptTemplate.from_template(
+    "You are a helpful assistant. Answer this question: {question}"
+)
+
+# Initialize the model
+model = ChatOpenAI(model="gpt-4o-mini")
+
+# Define output parser
+output_parser = StrOutputParser()
+
+# Create LCEL chain using pipe operator (|)
+chain = prompt | model | output_parser
+
+# Invoke the chain
+result = chain.invoke({"question": "What is 2+2?"})
+print(result)  # "The sum of 2 and 2 is 4."
+
+# Batch process multiple inputs
+results = chain.batch([
+    {"question": "What is 2+2?"},
+    {"question": "What is 3+3?"},
+    {"question": "What is 4+4?"}
+])
+
+# Stream results incrementally
+for chunk in chain.stream({"question": "What is 5+5?"}):
+    print(chunk, end="", flush=True)</pre>
+                </div>
+            </section>
+
+            <div class="section-divider"></div>
+
+            <!-- Structured Outputs -->
+            <section id="structured-outputs">
+                <h2>6️⃣ Structured Outputs: Ensuring Consistency</h2>
+
+                <p>
+                    While natural language is ideal for human interaction, production-grade systems require data that is structured and predictable. Raw, unstructured text is unreliable for machines to parse.
+                </p>
+
+                <h3>Why Structured Outputs Matter</h3>
+                <div class="warning-box">
+                    <h4>⚠️ The Problem</h4>
+                    <p>
+                        Without structured output, systems are fragile and error-prone. An LLM might format responses inconsistently, making parsing difficult and causing downstream errors.
+                    </p>
+                </div>
+
+                <h3>Two-Step Process for Structured Outputs</h3>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>Step 1: Define Schema</h4>
+                            <p>Define the exact structure you want the LLM's output to conform to. This schema acts as a template for the model.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>Step 2: Enforce Structure</h4>
+                            <p>Instruct the model to generate output that strictly adheres to the predefined schema using tool calling or JSON mode.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Methods for Defining Schemas</h3>
+                <p><strong>Option 1: JSON-like Structures</strong></p>
+                <div class="code-block">
+<pre>from typing import Optional
+
+# Simple JSON schema (Python dict)
+schema = {
+    "name": "string",
+    "age": "integer",
+    "interests": ["string"],
+    "email": "string"
+}</pre>
+                </div>
+
+                <p><strong>Option 2: Pydantic Models (Recommended)</strong></p>
+                <div class="code-block">
+<pre>from pydantic import BaseModel, Field
+from typing import List
+
+class Person(BaseModel):
+    """Schema for extracting person information"""
+    name: str = Field(..., description="The person's full name")
+    age: int = Field(..., description="The person's age")
+    interests: List[str] = Field(
+        ..., 
+        description="List of the person's interests"
+    )
+    email: str = Field(..., description="The person's email address")
+
+# Use with LLM
+from langchain_openai import ChatOpenAI
+
+llm = ChatOpenAI(model="gpt-4o-mini")
+structured_llm = llm.with_structured_output(Person)
+
+result = structured_llm.invoke(
+    "Extract info: I'm Lance, 28 years old, I love biking and coding. "
+    "Contact: lance@example.com"
+)
+print(result)
+# Output: Person(name='Lance', age=28, interests=['biking', 'coding'], email='lance@example.com')</pre>
+                </div>
+
+                <h3>Techniques for Enforcing Structure</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Technique</th>
+                            <th>Description</th>
+                            <th>Pros</th>
+                            <th>Cons</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Tool Calling</strong></td>
+                            <td>Bind schema as a tool; model "calls" it with structured args</td>
+                            <td>Most reliable, native LLM support, less error-prone</td>
+                            <td>Requires LLM support for function calling</td>
+                        </tr>
+                        <tr>
+                            <td><strong>JSON Mode</strong></td>
+                            <td>Constrain model to produce only valid JSON</td>
+                            <td>Simpler, works with JSON schema</td>
+                            <td>Less reliable than tool calling, requires formatting</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>with_structured_output() Helper</h3>
+                <p>
+                    LangChain provides the <code>with_structured_output()</code> method that abstracts away complexity and streamlines the workflow.
+                </p>
+                <div class="code-block">
+<pre>from pydantic import BaseModel
+from langchain_openai import ChatOpenAI
+
+class ResearchPaper(BaseModel):
+    title: str
+    authors: list[str]
+    abstract: str
+    keywords: list[str]
+    publication_year: int
+
+llm = ChatOpenAI(model="gpt-4o-mini")
+structured_llm = llm.with_structured_output(ResearchPaper)
+
+# Now invoke with text containing paper info
+response = structured_llm.invoke(
+    "Extract info from: 'Attention is All You Need' by Vaswani et al., "
+    "published in 2017. Abstract: We propose a novel architecture..."
+)
+
+print(type(response))  # <class '__main__.ResearchPaper'>
+print(response.title)  # "Attention is All You Need"</pre>
+                </div>
+            </section>
+
+            <div class="section-divider"></div>
+
+            <!-- Building Tools -->
+            <section id="tools">
+                <h2>7️⃣ Building Custom Tools</h2>
+
+                <p>
+                    Tools are the functions that LLMs can call. Creating effective tools requires clear definitions, proper documentation, and type annotations.
+                </p>
+
+                <h3>Anatomy of a Tool</h3>
+                <div class="code-block">
+<pre>from langchain_core.tools import tool
+
+@tool
+def tool_name(input_param: input_type) -> output_type:
+    """
+    Clear description of what the tool does.
+    
+    Args:
+        input_param (input_type): Description of this parameter
+        another_param (another_type): Description
+    
+    Returns:
+        output_type: Description of what is returned
+    """
+    # Function implementation
+    result = process(input_param)
+    return result</pre>
+                </div>
+                
+                <div class="image-container">
+                    <img src="https://raw.githubusercontent.com/md-sahil-analyst22/Study_Material/main/images/llm_tools_info.png" alt="LLM Tools Information">
+                    <p class="image-caption">Figure 3: LLM tools architecture and interaction flow</p>
+                </div>
+
+                <h3>Key Components Explained</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>Purpose</th>
+                            <th>Why It Matters</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>@tool Decorator</strong></td>
+                            <td>Registers function with LangChain as a tool</td>
+                            <td>Generates JSON schema, enables tool_calls, creates tool attributes</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Function Name</strong></td>
+                            <td>Used by LLM to select appropriate tool</td>
+                            <td>Should clearly indicate tool's purpose; used in tool mappings</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Type Annotations</strong></td>
+                            <td>Enable automatic input validation</td>
+                            <td>Create schema for parameters, allow proper serialization</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Docstring</strong></td>
+                            <td>Provides context for LLM decision-making</td>
+                            <td>Critical for tool selection; documents requirements and outputs</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Implementation</strong></td>
+                            <td>Executes the actual operation</td>
+                            <td>Should be efficient, handle errors, return properly formatted results</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Creating Tools Step-by-Step</h3>
+
+                <h4>Example 1: Simple Arithmetic Tool</h4>
+                <div class="code-block">
+<pre>from langchain_core.tools import tool
+
+@tool
+def add(a: int, b: int) -> int:
+    """
+    Add a and b.
+    
+    Args:
+        a (int): first integer to be added
+        b (int): second integer to be added
+    
+    Returns:
+        int: sum of a and b
+    """
+    return a + b
+
+@tool
+def multiply(a: int, b: int) -> int:
+    """
+    Multiply a and b.
+    
+    Args:
+        a (int): first integer to multiply
+        b (int): second integer to multiply
+    
+    Returns:
+        int: product of a and b
+    """
+    return a * b
+
+@tool
+def subtract(a: int, b: int) -> int:
+    """
+    Subtract b from a.
+    
+    Args:
+        a (int): minuend (number to subtract from)
+        b (int): subtrahend (number to subtract)
+    
+    Returns:
+        int: difference of a - b
+    """
+    return a - b
+
+# Test the tools
+print(add.invoke({"a": 5, "b": 3}))  # Output: 8
+print(multiply.invoke({"a": 4, "b": 2}))  # Output: 8
+print(subtract.invoke({"a": 10, "b": 3}))  # Output: 7</pre>
+                </div>
+
+                <h4>Example 2: Data Retrieval Tool</h4>
+                <div class="code-block">
+<pre>from langchain_core.tools import tool
+from typing import Optional
+
+@tool
+def fetch_user_data(user_id: int, include_profile: bool = True) -> dict:
+    """
+    Fetch user information from the database.
+    
+    Args:
+        user_id (int): The unique identifier of the user
+        include_profile (bool): Whether to include profile information
+    
+    Returns:
+        dict: User information including name, email, and optionally profile data
+    """
+    # In a real application, this would query a database
+    user_data = {
+        "user_id": user_id,
+        "name": f"User {user_id}",
+        "email": f"user{user_id}@example.com",
+    }
+    
+    if include_profile:
+        user_data["profile"] = {
+            "age": 30,
+            "location": "New York",
+            "interests": ["coding", "reading"]
+        }
+    
+    return user_data
+
+# Test the tool
+result = fetch_user_data.invoke({"user_id": 123, "include_profile": True})
+print(result)</pre>
+                </div>
+
+                <h4>Example 3: Complex Tool with Validation</h4>
+                <div class="code-block">
+<pre>from langchain_core.tools import tool
+from pydantic import BaseModel, Field, validator
+
+class MortgageInput(BaseModel):
+    principal: float = Field(..., gt=0, description="Loan amount in dollars")
+    annual_rate: float = Field(..., ge=0, le=100, description="Annual interest rate")
+    years: int = Field(..., gt=0, le=40, description="Loan term in years")
+    
+    @validator('annual_rate')
+    def validate_rate(cls, v):
+        if v > 30:
+            raise ValueError("Annual rate seems unreasonably high")
+        return v
+
+@tool
+def calculate_mortgage_payment(principal: float, annual_rate: float, years: int) -> dict:
+    """
+    Calculate monthly mortgage payment using the standard formula.
+    
+    Args:
+        principal (float): Loan amount in dollars (must be positive)
+        annual_rate (float): Annual interest rate as percentage (0-30)
+        years (int): Loan term in years (1-40)
+    
+    Returns:
+        dict: Monthly payment amount and total payment over loan term
+    """
+    # Validate inputs
+    try:
+        MortgageInput(principal=principal, annual_rate=annual_rate, years=years)
+    except Exception as e:
+        return {"error": str(e)}
+    
+    # Calculate monthly payment
+    monthly_rate = annual_rate / 100 / 12
+    num_payments = years * 12
+    
+    if monthly_rate == 0:
+        monthly_payment = principal / num_payments
+    else:
+        monthly_payment = (
+            principal * 
+            (monthly_rate * (1 + monthly_rate) ** num_payments) / 
+            ((1 + monthly_rate) ** num_payments - 1)
+        )
+    
+    total_payment = monthly_payment * num_payments
+    
+    return {
+        "monthly_payment": round(monthly_payment, 2),
+        "total_payment": round(total_payment, 2),
+        "total_interest": round(total_payment - principal, 2)
+    }
+
+# Test the tool
+result = calculate_mortgage_payment.invoke({
+    "principal": 300000,
+    "annual_rate": 6.5,
+    "years": 30
+})
+print(result)</pre>
+                </div>
+
+                <h3>Binding Tools to the LLM</h3>
+                <div class="code-block">
+<pre>from langchain_openai import ChatOpenAI
+from langchain_core.tools import tool
+
+@tool
+def add(a: int, b: int) -> int:
+    """Add a and b."""
+    return a + b
+
+@tool
+def multiply(a: int, b: int) -> int:
+    """Multiply a and b."""
+    return a * b
+
+# Initialize the LLM
+llm = ChatOpenAI(model="gpt-4o-mini")
+
+# Create list of tools
+tools = [add, multiply]
+
+# Bind tools to LLM
+llm_with_tools = llm.bind_tools(tools)
+
+# Now the LLM is aware of these tools and can call them
+print("LLM with tools initialized and ready for use")</pre>
+                </div>
+            </section>
+
+            <div class="section-divider"></div>
+
+            <!-- Agents -->
+            <section id="agents">
+                <h2>8️⃣ Creating Intelligent Agents</h2>
+
+                <p>
+                    An agent is a system that uses an LLM as its reasoning engine to determine which tools to call and when to call them.
+                </p>
+
+                <h3>Agent Architecture</h3>
+                <div class="mermaid">
+graph TD
+    A["User Query"] --> B["LLM Analysis"]
+    B --> C{"Tool Needed?"}
+    C -->|Yes| D["Select Tool"]
+    C -->|No| E["Generate Response"]
+    D --> F["Extract Parameters"]
+    F --> G["Execute Tool"]
+    G --> H["Return Result"]
+    H --> I["Update Context"]
+    I --> J{"Continue?"}
+    J -->|Yes| B
+    J -->|No| K["Final Response"]
+    E --> K
+                </div>
+
+                <h3>Simple Agent Example</h3>
+                <div class="code-block">
+<pre>from langchain_core.tools import tool
+from langchain_core.messages import HumanMessage, ToolMessage, AIMessage
+from langchain_openai import ChatOpenAI
+
+# Define tools
+@tool
+def add(a: int, b: int) -> int:
+    """Add two numbers."""
+    return a + b
+
+@tool
+def multiply(a: int, b: int) -> int:
+    """Multiply two numbers."""
+    return a * b
+
+# Initialize LLM and bind tools
+llm = ChatOpenAI(model="gpt-4o-mini")
+tools = [add, multiply]
+llm_with_tools = llm.bind_tools(tools)
+
+# Tool mapping for execution
+tool_map = {
+    "add": add,
+    "multiply": multiply
+}
+
+# Agent function
+def run_agent(query: str):
+    print(f"\n📝 Query: {query}\n")
+    
+    # Step 1: Create chat history with user query
+    chat_history = [HumanMessage(content=query)]
+    
+    # Step 2: LLM analyzes query and selects tool
+    response = llm_with_tools.invoke(chat_history)
+    chat_history.append(response)
+    
+    # Check if tool was called
+    if not response.tool_calls:
+        print(f"✅ Response: {response.content}")
+        return response.content
+    
+    # Step 3: Process tool calls
+    for tool_call in response.tool_calls:
+        tool_name = tool_call["name"]
+        tool_args = tool_call["args"]
+        tool_call_id = tool_call["id"]
+        
+        print(f"🔧 Tool Selected: {tool_name}")
+        print(f"📥 Arguments: {tool_args}")
+        
+        # Step 4: Execute tool
+        tool_result = tool_map[tool_name].invoke(tool_args)
+        print(f"📤 Result: {tool_result}")
+        
+        # Step 5: Add tool message to history
+        tool_message = ToolMessage(
+            content=str(tool_result),
+            tool_call_id=tool_call_id
+        )
+        chat_history.append(tool_message)
+    
+    # Step 6: Get final answer
+    final_response = llm_with_tools.invoke(chat_history)
+    print(f"\n✅ Final Answer: {final_response.content}")
+    
+    return final_response.content
+
+# Test the agent
+run_agent("What is 10 plus 5?")
+run_agent("What is 12 multiplied by 3?")
+run_agent("Calculate 8 plus 4, then multiply the result by 2")</pre>
+                </div>
+
+                <h3>Agent Class Implementation</h3>
+                <div class="code-block">
+<pre>from langchain_core.tools import tool
+from langchain_core.messages import HumanMessage, ToolMessage
+from langchain_openai import ChatOpenAI
+from typing import Dict, Callable, Any
+
+class ToolCallingAgent:
+    """
+    A simple agent that can call tools based on LLM reasoning.
+    """
+    
+    def __init__(self, llm, tools: list):
+        """
+        Initialize the agent with an LLM and tools.
+        
+        Args:
+            llm: The language model to use
+            tools: List of tool functions decorated with @tool
+        """
+        self.llm_with_tools = llm.bind_tools(tools)
+        self.tool_map: Dict[str, Callable] = {tool.name: tool for tool in tools}
+    
+    def run(self, query: str) -> str:
+        """
+        Run the agent on a user query.
+        
+        Args:
+            query (str): The user's question or request
+        
+        Returns:
+            str: The final response from the agent
+        """
+        # Initialize chat history
+        chat_history = [HumanMessage(content=query)]
+        
+        # Get initial response from LLM
+        response = self.llm_with_tools.invoke(chat_history)
+        chat_history.append(response)
+        
+        # If no tool calls, return the response directly
+        if not response.tool_calls:
+            return response.content
+        
+        # Process tool calls
+        for tool_call in response.tool_calls:
+            tool_name = tool_call["name"]
+            tool_args = tool_call["args"]
+            tool_call_id = tool_call["id"]
+            
+            # Execute the tool
+            tool_result = self.tool_map[tool_name].invoke(tool_args)
+            
+            # Add tool message to history
+            tool_message = ToolMessage(
+                content=str(tool_result),
+                tool_call_id=tool_call_id
+            )
+            chat_history.append(tool_message)
+        
+        # Get final answer
+        final_response = self.llm_with_tools.invoke(chat_history)
+        return final_response.content
+
+# Usage
+@tool
+def add(a: int, b: int) -> int:
+    """Add two integers."""
+    return a + b
+
+@tool
+def multiply(a: int, b: int) -> int:
+    """Multiply two integers."""
+    return a * b
+
+llm = ChatOpenAI(model="gpt-4o-mini")
+agent = ToolCallingAgent(llm, [add, multiply])
+
+# Run agent
+response = agent.run("What is 15 plus 25?")
+print(response)</pre>
+                </div>
+            </section>
+
+            <div class="section-divider"></div>
+
+            <!-- Manual vs Automatic -->
+            <section id="manual-vs-auto">
+                <h2>9️⃣ Manual vs Automatic Tool Invocation</h2>
+
+                <p>
+                    While agents can automatically invoke tools immediately after LLM suggestions, this carries significant risks in production environments. Manual invocation provides critical control.
+                </p>
+
+                <div class="comparison-row">
+                    <div class="comparison-item">
+                        <h4>🚀 Automatic Invocation</h4>
+                        <ul>
+                            <li><strong>Pros:</strong></li>
+                            <ul style="margin-top: 0.5rem;">
+                                <li>Fastest execution</li>
+                                <li>Minimal latency</li>
+                                <li>Fully autonomous</li>
+                                <li>No human intervention needed</li>
+                            </ul>
+                            <li><strong>Cons:</strong></li>
+                            <ul style="margin-top: 0.5rem;">
+                                <li>No safety checks</li>
+                                <li>Risk of unintended actions</li>
+                                <li>Uncontrolled cost spending</li>
+                                <li>Hard to debug errors</li>
+                            </ul>
+                        </ul>
+                    </div>
+                    <div class="comparison-item">
+                        <h4>🛡️ Manual Invocation</h4>
+                        <ul>
+                            <li><strong>Pros:</strong></li>
+                            <ul style="margin-top: 0.5rem;">
+                                <li>Full control and oversight</li>
+                                <li>Safety checks possible</li>
+                                <li>Cost management</li>
+                                <li>Better for critical operations</li>
+                            </ul>
+                            <li><strong>Cons:</strong></li>
+                            <ul style="margin-top: 0.5rem;">
+                                <li>Requires human intervention</li>
+                                <li>Slower execution</li>
+                                <li>More complex code</li>
+                                <li>Not fully autonomous</li>
+                            </ul>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Why Manual Control is Critical for Production</h3>
+
+                <div class="warning-box">
+                    <h4>⚠️ Safety Concerns</h4>
+                    <p>
+                        A single automated mistake can cause serious consequences. If an LLM suggests updating a sensitive financial database without human verification, a single error could result in significant financial losses or regulatory issues.
+                    </p>
+                </div>
+
+                <div class="warning-box">
+                    <h4>💰 Cost Control</h4>
+                    <p>
+                        Many tools rely on external APIs with per-call costs. Without manual oversight, redundant or incorrect API calls can lead to unexpected expenses. Manual checks ensure only necessary and approved calls are made.
+                    </p>
+                </div>
+
+                <div class="success-box">
+                    <h4>✅ Accuracy Assurance</h4>
+                    <p>
+                        By validating tools and parameters before execution, you ensure the correct function is used with the right inputs. This manual step guarantees agent actions align with user intent and produce accurate results.
+                    </p>
+                </div>
+
+                <h3>Manual Invocation Workflow</h3>
+                <div class="code-block">
+<pre>class ManualToolCallingAgent:
+    """
+    Agent with manual verification before executing tools.
+    """
+    
+    def __init__(self, llm, tools: list):
+        self.llm_with_tools = llm.bind_tools(tools)
+        self.tool_map = {tool.name: tool for tool in tools}
+    
+    def run(self, query: str, verbose: bool = True) -> str:
+        chat_history = [HumanMessage(content=query)]
+        
+        # Get LLM response
+        response = self.llm_with_tools.invoke(chat_history)
+        chat_history.append(response)
+        
+        if not response.tool_calls:
+            return response.content
+        
+        # Manual verification step
+        for tool_call in response.tool_calls:
+            tool_name = tool_call["name"]
+            tool_args = tool_call["args"]
+            tool_call_id = tool_call["id"]
+            
+            # STEP 1: Present to user for verification
+            if verbose:
+                print(f"\n🔍 Tool Call Verification")
+                print(f"Tool: {tool_name}")
+                print(f"Arguments: {tool_args}")
+            
+            # STEP 2: Get user approval (in production, this could be:
+            # - Admin approval UI
+            # - Cost threshold check
+            # - Business logic validation
+            # - Security policy enforcement)
+            approve = self._validate_tool_call(tool_name, tool_args)
+            
+            if not approve:
+                if verbose:
+                    print("❌ Tool call rejected by validation")
+                tool_result = "Tool execution rejected due to validation failure"
+            else:
+                if verbose:
+                    print("✅ Tool call approved, executing...")
+                # STEP 3: Execute only if approved
+                tool_result = self.tool_map[tool_name].invoke(tool_args)
+            
+            # Add result to history
+            tool_message = ToolMessage(
+                content=str(tool_result),
+                tool_call_id=tool_call_id
+            )
+            chat_history.append(tool_message)
+        
+        # Get final answer
+        final_response = self.llm_with_tools.invoke(chat_history)
+        return final_response.content
+    
+    def _validate_tool_call(self, tool_name: str, args: dict) -> bool:
+        """
+        Validate tool call before execution.
+        Implement business logic, security checks, cost limits, etc.
+        """
+        # Example validation rules
+        if tool_name == "delete_database":
+            return False  # Never auto-approve dangerous operations
+        
+        if "amount" in args and args["amount"] > 10000:
+            return False  # Require approval for large amounts
+        
+        return True  # Approve by default
+
+# Usage
+agent = ManualToolCallingAgent(llm, [add, multiply])
+response = agent.run("What is 5 plus 3?", verbose=True)</pre>
+                </div>
+            </section>
+
+            <div class="section-divider"></div>
+
+            <!-- Tool-Calling Lifecycle -->
+            <section id="lifecycle">
+                <h2>🔟 The Complete Tool-Calling Lifecycle</h2>
+
+                <h3>6-Step Process</h3>
+                
+                <div class="image-container">
+                    <img src="https://raw.githubusercontent.com/md-sahil-analyst22/Study_Material/main/images/llm_lifecycle_info.png" alt="LLM Lifecycle Information">
+                    <p class="image-caption">Figure 4: Complete LLM tool-calling lifecycle and workflow</p>
+                </div>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>1. User Asks a Question</h4>
+                            <p>The user initiates the interaction with a query, such as "What is 3 + 2?"</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>2. LLM Selects a Tool</h4>
+                            <p>The model analyzes the query, identifies "add" as the needed tool, and extracts parameters (3, 2).</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>3. Tool Instructions Generated</h4>
+                            <p>The model outputs structured tool call instructions including tool name, arguments, and unique ID.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>4. Application Executes Tool</h4>
+                            <p>Your code receives the tool call, validates arguments, and executes the tool function with the parameters.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>5. Tool Result Returned</h4>
+                            <p>The tool executes and returns the result (5 in this case) back to the application as a ToolMessage.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>6. LLM Generates Final Answer</h4>
+                            <p>The LLM receives the result, incorporates it into the context, and generates a natural language response.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Complete Implementation Example</h3>
+                <div class="code-block">
+<pre>from langchain_core.tools import tool
+from langchain_core.messages import HumanMessage, ToolMessage
+from langchain_openai import ChatOpenAI
+
+# Define the tool
+@tool
+def add(a: int, b: int) -> int:
+    """
+    Add two integers.
+    
+    Args:
+        a: First integer
+        b: Second integer
+    
+    Returns:
+        The sum of a and b
+    """
+    return a + b
+
+# Initialize LLM
+llm = ChatOpenAI(model="gpt-4o-mini")
+llm_with_tools = llm.bind_tools([add])
+
+# Step 1: User asks a question
+query = "What is 3 + 2?"
+print(f"User: {query}")
+chat_history = [HumanMessage(content=query)]
+
+# Step 2: LLM selects a tool
+response = llm_with_tools.invoke(chat_history)
+chat_history.append(response)
+print(f"\nLLM identified tool: {response.tool_calls[0]['name']}")
+print(f"Parameters: {response.tool_calls[0]['args']}")
+
+# Step 3: Extract tool call details
+tool_call = response.tool_calls[0]
+tool_name = tool_call["name"]
+tool_args = tool_call["args"]
+tool_call_id = tool_call["id"]
+
+# Step 4: Execute the tool
+tool_result = add.invoke(tool_args)
+print(f"\nTool executed with result: {tool_result}")
+
+# Step 5: Create ToolMessage
+tool_message = ToolMessage(
+    content=str(tool_result),
+    tool_call_id=tool_call_id
+)
+chat_history.append(tool_message)
+
+# Step 6: Get final answer
+final_answer = llm_with_tools.invoke(chat_history)
+print(f"\nAgent: {final_answer.content}")</pre>
+                </div>
+            </section>
+
+            <div class="section-divider"></div>
+
+            <!-- Practical Examples -->
+            <section id="examples">
+                <h2>1️⃣1️⃣ Practical Examples & Implementations</h2>
+
+                <h3>Example 1: Data Science Agent</h3>
+                <p>
+                    Build an agent that can analyze datasets, generate statistics, and train machine learning models through natural language.
+                </p>
+
+                <div class="code-block">
+<pre>from langchain_core.tools import tool
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+
+@tool
+def load_dataset(file_path: str) -> str:
+    """
+    Load a CSV dataset and return basic info.
+    
+    Args:
+        file_path (str): Path to the CSV file
+    
+    Returns:
+        str: Dataset shape and column info
+    """
+    df = pd.read_csv(file_path)
+    return f"Dataset shape: {df.shape}. Columns: {', '.join(df.columns)}"
+
+@tool
+def generate_statistics(file_path: str) -> str:
+    """
+    Generate statistical summary of a dataset.
+    
+    Args:
+        file_path (str): Path to the CSV file
+    
+    Returns:
+        str: Statistical summary
+    """
+    df = pd.read_csv(file_path)
+    return str(df.describe())
+
+@tool
+def train_model(file_path: str, target_column: str) -> str:
+    """
+    Train a random forest model on the dataset.
+    
+    Args:
+        file_path (str): Path to the CSV file
+        target_column (str): Name of the target column
+    
+    Returns:
+        str: Model accuracy score
+    """
+    df = pd.read_csv(file_path)
+    X = df.drop(columns=[target_column])
+    y = df[target_column]
+    
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2
+    )
+    
+    model = RandomForestClassifier()
+    model.fit(X_train, y_train)
+    
+    accuracy = model.score(X_test, y_test)
+    return f"Model trained successfully. Test accuracy: {accuracy:.4f}"
+
+# Create agent with data science tools
+llm = ChatOpenAI(model="gpt-4o-mini")
+tools = [load_dataset, generate_statistics, train_model]
+llm_with_tools = llm.bind_tools(tools)
+
+# Use the agent
+# query = "Load the iris.csv file and generate statistics"</pre>
+                </div>
+
+                <h3>Example 2: Financial Calculator Agent</h3>
+                <div class="code-block">
+<pre>from langchain_core.tools import tool
+
+@tool
+def calculate_compound_interest(
+    principal: float,
+    rate: float,
+    years: int,
+    compounds_per_year: int = 12
+) -> dict:
+    """
+    Calculate compound interest.
+    
+    Args:
+        principal (float): Initial investment amount
+        rate (float): Annual interest rate (as percentage)
+        years (int): Time period in years
+        compounds_per_year (int): Compounding frequency (default: 12 for monthly)
+    
+    Returns:
+        dict: Final amount and total interest earned
+    """
+    rate_decimal = rate / 100
+    n = compounds_per_year
+    t = years
+    
+    final_amount = principal * (1 + rate_decimal / n) ** (n * t)
+    interest_earned = final_amount - principal
+    
+    return {
+        "principal": principal,
+        "final_amount": round(final_amount, 2),
+        "interest_earned": round(interest_earned, 2),
+        "rate": rate,
+        "years": years
+    }
+
+@tool
+def calculate_savings_goal(
+    target_amount: float,
+    monthly_contribution: float,
+    annual_rate: float
+) -> dict:
+    """
+    Calculate how long to reach a savings goal with monthly contributions.
+    
+    Args:
+        target_amount (float): Target savings amount
+        monthly_contribution (float): Monthly savings amount
+        annual_rate (float): Annual interest rate
+    
+    Returns:
+        dict: Months needed and details
+    """
+    monthly_rate = annual_rate / 100 / 12
+    months = 0
+    balance = 0
+    
+    while balance < target_amount and months < 1000:
+        balance = balance * (1 + monthly_rate) + monthly_contribution
+        months += 1
+    
+    years = months / 12
+    return {
+        "target_amount": target_amount,
+        "months_needed": months,
+        "years_needed": round(years, 1),
+        "monthly_contribution": monthly_contribution
+    }
+
+# Agent setup and usage
+tools = [calculate_compound_interest, calculate_savings_goal]
+llm_with_tools = ChatOpenAI(model="gpt-4o-mini").bind_tools(tools)</pre>
+                </div>
+
+                <h3>Example 3: Weather & Travel Agent</h3>
+                <div class="code-block">
+<pre>from langchain_core.tools import tool
+from datetime import datetime
+import random
+
+@tool
+def get_weather(city: str, country: str) -> dict:
+    """
+    Get current weather information for a location.
+    
+    Args:
+        city (str): Name of the city
+        country (str): Country code or name
+    
+    Returns:
+        dict: Weather information including temperature and conditions
+    """
+    # In production, call real weather API
+    # This is simulated for demo
+    weather_data = {
+        "location": f"{city}, {country}",
+        "temperature": round(15 + random.uniform(-10, 20), 1),
+        "condition": random.choice(["Sunny", "Cloudy", "Rainy", "Partly Cloudy"]),
+        "humidity": random.randint(30, 90),
+        "timestamp": datetime.now().isoformat()
+    }
+    return weather_data
+
+@tool
+def get_flight_recommendations(
+    departure: str,
+    destination: str,
+    date: str,
+    passengers: int = 1
+) -> dict:
+    """
+    Get flight recommendations for a trip.
+    
+    Args:
+        departure (str): Departure city
+        destination (str): Destination city
+        date (str): Travel date (YYYY-MM-DD)
+        passengers (int): Number of passengers
+    
+    Returns:
+        dict: Flight options with prices
+    """
+    # Simulated flight data
+    return {
+        "departure": departure,
+        "destination": destination,
+        "date": date,
+        "passengers": passengers,
+        "options": [
+            {
+                "airline": "AirLux",
+                "price_per_person": 250 + random.randint(0, 200),
+                "duration": "2h 30m"
+            },
+            {
+                "airline": "GlobalAir",
+                "price_per_person": 200 + random.randint(0, 150),
+                "duration": "3h"
+            }
+        ]
+    }
+
+@tool
+def find_hotels(city: str, check_in: str, nights: int) -> dict:
+    """
+    Find hotel recommendations.
+    
+    Args:
+        city (str): Hotel location
+        check_in (str): Check-in date
+        nights (int): Number of nights
+    
+    Returns:
+        dict: Hotel options with prices
+    """
+    return {
+        "city": city,
+        "check_in": check_in,
+        "nights": nights,
+        "hotels": [
+            {
+                "name": "Luxury Palace",
+                "rating": 4.8,
+                "price_per_night": 200
+            },
+            {
+                "name": "Budget Inn",
+                "rating": 4.0,
+                "price_per_night": 80
+            },
+            {
+                "name": "Mid-Range Hotel",
+                "rating": 4.4,
+                "price_per_night": 120
+            }
+        ]
+    }
+
+# Create travel agent
+tools = [get_weather, get_flight_recommendations, find_hotels]
+travel_agent = ChatOpenAI(model="gpt-4o-mini").bind_tools(tools)</pre>
+                </div>
+            </section>
+
+            <div class="section-divider"></div>
+
+            <!-- Use Cases -->
+            <section id="use-cases">
+                <h2>1️⃣2️⃣ Real-World Use Cases</h2>
+
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-icon">🏢</div>
+                        <h4>Customer Service Automation</h4>
+                        <p>
+                            Intelligent chatbots that can check order status, process refunds, access customer data, and resolve issues autonomously.
+                        </p>
+                        <p><strong>Tools Needed:</strong> Database lookup, order status, payment processing, ticket creation</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">📊</div>
+                        <h4>Data Analysis & Reporting</h4>
+                        <p>
+                            Natural language interfaces for data exploration, automatic report generation, statistical analysis, and insights extraction.
+                        </p>
+                        <p><strong>Tools Needed:</strong> Data loading, aggregation, statistical functions, visualization</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">💼</div>
+                        <h4>HR & Recruitment</h4>
+                        <p>
+                            Automated candidate screening, scheduling interviews, managing job applications, and providing HR information.
+                        </p>
+                        <p><strong>Tools Needed:</strong> Database search, calendar integration, email notifications, document parsing</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">🏥</div>
+                        <h4>Healthcare Assistance</h4>
+                        <p>
+                            Medical information retrieval, appointment scheduling, prescription tracking, and patient education.
+                        </p>
+                        <p><strong>Tools Needed:</strong> Medical databases, calendar, pharmacy APIs, EHR integration</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">🏠</div>
+                        <h4>Real Estate Platform</h4>
+                        <p>
+                            Property search, mortgage calculation, neighborhood information, and virtual tours scheduling.
+                        </p>
+                        <p><strong>Tools Needed:</strong> Property database, calculator, mapping APIs, schedule management</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">📚</div>
+                        <h4>Education & Tutoring</h4>
+                        <p>
+                            Personalized learning assistant, homework help, progress tracking, and adaptive learning recommendations.
+                        </p>
+                        <p><strong>Tools Needed:</strong> Content database, progress tracking, quiz generation, recommendation engine</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">🎯</div>
+                        <h4>Sales & CRM</h4>
+                        <p>
+                            Lead qualification, opportunity management, sales pipeline automation, and contract generation.
+                        </p>
+                        <p><strong>Tools Needed:</strong> CRM integration, lead scoring, email automation, document generation</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">🔬</div>
+                        <h4>Research & Literature Review</h4>
+                        <p>
+                            Automated paper discovery, citation management, literature synthesis, and research insights generation.
+                        </p>
+                        <p><strong>Tools Needed:</strong> Academic database APIs, citation tools, NLP analysis, summarization</p>
+                    </div>
+                </div>
+
+                <h3>Case Study: Customer Service Agent</h3>
+                <div class="code-block">
+<pre>from langchain_core.tools import tool
+from datetime import datetime
+
+class CustomerServiceAgent:
+    """
+    A comprehensive customer service agent with multiple tools.
+    """
+    
+    @tool
+    def check_order_status(order_id: str) -> dict:
+        """Check the status of a customer's order."""
+        # Simulated order data
+        orders = {
+            "ORD001": {"status": "delivered", "date": "2024-01-15"},
+            "ORD002": {"status": "in_transit", "date": "2024-01-20"},
+            "ORD003": {"status": "processing", "date": "2024-01-25"}
+        }
+        return orders.get(order_id, {"error": "Order not found"})
+    
+    @tool
+    def process_refund(order_id: str, reason: str) -> dict:
+        """Process a refund for an order."""
+        return {
+            "order_id": order_id,
+            "refund_amount": 99.99,
+            "status": "approved",
+            "processing_time": "3-5 business days",
+            "reason": reason
+        }
+    
+    @tool
+    def get_customer_info(customer_id: str) -> dict:
+        """Get customer information."""
+        return {
+            "customer_id": customer_id,
+            "name": "John Doe",
+            "email": "john@example.com",
+            "member_since": "2020-05-15",
+            "loyalty_status": "Gold"
+        }
+    
+    @tool
+    def create_support_ticket(issue: str, priority: str = "normal") -> dict:
+        """Create a support ticket."""
+        return {
+            "ticket_id": f"SUPP{datetime.now().timestamp()}",
+            "issue": issue,
+            "priority": priority,
+            "status": "open",
+            "created": datetime.now().isoformat()
+        }
+
+# Usage example
+llm = ChatOpenAI(model="gpt-4o-mini")
+tools = [
+    CustomerServiceAgent.check_order_status,
+    CustomerServiceAgent.process_refund,
+    CustomerServiceAgent.get_customer_info,
+    CustomerServiceAgent.create_support_ticket
+]
+llm_with_tools = llm.bind_tools(tools)
+
+# Agent can now handle customer queries like:
+# "What's the status of my order ORD001?"
+# "I want to return order ORD002"
+# "Can you create a support ticket for my issue?"</pre>
+                </div>
+            </section>
+
+            <div class="section-divider"></div>
+
+            <!-- Features & Benefits -->
+            <section id="features">
+                <h2>1️⃣3️⃣ Key Features & Benefits</h2>
+
+                <h3>Core Features</h3>
+                <div class="features-list">
+                    <div class="feature-item">
+                        <h5>🔌 Tool Binding</h5>
+                        <p>Seamlessly connect functions to LLMs using the @tool decorator and bind_tools() method.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h5>🎯 Intelligent Selection</h5>
+                        <p>LLM analyzes queries and automatically selects the most appropriate tool based on docstrings.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h5>📦 Schema Extraction</h5>
+                        <p>Automatic generation of JSON schema from Python type hints for parameter validation.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h5>🔄 Chain Composition</h5>
+                        <p>Build complex workflows by chaining multiple tools and models using LCEL syntax.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h5>📊 Structured Output</h5>
+                        <p>Ensure consistent, machine-readable responses using Pydantic models or JSON schemas.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h5>⚡ Async Support</h5>
+                        <p>Built-in async/await support for non-blocking operations and improved performance.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h5>🔍 Manual Control</h5>
+                        <p>Full visibility and control over tool invocation for safety and cost management.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h5>📈 Scalability</h5>
+                        <p>Deploy agents to production with LangServe and monitor with LangSmith.</p>
+                    </div>
+                </div>
+
+                <h3>Business Benefits</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Benefit</th>
+                            <th>Impact</th>
+                            <th>Business Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Increased Automation</strong></td>
+                            <td>Reduces human intervention required for routine tasks</td>
+                            <td>Lower operational costs, faster response times</td>
+                        </tr>
+                        <tr>
+                            <td><strong>24/7 Availability</strong></td>
+                            <td>Systems operate continuously without downtime</td>
+                            <td>Better customer service, improved user experience</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Data Integration</strong></td>
+                            <td>Seamless access to real-time data and systems</td>
+                            <td>Better decision-making, accurate information</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Consistency</strong></td>
+                            <td>Structured outputs ensure reliable processing</td>
+                            <td>Fewer errors, better compliance, predictability</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Scalability</strong></td>
+                            <td>Handle increasing volume without proportional cost increase</td>
+                            <td>Sustainable growth, competitive advantage</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Smart Reasoning</strong></td>
+                            <td>LLM applies reasoning to complex scenarios</td>
+                            <td>Better solutions, adaptive behavior, innovation</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <div class="section-divider"></div>
+
+            <!-- Architecture -->
+            <section id="architecture">
+                <h2>1️⃣4️⃣ System Architecture & Design Patterns</h2>
+
+                <h3>High-Level Architecture</h3>
+                <div class="mermaid">
+graph TB
+    subgraph User["User Layer"]
+        A["Natural Language Query"]
+    end
+    
+    subgraph LLM["LLM Reasoning Layer"]
+        B["Chat Model"]
+        C["Tool Selector"]
+    end
+    
+    subgraph Tools["Tool Execution Layer"]
+        D["Tool 1"]
+        E["Tool 2"]
+        F["Tool N"]
+    end
+    
+    subgraph External["External Systems"]
+        G["Database"]
+        H["API"]
+        I["File System"]
+    end
+    
+    A --> B
+    B --> C
+    C --> D
+    C --> E
+    C --> F
+    D --> G
+    E --> H
+    F --> I
+    G -.->|Result| B
+    H -.->|Result| B
+    I -.->|Result| B
+    B --> J["Final Response"]
+                </div>
+
+                <h3>Component Architecture</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>Responsibility</th>
+                            <th>Key Technologies</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Input Layer</strong></td>
+                            <td>Accept and validate user input, initialize context</td>
+                            <td>HumanMessage, Message types, input validation</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Reasoning Engine</strong></td>
+                            <td>Analyze queries, select tools, make decisions</td>
+                            <td>ChatModel, Tool binding, instruction following</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tool Layer</strong></td>
+                            <td>Define, validate, and manage available functions</td>
+                            <td>@tool decorator, Pydantic, type hints</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Execution Engine</strong></td>
+                            <td>Execute selected tools, handle results, manage state</td>
+                            <td>Tool invocation, ToolMessage, state management</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Integration Layer</strong></td>
+                            <td>Connect to external systems, databases, APIs</td>
+                            <td>API clients, database drivers, adapters</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Output Layer</strong></td>
+                            <td>Format responses, ensure consistency, return results</td>
+                            <td>OutputParser, structured formats, serialization</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Design Patterns</h3>
+                <div class="info-box">
+                    <h4>🏗️ Common Patterns</h4>
+                    <ul>
+                        <li><strong>Sequential Pattern:</strong> Tools called one after another in sequence</li>
+                        <li><strong>Parallel Pattern:</strong> Multiple tools executed concurrently</li>
+                        <li><strong>Conditional Pattern:</strong> Tools selected based on conditions</li>
+                        <li><strong>Recursive Pattern:</strong> Agent makes multiple tool calls in loop</li>
+                        <li><strong>Fallback Pattern:</strong> Try alternative tools if primary fails</li>
+                        <li><strong>Chain Pattern:</strong> Output of one tool feeds into next</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="section-divider"></div>
+
+            <!-- Pros & Cons -->
+            <section id="pros-cons">
+                <h2>1️⃣5️⃣ Advantages & Disadvantages Analysis</h2>
+
+                <h3>Comprehensive Comparison</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Aspect</th>
+                            <th>Advantages</th>
+                            <th>Disadvantages</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Capability</strong></td>
+                            <td>Extends LLM beyond text generation; enables real-world interaction</td>
+                            <td>Limited to predefined tools; cannot access unfamiliar systems</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Accuracy</strong></td>
+                            <td>Tool execution is deterministic and reliable; no hallucinations</td>
+                            <td>LLM must correctly identify and extract parameters</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Control</strong></td>
+                            <td>Manual invocation provides complete oversight and safety</td>
+                            <td>Requires human intervention; not fully autonomous</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cost</strong></td>
+                            <td>Intelligent tool selection reduces unnecessary API calls</td>
+                            <td>Each tool invocation adds latency and processing overhead</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Complexity</strong></td>
+                            <td>Clear separation of concerns; modular and reusable</td>
+                            <td>More complex than simple LLM calls; requires orchestration</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Flexibility</strong></td>
+                            <td>Can combine multiple tools for complex tasks</td>
+                            <td>Tool definitions must be created in advance</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Reliability</strong></td>
+                            <td>Structured outputs ensure consistency and predictability</td>
+                            <td>Tool availability and correctness are critical</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Scalability</strong></td>
+                            <td>Horizontal scaling possible with async execution</td>
+                            <td>Tool bottlenecks can limit overall throughput</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>When to Use (Best Practices)</h3>
+                <div class="success-box">
+                    <h4>✅ Perfect For:</h4>
+                    <ul>
+                        <li>Tasks requiring real-time data access</li>
+                        <li>Operations affecting critical systems</li>
+                        <li>Complex multi-step processes</li>
+                        <li>Systems requiring compliance and audit trails</li>
+                        <li>Applications needing cost control</li>
+                        <li>Safety-critical operations</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <h4>⚠️ Be Careful With:</h4>
+                    <ul>
+                        <li>Simple Q&A that doesn't need external data</li>
+                        <li>One-off queries without reusable tools</li>
+                        <li>When latency is critical (adds overhead)</li>
+                        <li>Tools that are unreliable or frequently fail</li>
+                        <li>Highly dynamic tool requirements</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="section-divider"></div>
+
+            <!-- Alternatives -->
+            <section id="alternatives">
+                <h2>1️⃣6️⃣ Alternatives & Competitive Analysis</h2>
+
+                <h3>Alternative Approaches</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Approach</th>
+                            <th>Description</th>
+                            <th>Pros</th>
+                            <th>Cons</th>
+                            <th>Best For</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Plain LLM API</strong></td>
+                            <td>Call LLM directly without tools; traditional prompt engineering</td>
+                            <td>Simple, low latency, cost-effective for basic tasks</td>
+                            <td>No real-world interaction, hallucinations, no structure</td>
+                            <td>Text generation, creative writing, simple Q&A</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Retrieval-Augmented Generation (RAG)</strong></td>
+                            <td>Provide context through document retrieval before LLM call</td>
+                            <td>Grounds responses in actual data, reduces hallucination</td>
+                            <td>Doesn't execute actions, limited to read-only operations</td>
+                            <td>Question answering over documents, knowledge bases</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Traditional APIs</strong></td>
+                            <td>Build deterministic APIs with if-then logic and decision trees</td>
+                            <td>Fully predictable, no surprises, optimized</td>
+                            <td>Rigid, cannot adapt to new scenarios, not intelligent</td>
+                            <td>Well-defined, repetitive processes</td>
+                        </tr>
+                        <tr>
+                            <td><strong>LangGraph</strong></td>
+                            <td>Advanced framework for complex multi-step agent workflows</td>
+                            <td>Handles complex state, branching, loops, human-in-the-loop</td>
+                            <td>More complex than simple tools, steeper learning curve</td>
+                            <td>Complex multi-agent systems, advanced orchestration</td>
+                        </tr>
+                        <tr>
+                            <td><strong>AutoGPT / Task Agents</strong></td>
+                            <td>Fully autonomous agents with self-directed task completion</td>
+                            <td>Maximum autonomy, minimal human oversight</td>
+                            <td>Risk of unintended actions, hard to control, expensive</td>
+                            <td>Research, exploration, autonomous research tasks</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>LangChain vs Competitors</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>LangChain</th>
+                            <th>LlamaIndex</th>
+                            <th>Haystack</th>
+                            <th>Custom Implementation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Tool Support</strong></td>
+                            <td>⭐⭐⭐⭐⭐ Excellent</td>
+                            <td>⭐⭐⭐ Good</td>
+                            <td>⭐⭐⭐⭐ Very Good</td>
+                            <td>⭐⭐ Basic</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Agent Capabilities</strong></td>
+                            <td>⭐⭐⭐⭐⭐ Excellent</td>
+                            <td>⭐⭐⭐ Good</td>
+                            <td>⭐⭐⭐ Good</td>
+                            <td>⭐⭐ Basic</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Learning Curve</strong></td>
+                            <td>⭐⭐⭐ Moderate</td>
+                            <td>⭐⭐⭐⭐ Easy</td>
+                            <td>⭐⭐⭐ Moderate</td>
+                            <td>⭐⭐⭐⭐⭐ Steep</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Community</strong></td>
+                            <td>⭐⭐⭐⭐⭐ Excellent</td>
+                            <td>⭐⭐⭐⭐ Very Good</td>
+                            <td>⭐⭐⭐ Good</td>
+                            <td>N/A</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Flexibility</strong></td>
+                            <td>⭐⭐⭐⭐⭐ Excellent</td>
+                            <td>⭐⭐⭐⭐ Very Good</td>
+                            <td>⭐⭐⭐⭐ Very Good</td>
+                            <td>⭐⭐⭐⭐⭐ Maximum</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <div class="section-divider"></div>
+
+            <!-- Future -->
+            <section id="future">
+                <h2>1️⃣7️⃣ Future Evolution & Trends</h2>
+
+                <h3>Emerging Developments</h3>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-icon">🧠</div>
+                        <h4>Multi-Agent Systems</h4>
+                        <p>
+                            Multiple specialized agents working together, delegating tasks, and collaborating to solve complex problems requiring different expertise.
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">🔄</div>
+                        <h4>Self-Improving Agents</h4>
+                        <p>
+                            Agents that learn from experience, optimize tool usage patterns, and improve decision-making over time through feedback loops.
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">🌐</div>
+                        <h4>Federated Learning</h4>
+                        <p>
+                            Distributed agent networks that collaborate while maintaining privacy, enabling secure enterprise-scale deployments.
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">⚡</div>
+                        <h4>Edge Deployment</h4>
+                        <p>
+                            Lightweight agents running on edge devices, reducing latency and enabling offline-capable AI applications.
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">🎯</div>
+                        <h4>Tool Discovery</h4>
+                        <p>
+                            Agents that can discover and learn to use new tools dynamically without retraining, adapting to new APIs and systems automatically.
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">🔐</div>
+                        <h4>Trustworthy AI</h4>
+                        <p>
+                            Built-in transparency, explainability, and control mechanisms for responsible AI deployment in regulated industries.
+                        </p>
+                    </div>
+                </div>
+
+                <h3>Technology Roadmap</h3>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>Present (2024-2025)</h4>
+                            <p>
+                                <strong>Focus:</strong> Refinement of tool-calling mechanisms, manual control patterns, structured outputs
+                            </p>
+                            <p>
+                                <strong>Key Tech:</strong> LangChain, LangGraph, function calling APIs, Pydantic v2, LangSmith monitoring
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>Near Future (2025-2026)</h4>
+                            <p>
+                                <strong>Focus:</strong> Multi-agent orchestration, reasoning improvements, world models
+                            </p>
+                            <p>
+                                <strong>Key Tech:</strong> LangGraph complexity, reasoning LLMs (o1, o3), multi-turn planning
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>Medium Future (2026-2028)</h4>
+                            <p>
+                                <strong>Focus:</strong> Autonomous agents, self-improvement loops, tool learning
+                            </p>
+                            <p>
+                                <strong>Key Tech:</strong> Meta-learning, continuous adaptation, federated systems
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>Long Term (2028+)</h4>
+                            <p>
+                                <strong>Focus:</strong> Artificial general intelligence, multi-domain agents, fully autonomous systems
+                            </p>
+                            <p>
+                                <strong>Key Tech:</strong> Emergent behaviors, cross-domain transfer learning, unified intelligence
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Predicted Trends</h3>
+                <div class="callout">
+                    <strong>📈 Increased Adoption:</strong> Tool-calling will become standard for enterprise AI, moving from experimental to production at scale.
+                </div>
+
+                <div class="callout">
+                    <strong>🤝 Better Integration:</strong> Seamless integration with existing enterprise systems, APIs, and databases will improve significantly.
+                </div>
+
+                <div class="callout">
+                    <strong>🧠 Enhanced Reasoning:</strong> More powerful reasoning models will better understand when and how to use tools effectively.
+                </div>
+
+                <div class="callout">
+                    <strong>🔒 Safety & Control:</strong> Stronger focus on safety mechanisms, explainability, and human oversight in critical applications.
+                </div>
+
+                <div class="callout">
+                    <strong>💰 Cost Efficiency:</strong> Improved efficiency in tool selection and execution will drive down the cost of AI operations.
+                </div>
+
+                <div class="callout">
+                    <strong>🌍 Standardization:</strong> Emerging standards and best practices will make building agents more accessible to developers.
+                </div>
+            </section>
+
+            <div class="section-divider"></div>
+
+            <!-- Conclusion -->
+            <section>
+                <h2>🎓 Conclusion & Next Steps</h2>
+
+                <p>
+                    The transformation of Large Language Models from passive text generators into intelligent, action-taking agents represents a fundamental shift in how we build AI applications. By equipping LLMs with tools, we've unlocked their potential to interact with the real world, access current data, and perform complex, multi-step tasks.
+                </p>
+
+                <div class="success-box">
+                    <h4>✨ Key Takeaways</h4>
+                    <ul>
+                        <li><strong>Tools are the Bridge:</strong> Connect LLMs to external systems and enable real-world action</li>
+                        <li><strong>Agents are Smart:</strong> Use LLM reasoning to decide when and which tools to use</li>
+                        <li><strong>Control Matters:</strong> Manual invocation provides safety, cost management, and accuracy</li>
+                        <li><strong>Structure is Essential:</strong> Structured outputs ensure reliability and consistency</li>
+                        <li><strong>LCEL Simplifies:</strong> Declarative syntax makes building complex chains accessible</li>
+                        <li><strong>Production Ready:</strong> LangChain provides the framework for enterprise-grade deployment</li>
+                    </ul>
+                </div>
+
+                <h3>Resources for Further Learning</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Resource</th>
+                            <th>Description</th>
+                            <th>Level</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>LangChain Documentation</strong></td>
+                            <td>Official docs with comprehensive guides and API reference</td>
+                            <td>All Levels</td>
+                        </tr>
+                        <tr>
+                            <td><strong>LangGraph Tutorial</strong></td>
+                            <td>Learn advanced multi-agent and stateful orchestration patterns</td>
+                            <td>Intermediate</td>
+                        </tr>
+                        <tr>
+                            <td><strong>OpenAI Function Calling Guide</strong></td>
+                            <td>Native function calling implementation and best practices</td>
+                            <td>Intermediate</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Anthropic Tool Use Docs</strong></td>
+                            <td>Tool calling with Claude models and extended thinking</td>
+                            <td>Intermediate</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Production Patterns</strong></td>
+                            <td>Real-world implementation patterns and architecture decisions</td>
+                            <td>Advanced</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Your Next Steps</h3>
+                <div class="info-box">
+                    <h4>📝 Recommended Path</h4>
+                    <ol>
+                        <li>Start with simple tools using the @tool decorator</li>
+                        <li>Build a basic agent with manual tool invocation</li>
+                        <li>Add structured outputs using Pydantic models</li>
+                        <li>Implement validation and error handling</li>
+                        <li>Experiment with LCEL for chain composition</li>
+                        <li>Add tool combinations for complex workflows</li>
+                        <li>Deploy with LangServe for production use</li>
+                        <li>Monitor and optimize with LangSmith</li>
+                    </ol>
+                </div>
+            </section>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>
+                <strong>LLM Agents & Tools: Complete Developer's Guide</strong>
+            </p>
+            <p>
+                Master the art of building intelligent AI agents with LangChain
+            </p>
+            <p style="font-size: 0.9rem; margin-top: 1rem;">
+                Last Updated: January 2025 | Comprehensive Study Material for Advanced LLM Development
+            </p>
+        </footer>
+    </main>
+
+    <!-- Back to Top Button -->
+    <div class="back-to-top" onclick="window.scrollTo(0,0)">↑</div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+        mermaid.contentLoaded();
+
+        // Back to top button functionality
+        const backToTopBtn = document.querySelector('.back-to-top');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTopBtn.classList.add('visible');
+            } else {
+                backToTopBtn.classList.remove('visible');
+            }
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href.startsWith('#')) {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            });
+        });
+
+        // Add copy-to-clipboard functionality for code blocks
+        document.querySelectorAll('.code-block').forEach(block => {
+            const copyBtn = document.createElement('button');
+            copyBtn.textContent = '📋 Copy';
+            copyBtn.className = 'btn btn-secondary';
+            copyBtn.style.position = 'absolute';
+            copyBtn.style.top = '0.5rem';
+            copyBtn.style.right = '0.5rem';
+            copyBtn.style.padding = '0.4rem 0.8rem';
+            copyBtn.style.fontSize = '0.85rem';
+            
+            block.style.position = 'relative';
+            block.appendChild(copyBtn);
+            
+            copyBtn.addEventListener('click', function() {
+                const code = block.querySelector('code') || block.textContent;
+                navigator.clipboard.writeText(code.textContent || code);
+                copyBtn.textContent = '✅ Copied!';
+                setTimeout(() => {
+                    copyBtn.textContent = '📋 Copy';
+                }, 2000);
+            });
+        });
+
+        // Mobile menu toggle (if needed for smaller screens)
+        window.addEventListener('resize', () => {
+            const nav = document.querySelector('nav');
+            if (window.innerWidth < 768) {
+                nav.style.flexWrap = 'wrap';
+            }
+        });
+    </script>
+</body>
+</html>
