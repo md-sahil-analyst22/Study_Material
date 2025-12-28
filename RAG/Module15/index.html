@@ -1,0 +1,2339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Guide to LangChain Agents for Data Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --accent-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --dark-bg: #0f172a;
+            --light-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Header & Navigation */
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: #e2e8ff; /* Changed for better readability */
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 600;
+            box-shadow: var(--shadow);
+        }
+
+        header h1 {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 0.1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            text-align: center;
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        nav {
+            background: var(--secondary-color);
+            padding: 1rem 2rem;
+            overflow-x: auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: #e2e8ff; /* Changed for better readability */
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        section {
+            background: var(--card-bg);
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        h4 {
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+
+        /* Lists */
+        ul, ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.8rem;
+            color: var(--text-primary);
+        }
+
+        /* Code Blocks */
+        pre {
+            background: var(--dark-bg);
+            color: #e0e7ff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        code {
+            background: var(--dark-bg);
+            color: #e0e7ff;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        table th {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        table td {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        table tr:hover {
+            background: var(--light-bg);
+            transition: var(--transition);
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow);
+            transform: translateY(-2px);
+        }
+
+        .card-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Highlights */
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .highlight-box.warning {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(239, 68, 68, 0.1) 100%);
+            border-left-color: var(--warning-color);
+        }
+
+        .highlight-box.info {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.1) 100%);
+            border-left-color: var(--primary-color);
+        }
+
+        /* Diagram */
+        .diagram {
+            background: var(--light-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 300px;
+        }
+
+        .diagram svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .feature-item {
+            background: linear-gradient(135deg, var(--light-bg) 0%, white 100%);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .feature-item:hover {
+            box-shadow: var(--shadow);
+            transform: translateY(-5px);
+        }
+
+        .feature-item h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Implementation Guide */
+        .implementation-step {
+            background: var(--light-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .implementation-step h4 {
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .step-number {
+            background: var(--primary-color);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        .comparison-table table {
+            width: 100%;
+            min-width: 600px;
+        }
+
+        /* Benefits & Drawbacks */
+        .benefits-drawbacks {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .benefit-item {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
+            border-left: 4px solid var(--accent-color);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .drawback-item {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+            border-left: 4px solid var(--danger-color);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: #e2e8ff; /* Changed for better readability */
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+            border-radius: 8px 8px 0 0;
+        }
+
+        footer p, footer strong {
+            color: #e2e8ff; /* Changed for better readability */
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            h3 {
+                font-size: 1.2rem;
+            }
+
+            nav {
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            nav a {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
+
+            section {
+                padding: 1.5rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .benefits-drawbacks {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 0 0.5rem;
+            }
+
+            pre {
+                font-size: 0.85rem;
+                padding: 1rem;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            table th, table td {
+                padding: 0.6rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+
+            h2 {
+                font-size: 1.3rem;
+            }
+
+            nav {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            nav a {
+                display: block;
+                text-align: center;
+            }
+
+            section {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            pre {
+                font-size: 0.8rem;
+                padding: 0.8rem;
+            }
+        }
+
+        /* Scroll Behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+            }
+
+            section {
+                page-break-inside: avoid;
+            }
+
+            nav {
+                display: none;
+            }
+        }
+
+        /* Accessibility */
+        a:focus {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 2px;
+        }
+
+        button:focus {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 2px;
+        }
+
+        /* Mermaid Diagram Container */
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            background: var(--light-bg);
+            padding: 2rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+
+        /* Additional Styling */
+        .icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .badge-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .badge-success {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .badge-warning {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .code-example {
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .code-label {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px 4px 0 0;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Animation */
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .animate-pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* Print-friendly */
+        @media print {
+            .no-print {
+                display: none;
+            }
+        }
+
+        /* Image Styling */
+        .section-image {
+            display: block;
+            margin: 2rem auto;
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .image-caption {
+            text-align: center;
+            font-style: italic;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🤖 Complete Guide to LangChain Agents for Data Analysis</h1>
+    </header>
+
+    <nav>
+        <a href="#what-is">What is LangChain?</a>
+        <a href="#why-it">Why LangChain?</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#agent-types">Agent Types</a>
+        <a href="#core-concepts">Core Concepts</a>
+        <a href="#sql-agent">SQL Agents</a>
+        <a href="#pandas-agent">Pandas Agents</a>
+        <a href="#implementation">Implementation</a>
+        <a href="#use-cases">Use Cases</a>
+        <a href="#best-practices">Best Practices</a>
+        <a href="#future">Future Trends</a>
+    </nav>
+
+    <div class="container">
+        <!-- Section 1: What is LangChain -->
+        <section id="what-is">
+            <h2>1. What is LangChain? Understanding the Foundation</h2>
+            
+            <p><strong>LangChain</strong> is an open-source framework that empowers developers to build applications powered by large language models (LLMs). At its core, it provides modular components for creating sophisticated AI applications that can understand natural language, reason about complex tasks, and interact with external systems seamlessly.</p>
+
+            <div class="highlight-box info">
+                <h4>💡 Key Definition</h4>
+                <p>LangChain is a framework that bridges the gap between unstructured natural language inputs and structured computational systems, enabling conversational interfaces to data, APIs, and computational tools.</p>
+            </div>
+
+            <h3>Core Features</h3>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <h4>🔗 Modular Components</h4>
+                    <p>Pre-built tools and utilities for common tasks like data analysis, API integration, and document processing</p>
+                </div>
+                <div class="feature-item">
+                    <h4>🧠 Agent Framework</h4>
+                    <p>Sophisticated reasoning engines that enable autonomous decision-making and multi-step task execution</p>
+                </div>
+                <div class="feature-item">
+                    <h4>💾 Memory Management</h4>
+                    <p>Built-in systems for maintaining context across conversations and interactions</p>
+                </div>
+                <div class="feature-item">
+                    <h4>🔌 Tool Integration</h4>
+                    <p>Seamless integration with databases, APIs, file systems, and data processing libraries</p>
+                </div>
+                <div class="feature-item">
+                    <h4>📊 Data Processing</h4>
+                    <p>Direct integration with Pandas DataFrames, SQL databases, and CSV files for data analysis</p>
+                </div>
+                <div class="feature-item">
+                    <h4>🎯 Query Generation</h4>
+                    <p>Automatic conversion of natural language to executable queries (SQL, Python code)</p>
+                </div>
+            </div>
+
+            <h3>The Evolution of Data Access</h3>
+            <div class="card">
+                <p><strong>Traditional Approach:</strong> Users needed proficiency in SQL, Python, or specialized BI tools. This created a significant technical barrier that locked insights away from non-technical stakeholders.</p>
+            </div>
+            <div class="card">
+                <p><strong>Natural Language Revolution:</strong> LangChain and similar frameworks enable anyone to ask questions in plain English and receive data-driven insights and visualizations without writing code.</p>
+            </div>
+
+            <h3>LangChain Ecosystem</h3>
+            <ul>
+                <li><strong>LangChain Core:</strong> Base framework with fundamental components</li>
+                <li><strong>LangChain Community:</strong> Community-contributed integrations and tools</li>
+                <li><strong>LangGraph:</strong> Graph-based workflow engine for complex reasoning</li>
+                <li><strong>LangServe:</strong> Deployment and serving tools for production applications</li>
+                <li><strong>LangSmith:</strong> Debugging and monitoring for LLM applications</li>
+            </ul>
+        </section>
+
+        <!-- Section 2: Why LangChain -->
+        <section id="why-it">
+            <h2>2. Why LangChain? The Strategic Advantage</h2>
+
+            <h3>The Problem It Solves</h3>
+            <div class="highlight-box warning">
+                <h4>⚠️ Traditional Challenges</h4>
+                <ul>
+                    <li>Technical expertise required (SQL, Python, R)</li>
+                    <li>Time-consuming query development and iteration</li>
+                    <li>Limited accessibility for non-technical users</li>
+                    <li>Complex schema navigation and relationship mapping</li>
+                    <li>Barrier to rapid insight generation</li>
+                </ul>
+            </div>
+
+            <h3>Key Advantages</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Advantage</th>
+                        <th>Impact</th>
+                        <th>Use Case</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Democratizes Data Access</strong></td>
+                        <td>Non-technical users can query data directly</td>
+                        <td>Business users, analysts, executives</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Accelerates Analysis</strong></td>
+                        <td>Instant query conversion and execution</td>
+                        <td>Real-time business intelligence</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reduces Development Time</strong></td>
+                        <td>Pre-built agents for common tasks</td>
+                        <td>Rapid prototyping and MVP development</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Multi-Step Reasoning</strong></td>
+                        <td>Handles complex, multi-query scenarios</td>
+                        <td>Sophisticated analytical needs</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Error Recovery</strong></td>
+                        <td>Self-corrects failed queries automatically</td>
+                        <td>Robust production systems</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="benefits-drawbacks">
+                <div class="benefit-item">
+                    <h4>✅ Benefits</h4>
+                    <ul>
+                        <li>Natural language interface</li>
+                        <li>Automatic code generation</li>
+                        <li>Flexible data source support</li>
+                        <li>Built-in error handling</li>
+                        <li>Scalable architecture</li>
+                        <li>Active community support</li>
+                        <li>Comprehensive documentation</li>
+                    </ul>
+                </div>
+                <div class="drawback-item">
+                    <h4>⚠️ Considerations</h4>
+                    <ul>
+                        <li>Requires LLM access/costs</li>
+                        <li>Security considerations with code execution</li>
+                        <li>Limited by LLM capabilities</li>
+                        <li>Potential for ambiguous queries</li>
+                        <li>Learning curve for implementation</li>
+                        <li>Dependency on external services</li>
+                        <li>Data privacy concerns</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Real-World Impact</h3>
+            <div class="card">
+                <h4>📈 Business Intelligence Example</h4>
+                <p>Instead of waiting hours for SQL queries to be written and executed, business users can now ask: "Show me sales trends by region for Q4" and receive immediate visualizations with insights.</p>
+            </div>
+            <div class="card">
+                <h4>🔬 Data Science Workflow</h4>
+                <p>Data scientists can focus on hypothesis validation rather than data wrangling. Natural language allows rapid exploratory analysis without manual coding.</p>
+            </div>
+        </section>
+
+        <!-- Section 3: Core Concepts & Diagrams -->
+        <section id="core-concepts">
+            <h2>3. Core Concepts & Architecture Fundamentals</h2>
+
+            <!-- Added LangChain Agents Image -->
+            <img src="https://raw.githubusercontent.com/md-sahil-analyst22/Study_Material/main/images/langchain_agents.png" alt="LangChain Agents Architecture" class="section-image">
+            <p class="image-caption">Figure: LangChain Agents Architecture Overview</p>
+
+            <h3>AI-Powered Analytics Workflow</h3>
+            <div class="mermaid">
+                <svg viewBox="0 0 1000 300" xmlns="http://www.w3.org/2000/svg">
+                    <!-- User Input -->
+                    <rect x="10" y="100" width="120" height="80" fill="#3b82f6" rx="8" stroke="#1e40af" stroke-width="2"/>
+                    <text x="70" y="145" text-anchor="middle" fill="white" font-weight="bold">User Query</text>
+                    
+                    <!-- Arrow -->
+                    <path d="M 130 140 L 170 140" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                    
+                    <!-- AI Query Formulation -->
+                    <rect x="170" y="100" width="130" height="80" fill="#8b5cf6" rx="8" stroke="#6d28d9" stroke-width="2"/>
+                    <text x="235" y="135" text-anchor="middle" fill="white" font-weight="bold">AI Query</text>
+                    <text x="235" y="160" text-anchor="middle" fill="white" font-weight="bold">Formulation</text>
+                    
+                    <!-- Arrow -->
+                    <path d="M 300 140 L 340 140" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                    
+                    <!-- Database -->
+                    <rect x="340" y="100" width="120" height="80" fill="#06b6d4" rx="8" stroke="#0891b2" stroke-width="2"/>
+                    <text x="400" y="130" text-anchor="middle" fill="white" font-weight="bold">Database</text>
+                    <text x="400" y="160" text-anchor="middle" fill="white" font-weight="bold">Extraction</text>
+                    
+                    <!-- Arrow -->
+                    <path d="M 460 140 L 500 140" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                    
+                    <!-- Analysis -->
+                    <rect x="500" y="100" width="120" height="80" fill="#10b981" rx="8" stroke="#059669" stroke-width="2"/>
+                    <text x="560" y="135" text-anchor="middle" fill="white" font-weight="bold">Data</text>
+                    <text x="560" y="160" text-anchor="middle" fill="white" font-weight="bold">Analysis</text>
+                    
+                    <!-- Arrow -->
+                    <path d="M 620 140 L 660 140" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                    
+                    <!-- Insights -->
+                    <rect x="660" y="100" width="120" height="80" fill="#f59e0b" rx="8" stroke="#d97706" stroke-width="2"/>
+                    <text x="720" y="135" text-anchor="middle" fill="white" font-weight="bold">Insight</text>
+                    <text x="720" y="160" text-anchor="middle" fill="white" font-weight="bold">Synthesis</text>
+                    
+                    <!-- Arrow -->
+                    <path d="M 780 140 L 820 140" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                    
+                    <!-- Visualization -->
+                    <rect x="820" y="100" width="120" height="80" fill="#ef4444" rx="8" stroke="#dc2626" stroke-width="2"/>
+                    <text x="880" y="135" text-anchor="middle" fill="white" font-weight="bold">Presentation</text>
+                    <text x="880" y="160" text-anchor="middle" fill="white" font-weight="bold">Output</text>
+                    
+                    <!-- Arrow marker definition -->
+                    <defs>
+                        <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#64748b"/>
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+
+            <h3>The Six-Step AI Analytics Pipeline</h3>
+            
+            <div class="implementation-step">
+                <h4><span class="step-number">1</span>User Input Query</h4>
+                <p>The process begins when a user enters a natural language question like "Show me sales trends by region for the last quarter" or "Which products have the highest customer retention?"</p>
+            </div>
+
+            <div class="implementation-step">
+                <h4><span class="step-number">2</span>AI-Driven Query Formulation</h4>
+                <p>The LLM interprets the natural language input by:</p>
+                <ul>
+                    <li>Identifying key entities and metrics</li>
+                    <li>Mapping natural language terms to database schema</li>
+                    <li>Determining analytical intent</li>
+                    <li>Formulating executable queries (SQL or Python)</li>
+                </ul>
+            </div>
+
+            <div class="implementation-step">
+                <h4><span class="step-number">3</span>Database Data Extraction</h4>
+                <p>The formulated query is executed against data sources to retrieve raw data while managing authentication, error handling, and optimization.</p>
+            </div>
+
+            <div class="implementation-step">
+                <h4><span class="step-number">4</span>Data Analysis Process</h4>
+                <p>Retrieved data undergoes cleaning, preprocessing, statistical analysis, and pattern identification to transform raw data into meaningful results.</p>
+            </div>
+
+            <div class="implementation-step">
+                <h4><span class="step-number">5</span>Insight Synthesis</h4>
+                <p>The system interprets analytical results, identifies key findings, and generates natural language explanations of what the data means.</p>
+            </div>
+
+            <div class="implementation-step">
+                <h4><span class="step-number">6</span>Presentation Output</h4>
+                <p>Insights are delivered through visualizations, charts, and clear textual summaries, ensuring findings are accessible regardless of technical background.</p>
+            </div>
+
+            <h3>Key Components of LangChain</h3>
+            <div class="card">
+                <div class="card-title">🔌 Agents</div>
+                <p>Autonomous systems that use LLMs as reasoning engines to decide which tools to use and how to accomplish tasks through multiple steps.</p>
+            </div>
+            <div class="card">
+                <div class="card-title">🛠️ Tools</div>
+                <p>External functions and systems that agents can invoke (databases, APIs, computational libraries, search engines).</p>
+            </div>
+            <div class="card">
+                <div class="card-title">🧠 Large Language Models (LLMs)</div>
+                <p>The reasoning engine behind agents, providing natural language understanding and generation capabilities.</p>
+            </div>
+            <div class="card">
+                <div class="card-title">💾 Memory</div>
+                <p>Mechanisms for maintaining context across interactions, enabling multi-turn conversations and informed decision-making.</p>
+            </div>
+            <div class="card">
+                <div class="card-title">🔗 Chains</div>
+                <p>Sequences of operations that combine multiple components to accomplish complex tasks.</p>
+            </div>
+            <div class="card">
+                <div class="card-title">📊 Parsers</div>
+                <p>Tools for extracting structured information from unstructured LLM outputs.</p>
+            </div>
+        </section>
+
+        <!-- Section 4: Agent Architecture -->
+        <section id="architecture">
+            <h2>4. LangChain Agent Architecture & Design Patterns</h2>
+
+            <h3>Agent Architecture Overview</h3>
+            <div class="mermaid">
+                <svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Main Agent Box -->
+                    <rect x="150" y="50" width="500" height="400" fill="none" stroke="#2563eb" stroke-width="2" stroke-dasharray="5,5" rx="8"/>
+                    <text x="400" y="35" text-anchor="middle" font-weight="bold" font-size="16">LangChain Agent System</text>
+                    
+                    <!-- LLM Component -->
+                    <rect x="200" y="100" width="150" height="80" fill="#3b82f6" rx="8" stroke="#1e40af" stroke-width="2"/>
+                    <text x="275" y="140" text-anchor="middle" fill="white" font-weight="bold">LLM (Reasoning</text>
+                    <text x="275" y="165" text-anchor="middle" fill="white" font-weight="bold">Engine)</text>
+                    
+                    <!-- Tool Selection -->
+                    <rect x="450" y="100" width="150" height="80" fill="#8b5cf6" rx="8" stroke="#6d28d9" stroke-width="2"/>
+                    <text x="525" y="135" text-anchor="middle" fill="white" font-weight="bold">Tool</text>
+                    <text x="525" y="165" text-anchor="middle" fill="white" font-weight="bold">Selection</text>
+                    
+                    <!-- Tools -->
+                    <rect x="50" y="220" width="140" height="70" fill="#06b6d4" rx="8" stroke="#0891b2" stroke-width="2"/>
+                    <text x="120" y="255" text-anchor="middle" fill="white" font-weight="bold">SQL Database</text>
+                    
+                    <rect x="200" y="220" width="140" height="70" fill="#06b6d4" rx="8" stroke="#0891b2" stroke-width="2"/>
+                    <text x="270" y="245" text-anchor="middle" fill="white" font-weight="bold">Pandas</text>
+                    <text x="270" y="270" text-anchor="middle" fill="white" font-weight="bold">DataFrame</text>
+                    
+                    <rect x="350" y="220" width="140" height="70" fill="#06b6d4" rx="8" stroke="#0891b2" stroke-width="2"/>
+                    <text x="420" y="255" text-anchor="middle" fill="white" font-weight="bold">CSV Files</text>
+                    
+                    <rect x="500" y="220" width="140" height="70" fill="#06b6d4" rx="8" stroke="#0891b2" stroke-width="2"/>
+                    <text x="570" y="255" text-anchor="middle" fill="white" font-weight="bold">Custom APIs</text>
+                    
+                    <!-- Memory Component -->
+                    <rect x="200" y="340" width="400" height="60" fill="#10b981" rx="8" stroke="#059669" stroke-width="2"/>
+                    <text x="400" y="375" text-anchor="middle" fill="white" font-weight="bold">Memory & Context Management</text>
+                    
+                    <!-- Arrows -->
+                    <path d="M 275 180 L 275 220" stroke="#64748b" stroke-width="2" marker-end="url(#arrowhead)"/>
+                    <path d="M 525 180 L 525 220" stroke="#64748b" stroke-width="2" marker-end="url(#arrowhead)"/>
+                    <path d="M 400 340 L 400 310" stroke="#64748b" stroke-width="2" marker-end="url(#arrowhead)"/>
+                </svg>
+            </div>
+
+            <h3>Agent Reasoning Process: The ReAct Framework</h3>
+            <p>Most LangChain agents are built on the <strong>ReAct (Reason+Act)</strong> framework, which combines reasoning and action in a loop:</p>
+
+            <div class="highlight-box">
+                <h4>ReAct Workflow</h4>
+                <ol>
+                    <li><strong>Thought:</strong> LLM reasons about the problem and formulates a plan</li>
+                    <li><strong>Action:</strong> LLM decides which tool to use</li>
+                    <li><strong>Observation:</strong> Tool execution returns results</li>
+                    <li><strong>Loop:</strong> Process repeats until solution is found</li>
+                    <li><strong>Final Answer:</strong> Agent provides the result in natural language</li>
+                </ol>
+            </div>
+
+            <h3>Agent Execution Flow</h3>
+            <div class="card">
+                <h4>Step-by-Step Execution</h4>
+                <pre><code># Example agent reasoning process
+User Query: "How many employees are in the Sales department?"
+
+Agent Thought: "I need to find information about employees in the Sales department. 
+I should use the SQL database tool to query this."
+
+Agent Action: Execute SQL query
+SELECT COUNT(*) FROM Employees WHERE Department = 'Sales'
+
+Observation: Result = 24
+
+Final Answer: "There are 24 employees in the Sales department."</code></pre>
+            </div>
+
+            <h3>Architecture Components in Detail</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Function</th>
+                        <th>Examples</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Language Model</strong></td>
+                        <td>Core reasoning engine</td>
+                        <td>GPT-4, Claude, Llama, IBM Granite</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tools/Toolkit</strong></td>
+                        <td>External capabilities</td>
+                        <td>SQLDatabase, PandasDataFrame, Custom APIs</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Agent Loop</strong></td>
+                        <td>Control flow mechanism</td>
+                        <td>ReAct, Plan-and-Execute, Graph-based</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Memory System</strong></td>
+                        <td>Context preservation</td>
+                        <td>Conversation history, variable storage</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Executor</strong></td>
+                        <td>Runtime orchestration</td>
+                        <td>AgentExecutor, LangGraph executor</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 5: Agent Types -->
+        <section id="agent-types">
+            <h2>5. LangChain Agent Types: Comprehensive Taxonomy</h2>
+
+            <h3>Core Agent Types</h3>
+            <p>LangChain provides several foundational agent types, each defining a unique approach to reasoning and tool utilization:</p>
+
+            <div class="card">
+                <div class="card-title">🔵 ZERO_SHOT_REACT_DESCRIPTION</div>
+                <p><strong>How it works:</strong> Performs reasoning before acting. Picks the right tool using only its description.</p>
+                <p><strong>Best for:</strong> General-purpose tasks where the agent needs to reason about which tool to use based on tool descriptions alone.</p>
+                <p><strong>Example:</strong> Data analysis queries where the agent must decide between SQL, Pandas, or Python based on the question.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">📚 REACT_DOCSTORE</div>
+                <p><strong>How it works:</strong> Zero-shot agent with access to a document store for retrieving information.</p>
+                <p><strong>Best for:</strong> Queries requiring information retrieval from documents, Wikipedia, or knowledge bases.</p>
+                <p><strong>Example:</strong> "What is the definition of machine learning?"</p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🔍 SELF_ASK_WITH_SEARCH</div>
+                <p><strong>How it works:</strong> Breaks complex questions into simpler ones and answers using search tools.</p>
+                <p><strong>Best for:</strong> Complex multi-step questions requiring decomposition.</p>
+                <p><strong>Example:</strong> "Who is the current CEO of the company founded by the inventor of the internet?"</p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">💬 CONVERSATIONAL_REACT_DESCRIPTION</div>
+                <p><strong>How it works:</strong> Maintains conversation history while reasoning and acting.</p>
+                <p><strong>Best for:</strong> Multi-turn conversations with context awareness.</p>
+                <p><strong>Example:</strong> Chatbots that need to remember previous queries in a session.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🎤 CHAT_ZERO_SHOT_REACT_DESCRIPTION</div>
+                <p><strong>How it works:</strong> Like zero-shot agent but optimized for chat models like GPT-4.</p>
+                <p><strong>Best for:</strong> Chat-based interfaces with modern LLMs.</p>
+                <p><strong>Example:</strong> ChatGPT-like interfaces for data analysis.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🗣️ STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION</div>
+                <p><strong>How it works:</strong> Optimized for chat models and structured tools with multiple inputs.</p>
+                <p><strong>Best for:</strong> Complex tool interactions requiring structured inputs.</p>
+                <p><strong>Example:</strong> Advanced API calls with multiple parameters.</p>
+            </div>
+
+            <h3>Prebuilt Agent Utilities</h3>
+            <p>For common use cases, LangChain provides specialized agent creators:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Function</th>
+                        <th>Purpose</th>
+                        <th>Default Agent Type</th>
+                        <th>Use Case</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>create_pandas_dataframe_agent()</strong></td>
+                        <td>Natural language to DataFrame analysis</td>
+                        <td>zero-shot-react-description</td>
+                        <td>CSV/in-memory data analysis</td>
+                    </tr>
+                    <tr>
+                        <td><strong>create_csv_agent()</strong></td>
+                        <td>Query CSV files conversationally</td>
+                        <td>zero-shot-react-description</td>
+                        <td>File-based data exploration</td>
+                    </tr>
+                    <tr>
+                        <td><strong>create_sql_agent()</strong></td>
+                        <td>Natural language SQL queries</td>
+                        <td>zero-shot-react-description</td>
+                        <td>Database queries</td>
+                    </tr>
+                    <tr>
+                        <td><strong>create_openai_functions_agent()</strong></td>
+                        <td>OpenAI function calling</td>
+                        <td>openai-functions</td>
+                        <td>OpenAI-specific optimization</td>
+                    </tr>
+                    <tr>
+                        <td><strong>create_tool_calling_agent()</strong></td>
+                        <td>Generic structured tool invocation</td>
+                        <td>structured-chat-zero-shot-react-description</td>
+                        <td>Custom tool orchestration</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>LangGraph: Advanced Agent Patterns</h3>
+            <p>For complex scenarios requiring fine-grained control:</p>
+            <div class="highlight-box">
+                <h4>LangGraph Advantages</h4>
+                <ul>
+                    <li>Explicit reasoning steps with clear control flow</li>
+                    <li>Graph-structured workflows for complex logic</li>
+                    <li>Loop and conditional logic support</li>
+                    <li>Better debugging and visualization</li>
+                    <li>Production-ready agent implementations</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 6: SQL Agents -->
+        <section id="sql-agent">
+            <h2>6. SQL Agents: Natural Language Database Querying</h2>
+
+            <!-- Added LangChain SQL Agent Image -->
+            <img src="https://raw.githubusercontent.com/md-sahil-analyst22/Study_Material/main/images/Langchain_sql_agent.png" alt="LangChain SQL Agent Architecture" class="section-image">
+            <p class="image-caption">Figure: LangChain SQL Agent Architecture and Workflow</p>
+
+            <h3>What is a SQL Agent?</h3>
+            <p>A SQL Agent is a specialized LangChain agent that translates natural language questions into SQL queries, executes them against databases, and returns results. It bridges the gap between business users and complex databases.</p>
+
+            <h3>Core Capabilities</h3>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <h4>🔍 Schema Understanding</h4>
+                    <p>Automatically learns database structure and table relationships</p>
+                </div>
+                <div class="feature-item">
+                    <h4>✅ Query Validation</h4>
+                    <p>Validates and corrects malformed queries</p>
+                </div>
+                <div class="feature-item">
+                    <h4>🔄 Error Recovery</h4>
+                    <p>Automatically retries failed queries with corrections</p>
+                </div>
+                <div class="feature-item">
+                    <h4>📊 Multi-Step Queries</h4>
+                    <p>Handles complex queries with joins and nested conditions</p>
+                </div>
+                <div class="feature-item">
+                    <h4>💡 Token Efficiency</h4>
+                    <p>Retrieves schemas only from relevant tables</p>
+                </div>
+                <div class="feature-item">
+                    <h4>📝 Insight Generation</h4>
+                    <p>Explains results in natural language</p>
+                </div>
+            </div>
+
+            <h3>SQL Agent Implementation</h3>
+
+            <div class="code-example">
+                <div class="code-label">Step 1: Environment Setup & Imports</div>
+                <pre><code># Install required packages
+# pip install langchain ibm-watsonx-ai mysql-connector-python
+
+import warnings
+warnings.filterwarnings('ignore')
+
+from ibm_watsonx_ai.foundation_models import ModelInference
+from ibm_watsonx_ai.metanames import GenTextParamsMetaNames as GenParams
+from ibm_watsonx_ai.foundation_models.utils.enums import ModelTypes
+from ibm_watson_machine_learning.foundation_models.extensions.langchain import WatsonxLLM
+from langchain_community.utilities.sql_database import SQLDatabase
+from langchain_community.agent_toolkits import create_sql_agent
+from langchain.agents import AgentType
+</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-label">Step 2: Configure LLM with IBM Watsonx.ai</div>
+                <pre><code># Define model parameters
+model_id = 'ibm/granite-3-2-8b-instruct'
+parameters = {
+    GenParams.MAX_NEW_TOKENS: 1024,  # Max response length
+    GenParams.TEMPERATURE: 0.2,       # Lower = more predictable
+    GenParams.TOP_P: 0.95,
+    GenParams.REPETITION_PENALTY: 1.2,
+}
+
+# Set up credentials
+credentials = {
+    "url": "https://us-south.ml.cloud.ibm.com"
+}
+
+project_id = "your-project-id"
+
+# Initialize the model
+model = ModelInference(
+    model_id=model_id,
+    params=parameters,
+    credentials=credentials,
+    project_id=project_id
+)
+
+# Wrap for LangChain integration
+llm = WatsonxLLM(model=model)
+</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-label">Step 3: Create Database Connection</div>
+                <pre><code># Database connection parameters
+mysql_username = 'root'
+mysql_password = 'your_password'
+mysql_host = 'your_host_ip'
+mysql_port = '3306'
+database_name = 'Chinook'
+
+# Create connection URI
+mysql_uri = f'mysql+mysqlconnector://{mysql_username}:{mysql_password}@{mysql_host}:{mysql_port}/{database_name}'
+
+# Initialize database connection
+db = SQLDatabase.from_uri(mysql_uri)
+
+# Verify connection
+print(f"Connected tables: {db.get_table_names()}")
+</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-label">Step 4: Create SQL Agent</div>
+                <pre><code># Initialize the SQL agent
+agent_executor = create_sql_agent(
+    llm=llm,
+    db=db,
+    verbose=True,  # Show detailed reasoning
+    handle_parsing_errors=True,  # Auto-correct errors
+    agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION
+)
+
+# Test with a simple query
+result = agent_executor.invoke(
+    "How many albums are in the database?"
+)
+
+print(result)
+</code></pre>
+            </div>
+
+            <h3>SQL Agent in Action: Example Queries</h3>
+
+            <div class="card">
+                <h4>Example 1: Simple Count Query</h4>
+                <p><strong>Natural Language Query:</strong> "How many albums are in the database?"</p>
+                <p><strong>Agent Thought Process:</strong></p>
+                <pre><code>Thought: I need to count the number of albums in the Album table.
+Action: Query the database to count rows in the Album table.
+SQL Generated: SELECT COUNT(*) FROM Album;
+Result: 347
+Final Answer: There are 347 albums in the database.</code></pre>
+            </div>
+
+            <div class="card">
+                <h4>Example 2: Schema Exploration</h4>
+                <p><strong>Natural Language Query:</strong> "Describe the PlaylistTrack table"</p>
+                <p><strong>Agent Thought Process:</strong></p>
+                <pre><code>Thought: I need to understand the structure of the PlaylistTrack table.
+Action: Retrieve table schema information.
+Result: 
+- PlaylistId: INTEGER (FK)
+- TrackId: INTEGER (FK)
+Final Answer: The PlaylistTrack table has two columns: 
+PlaylistId (Foreign Key) and TrackId (Foreign Key).</code></pre>
+            </div>
+
+            <div class="card">
+                <h4>Example 3: Complex Multi-Step Query</h4>
+                <p><strong>Natural Language Query:</strong> "Which country's customers spent the most by invoice?"</p>
+                <p><strong>Agent Thought Process:</strong></p>
+                <pre><code>Thought: I need to find which country has the highest total spending.
+This requires joining Customer and Invoice tables.
+Initial Attempt: Failed (incorrect table names)
+Error Recovery: Agent lists available tables, identifies correct ones
+Corrected SQL: SELECT c.Country, SUM(i.Total) as Total
+               FROM Customer c
+               JOIN Invoice i ON c.CustomerId = i.CustomerId
+               GROUP BY c.Country
+               ORDER BY Total DESC LIMIT 1;
+Result: USA with total of 523.06
+Final Answer: Customers from the USA spent the most with a total of $523.06.</code></pre>
+            </div>
+
+            <h3>Key Parameters for SQL Agents</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Description</th>
+                        <th>Default</th>
+                        <th>Impact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>verbose</strong></td>
+                        <td>Print detailed reasoning steps</td>
+                        <td>False</td>
+                        <td>Essential for debugging</td>
+                    </tr>
+                    <tr>
+                        <td><strong>handle_parsing_errors</strong></td>
+                        <td>Auto-correct SQL errors</td>
+                        <td>False</td>
+                        <td>Improves robustness</td>
+                    </tr>
+                    <tr>
+                        <td><strong>agent_type</strong></td>
+                        <td>Reasoning framework</td>
+                        <td>ZERO_SHOT_REACT_DESCRIPTION</td>
+                        <td>Controls thinking process</td>
+                    </tr>
+                    <tr>
+                        <td><strong>max_iterations</strong></td>
+                        <td>Max reasoning loops</td>
+                        <td>15</td>
+                        <td>Prevents infinite loops</td>
+                    </tr>
+                    <tr>
+                        <td><strong>early_stopping_method</strong></td>
+                        <td>Stop condition</td>
+                        <td>'force'</td>
+                        <td>Controls exit strategy</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Best Practices for SQL Agents</h3>
+            <div class="highlight-box">
+                <h4>🔒 Security Considerations</h4>
+                <ul>
+                    <li>Always use sandboxed/read-only database connections</li>
+                    <li>Implement row-level security based on user permissions</li>
+                    <li>Never expose sensitive database credentials in logs</li>
+                    <li>Audit all generated queries for compliance</li>
+                    <li>Use connection pooling for production</li>
+                </ul>
+            </div>
+
+            <div class="highlight-box warning">
+                <h4>⚠️ Common Pitfalls</h4>
+                <ul>
+                    <li>Ambiguous schema names confusing the agent</li>
+                    <li>Missing relationships or foreign keys</li>
+                    <li>Complex nested query requirements</li>
+                    <li>Performance issues with large datasets</li>
+                    <li>LLM hallucination of non-existent columns</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 7: Pandas Agent -->
+        <section id="pandas-agent">
+            <h2>7. Pandas Agent: In-Memory Data Analysis</h2>
+
+            <!-- Added LangChain Pandas Agent Image -->
+            <img src="https://raw.githubusercontent.com/md-sahil-analyst22/Study_Material/main/images/langchain_pandas_agent.png" alt="LangChain Pandas Agent Architecture" class="section-image">
+            <p class="image-caption">Figure: LangChain Pandas Agent Workflow and Data Processing</p>
+
+            <h3>What is a Pandas Agent?</h3>
+            <p>The Pandas DataFrame Agent is a specialized LangChain agent designed for analyzing in-memory data loaded into Pandas DataFrames. It generates and executes Python code to perform data operations, visualizations, and analysis without requiring users to write code.</p>
+
+            <h3>Unique Characteristics</h3>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <h4>⚡ Preconfigured Functions</h4>
+                    <p>Uses built-in Pandas operations optimized for data analysis</p>
+                </div>
+                <div class="feature-item">
+                    <h4>📊 Dynamic Code Generation</h4>
+                    <p>Generates Python code on-the-fly based on natural language</p>
+                </div>
+                <div class="feature-item">
+                    <h4>🎨 Visualization Support</h4>
+                    <p>Creates charts and plots from natural language requests</p>
+                </div>
+                <div class="feature-item">
+                    <h4>🔢 Statistical Analysis</h4>
+                    <p>Performs aggregations, grouping, and calculations</p>
+                </div>
+                <div class="feature-item">
+                    <h4>🧹 Data Cleaning</h4>
+                    <p>Handles missing values and data preprocessing</p>
+                </div>
+                <div class="feature-item">
+                    <h4>⚠️ Sandboxing Required</h4>
+                    <p>Executes arbitrary Python code - requires security measures</p>
+                </div>
+            </div>
+
+            <h3>Pandas Agent Implementation</h3>
+
+            <div class="code-example">
+                <div class="code-label">Step 1: Setup and Data Loading</div>
+                <pre><code>import pandas as pd
+import matplotlib.pyplot as plt
+from ibm_watsonx_ai.foundation_models import ModelInference
+from ibm_watsonx_ai.metanames import GenTextParamsMetaNames as GenParams
+from ibm_watson_machine_learning.foundation_models.extensions.langchain import WatsonxLLM
+from langchain.agents import create_pandas_dataframe_agent
+import warnings
+warnings.filterwarnings('ignore')
+
+# Load your data
+df = pd.read_csv('your_data.csv')
+print(f"Data shape: {df.shape}")
+print(f"Columns: {df.columns.tolist()}")
+print(df.head())
+</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-label">Step 2: Configure LLM</div>
+                <pre><code># Setup LLM with Watsonx.ai
+model_id = 'ibm/granite-3-2-8b-instruct'
+parameters = {
+    GenParams.MAX_NEW_TOKENS: 1024,
+    GenParams.TEMPERATURE: 0.2,
+    GenParams.TOP_P: 0.95,
+}
+
+credentials = {
+    "url": "https://us-south.ml.cloud.ibm.com"
+}
+
+project_id = "your-project-id"
+
+model = ModelInference(
+    model_id=model_id,
+    params=parameters,
+    credentials=credentials,
+    project_id=project_id
+)
+
+llm = WatsonxLLM(model=model)
+</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-label">Step 3: Create Pandas Agent</div>
+                <pre><code># Create the agent
+agent = create_pandas_dataframe_agent(
+    llm=llm,
+    df=df,
+    verbose=True,
+    agent_type="zero-shot-react-description",
+    allow_dangerous_code=False  # Security setting
+)
+
+# Ask a question
+result = agent.invoke({
+    "input": "What is the average age by gender?"
+})
+
+print(result['output'])
+</code></pre>
+            </div>
+
+            <h3>Pandas Agent Examples</h3>
+
+            <div class="card">
+                <h4>Example 1: Data Aggregation</h4>
+                <p><strong>Query:</strong> "What is the average salary by department?"</p>
+                <p><strong>Generated Code:</strong></p>
+                <pre><code>df_result = df.groupby('department')['salary'].mean()
+print(df_result)</code></pre>
+                <p><strong>Result:</strong> Average salaries by department with insights</p>
+            </div>
+
+            <div class="card">
+                <h4>Example 2: Data Visualization</h4>
+                <p><strong>Query:</strong> "Create a bar chart showing the count of employees by gender"</p>
+                <p><strong>Generated Code:</strong></p>
+                <pre><code>import matplotlib.pyplot as plt
+df.groupby('gender').size().plot(kind='bar')
+plt.title('Employee Count by Gender')
+plt.xlabel('Gender')
+plt.ylabel('Count')
+plt.show()</code></pre>
+            </div>
+
+            <div class="card">
+                <h4>Example 3: Complex Analysis</h4>
+                <p><strong>Query:</strong> "Plot the gender count with bars and make bars different colors"</p>
+                <p><strong>Generated Code:</strong></p>
+                <pre><code>import matplotlib.pyplot as plt
+gender_counts = df.groupby('gender').size()
+colors = ['#3498db', '#e74c3c', '#2ecc71']
+gender_counts.plot(kind='bar', color=colors[:len(gender_counts)])
+plt.title('Gender Distribution')
+plt.xlabel('Gender')
+plt.ylabel('Count')
+plt.tight_layout()
+plt.show()
+
+# Return intermediate steps
+return_intermediate_steps = True</code></pre>
+            </div>
+
+            <h3>Accessing Generated Code</h3>
+            <p>To see the Python code generated by the agent:</p>
+            <div class="code-example">
+                <div class="code-label">Viewing Intermediate Steps</div>
+                <pre><code># Set this parameter to view generated code
+result = agent.invoke({
+    "input": "Plot the gender count with bars",
+    "return_intermediate_steps": True
+})
+
+# Access the intermediate steps
+if isinstance(result, dict) and 'intermediate_steps' in result:
+    for step in result['intermediate_steps']:
+        print(f"Tool: {step[0].tool}")
+        print(f"Input: {step[0].tool_input}")
+        print(f"Output: {step[1]}")
+        print("---")
+</code></pre>
+            </div>
+
+            <h3>Safety and Security Considerations</h3>
+            <div class="highlight-box warning">
+                <h4>⚠️ Code Execution Risk</h4>
+                <p>The Pandas agent executes arbitrary Python code. Only use in controlled environments:</p>
+                <ul>
+                    <li>Sandboxed environments for untrusted input</li>
+                    <li>Read-only data access where possible</li>
+                    <li>Resource limits on execution</li>
+                    <li>Audit logging of all generated code</li>
+                    <li>Not recommended for production without security hardening</li>
+                </ul>
+            </div>
+
+            <h3>Configuration Options</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Recommendation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>llm</strong></td>
+                        <td>LLM</td>
+                        <td>Language model to use</td>
+                        <td>Use compatible models like Llama or Granite</td>
+                    </tr>
+                    <tr>
+                        <td><strong>df</strong></td>
+                        <td>DataFrame</td>
+                        <td>Data to analyze</td>
+                        <td>Pre-clean and validate data</td>
+                    </tr>
+                    <tr>
+                        <td><strong>verbose</strong></td>
+                        <td>Boolean</td>
+                        <td>Show reasoning steps</td>
+                        <td>True for debugging, False for production</td>
+                    </tr>
+                    <tr>
+                        <td><strong>allow_dangerous_code</strong></td>
+                        <td>Boolean</td>
+                        <td>Allow unrestricted code execution</td>
+                        <td>Always False in production</td>
+                    </tr>
+                    <tr>
+                        <td><strong>max_iterations</strong></td>
+                        <td>Integer</td>
+                        <td>Maximum reasoning loops</td>
+                        <td>15 by default</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Pandas vs SQL Agents Comparison</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Aspect</th>
+                        <th>Pandas Agent</th>
+                        <th>SQL Agent</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Data Source</strong></td>
+                        <td>In-memory DataFrames</td>
+                        <td>Database systems</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Code Generated</strong></td>
+                        <td>Python code</td>
+                        <td>SQL queries</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Scalability</strong></td>
+                        <td>Limited to memory</td>
+                        <td>Handles large databases</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Security</strong></td>
+                        <td>Code execution risk</td>
+                        <td>Query-based, safer</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Flexibility</strong></td>
+                        <td>Full Python capabilities</td>
+                        <td>SQL limitations</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Visualization</strong></td>
+                        <td>Native support</td>
+                        <td>Requires additional tools</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Best Use Case</strong></td>
+                        <td>Small to medium datasets, exploration</td>
+                        <td>Large databases, production queries</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 8: Implementation Guide -->
+        <section id="implementation">
+            <h2>8. Step-by-Step Implementation Guide</h2>
+
+            <h3>Complete SQL Agent Implementation</h3>
+
+            <div class="implementation-step">
+                <h4><span class="step-number">1</span>Set Up Virtual Environment</h4>
+                <p>Create an isolated Python environment to manage dependencies:</p>
+                <pre><code># Create virtual environment
+pip install virtualenv
+virtualenv my_env
+source my_env/bin/activate  # On Windows: my_env\Scripts\activate
+
+# Verify activation
+# You should see (my_env) in your terminal prompt</code></pre>
+            </div>
+
+            <div class="implementation-step">
+                <h4><span class="step-number">2</span>Install Required Libraries</h4>
+                <pre><code>python3.11 -m pip install \
+  ibm-watsonx-ai==1.0.4 \
+  ibm-watson-machine-learning==1.0.357 \
+  langchain==0.2.1 \
+  langchain-ibm==0.1.7 \
+  langchain-experimental==0.0.59 \
+  langchain-community==0.0.36 \
+  mysql-connector-python==8.4.0 \
+  pandas==2.0.0 \
+  matplotlib==3.7.0</code></pre>
+            </div>
+
+            <div class="implementation-step">
+                <h4><span class="step-number">3</span>Set Up Database</h4>
+                <p>Launch MySQL server and create sample database:</p>
+                <pre><code># Start MySQL (using Cloud IDE or local installation)
+# Create database using provided SQL script
+mysql -u root -p < chinook-mysql.sql
+
+# Verify installation
+mysql -u root -p
+mysql> SHOW DATABASES;
+mysql> USE Chinook;
+mysql> SELECT COUNT(*) FROM Album;
+# Expected: 347</code></pre>
+            </div>
+
+            <div class="implementation-step">
+                <h4><span class="step-number">4</span>Create Configuration File</h4>
+                <p>Create a config.py file for credentials:</p>
+                <pre><code># config.py
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# IBM Watsonx.ai Credentials
+WATSONX_URL = os.getenv('WATSONX_URL', 'https://us-south.ml.cloud.ibm.com')
+WATSONX_PROJECT_ID = os.getenv('WATSONX_PROJECT_ID', 'your-project-id')
+WATSONX_API_KEY = os.getenv('WATSONX_API_KEY', 'your-api-key')
+
+# Database Credentials
+DB_USERNAME = os.getenv('DB_USERNAME', 'root')
+DB_PASSWORD = os.getenv('DB_PASSWORD', 'password')
+DB_HOST = os.getenv('DB_HOST', 'localhost')
+DB_PORT = os.getenv('DB_PORT', '3306')
+DB_NAME = os.getenv('DB_NAME', 'Chinook')
+
+# LLM Configuration
+MODEL_ID = 'ibm/granite-3-2-8b-instruct'
+MAX_TOKENS = 1024
+TEMPERATURE = 0.2</code></pre>
+            </div>
+
+            <div class="implementation-step">
+                <h4><span class="step-number">5</span>Build the SQL Agent Application</h4>
+                <pre><code># sql_agent.py
+import warnings
+warnings.filterwarnings('ignore')
+
+from config import *
+from ibm_watsonx_ai.foundation_models import ModelInference
+from ibm_watsonx_ai.metanames import GenTextParamsMetaNames as GenParams
+from ibm_watson_machine_learning.foundation_models.extensions.langchain import WatsonxLLM
+from langchain_community.utilities.sql_database import SQLDatabase
+from langchain_community.agent_toolkits import create_sql_agent
+from langchain.agents import AgentType
+
+def initialize_llm():
+    """Initialize the LLM with Watsonx.ai"""
+    parameters = {
+        GenParams.MAX_NEW_TOKENS: MAX_TOKENS,
+        GenParams.TEMPERATURE: TEMPERATURE,
+        GenParams.TOP_P: 0.95,
+        GenParams.REPETITION_PENALTY: 1.2,
+    }
+    
+    credentials = {"url": WATSONX_URL}
+    
+    model = ModelInference(
+        model_id=MODEL_ID,
+        params=parameters,
+        credentials=credentials,
+        project_id=WATSONX_PROJECT_ID
+    )
+    
+    return WatsonxLLM(model=model)
+
+def initialize_database():
+    """Initialize database connection"""
+    mysql_uri = f'mysql+mysqlconnector://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
+    return SQLDatabase.from_uri(mysql_uri)
+
+def create_agent(llm, db):
+    """Create SQL agent"""
+    return create_sql_agent(
+        llm=llm,
+        db=db,
+        verbose=True,
+        handle_parsing_errors=True,
+        agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
+        max_iterations=15
+    )
+
+def run_query(agent, query):
+    """Execute a query using the agent"""
+    print(f"\n{'='*60}")
+    print(f"Query: {query}")
+    print(f"{'='*60}\n")
+    
+    result = agent.invoke(query)
+    print(f"\nFinal Answer: {result['output']}\n")
+    return result
+
+if __name__ == "__main__":
+    # Initialize components
+    print("Initializing LLM...")
+    llm = initialize_llm()
+    
+    print("Connecting to database...")
+    db = initialize_database()
+    
+    print("Creating agent...")
+    agent = create_agent(llm, db)
+    
+    # Run sample queries
+    queries = [
+        "How many albums are in the database?",
+        "What are the top 5 customers by total spending?",
+        "List all genres and their track counts"
+    ]
+    
+    for query in queries:
+        run_query(agent, query)</code></pre>
+            </div>
+
+            <h3>Complete Pandas Agent Implementation</h3>
+
+            <div class="code-example">
+                <div class="code-label">Full Pandas Agent Example</div>
+                <pre><code># pandas_agent.py
+import pandas as pd
+import matplotlib.pyplot as plt
+import warnings
+warnings.filterwarnings('ignore')
+
+from config import *
+from ibm_watsonx_ai.foundation_models import ModelInference
+from ibm_watsonx_ai.metanames import GenTextParamsMetaNames as GenParams
+from ibm_watson_machine_learning.foundation_models.extensions.langchain import WatsonxLLM
+from langchain.agents import create_pandas_dataframe_agent
+
+def initialize_llm():
+    """Initialize the LLM"""
+    parameters = {
+        GenParams.MAX_NEW_TOKENS: MAX_TOKENS,
+        GenParams.TEMPERATURE: TEMPERATURE,
+        GenParams.TOP_P: 0.95,
+    }
+    
+    credentials = {"url": WATSONX_URL}
+    
+    model = ModelInference(
+        model_id=MODEL_ID,
+        params=parameters,
+        credentials=credentials,
+        project_id=WATSONX_PROJECT_ID
+    )
+    
+    return WatsonxLLM(model=model)
+
+def create_agent(llm, df):
+    """Create Pandas DataFrame agent"""
+    return create_pandas_dataframe_agent(
+        llm=llm,
+        df=df,
+        verbose=True,
+        agent_type="zero-shot-react-description",
+        allow_dangerous_code=False
+    )
+
+def analyze_data(agent, query):
+    """Analyze data using natural language"""
+    print(f"\n{'='*60}")
+    print(f"Analysis Query: {query}")
+    print(f"{'='*60}\n")
+    
+    result = agent.invoke({
+        "input": query,
+    })
+    
+    print(f"\nResult: {result['output']}\n")
+    return result
+
+if __name__ == "__main__":
+    # Load data
+    print("Loading data...")
+    df = pd.read_csv('data.csv')
+    print(f"Data shape: {df.shape}")
+    print(f"Columns: {df.columns.tolist()}\n")
+    
+    # Initialize LLM
+    print("Initializing LLM...")
+    llm = initialize_llm()
+    
+    # Create agent
+    print("Creating agent...")
+    agent = create_agent(llm, df)
+    
+    # Run analyses
+    queries = [
+        "What is the average age by gender?",
+        "Create a bar chart showing age distribution",
+        "Calculate the total revenue by product category"
+    ]
+    
+    for query in queries:
+        analyze_data(agent, query)
+</code></pre>
+            </div>
+
+            <h3>Testing and Validation</h3>
+            <div class="code-example">
+                <div class="code-label">Testing Framework</div>
+                <pre><code># test_agents.py
+import unittest
+from sql_agent import create_agent, initialize_llm, initialize_database
+from pandas_agent import create_agent as create_pandas_agent
+
+class TestSQLAgent(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.llm = initialize_llm()
+        cls.db = initialize_database()
+        cls.agent = create_agent(cls.llm, cls.db)
+    
+    def test_simple_count_query(self):
+        """Test basic count query"""
+        result = self.agent.invoke("How many albums are there?")
+        self.assertIn('347', str(result['output']))
+    
+    def test_schema_query(self):
+        """Test schema exploration"""
+        result = self.agent.invoke("Describe the Album table")
+        self.assertIn('Title', str(result['output']))
+    
+    def test_error_handling(self):
+        """Test error recovery"""
+        result = self.agent.invoke("How many invalid_table records?")
+        # Should handle error gracefully
+        self.assertIsNotNone(result)
+
+if __name__ == '__main__':
+    unittest.main()
+</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 9: Use Cases -->
+        <section id="use-cases">
+            <h2>9. Real-World Use Cases & Applications</h2>
+
+            <h3>1. Business Intelligence & Analytics</h3>
+            <div class="card">
+                <h4>📊 Scenario: Sales Performance Analysis</h4>
+                <p><strong>Challenge:</strong> Sales managers need real-time insights into regional performance without technical skills.</p>
+                <p><strong>Solution:</strong> Deploy a SQL Agent for a sales database</p>
+                <p><strong>Example Queries:</strong></p>
+                <ul>
+                    <li>"What were our top 5 products by revenue last month?"</li>
+                    <li>"Which regions had the highest growth rate?"</li>
+                    <li>"Show me customer retention rates by product category"</li>
+                </ul>
+                <p><strong>Impact:</strong> Reduce time from query to insight from hours to seconds</p>
+            </div>
+
+            <h3>2. Financial Analysis</h3>
+            <div class="card">
+                <h4>💰 Scenario: Investment Portfolio Analysis</h4>
+                <p><strong>Challenge:</strong> Finance teams need rapid analysis of large portfolios.</p>
+                <p><strong>Solution:</strong> Pandas Agent with financial data</p>
+                <p><strong>Example Queries:</strong></p>
+                <ul>
+                    <li>"What is the correlation between stock prices and economic indicators?"</li>
+                    <li>"Generate a risk assessment report for each sector"</li>
+                    <li>"Visualize portfolio allocation by asset class"</li>
+                </ul>
+            </div>
+
+            <h3>3. Customer Analytics</h3>
+            <div class="card">
+                <h4>👥 Scenario: Customer Behavior Analysis</h4>
+                <p><strong>Challenge:</strong> Marketing teams need customer insights for campaign targeting.</p>
+                <p><strong>Solution:</strong> SQL Agent for customer database</p>
+                <p><strong>Example Queries:</strong></p>
+                <ul>
+                    <li>"Segment customers by purchase frequency and value"</li>
+                    <li>"What is the churn rate by customer segment?"</li>
+                    <li>"Identify high-value customers at risk of leaving"</li>
+                </ul>
+            </div>
+
+            <h3>4. Healthcare Analytics</h3>
+            <div class="card">
+                <h4>🏥 Scenario: Patient Population Health Analysis</h4>
+                <p><strong>Challenge:</strong> Healthcare providers need quick insights into patient populations.</p>
+                <p><strong>Solution:</strong> Pandas Agent with patient data (HIPAA-compliant)</p>
+                <p><strong>Example Queries:</strong></p>
+                <ul>
+                    <li>"What are the most common diagnoses by age group?"</li>
+                    <li>"Generate treatment outcome statistics by provider"</li>
+                    <li>"Identify patient cohorts for research studies"</li>
+                </ul>
+            </div>
+
+            <h3>5. Operations & Supply Chain</h3>
+            <div class="card">
+                <h4>📦 Scenario: Supply Chain Optimization</h4>
+                <p><strong>Challenge:</strong> Operations teams need real-time inventory and logistics insights.</p>
+                <p><strong>Solution:</strong> SQL Agent for operations database</p>
+                <p><strong>Example Queries:</strong></p>
+                <ul>
+                    <li>"What products have low inventory levels?"</li>
+                    <li>"Analyze warehouse efficiency metrics"</li>
+                    <li>"Forecast demand for Q4"</li>
+                </ul>
+            </div>
+
+            <h3>6. Education & Research</h3>
+            <div class="card">
+                <h4>🎓 Scenario: Educational Data Analysis</h4>
+                <p><strong>Challenge:</strong> Academic institutions need insights into student performance.</p>
+                <p><strong>Solution:</strong> Pandas Agent with student data</p>
+                <p><strong>Example Queries:</strong></p>
+                <ul>
+                    <li>"Which courses have the highest dropout rates?"</li>
+                    <li>"Visualize student performance trends by department"</li>
+                    <li>"Identify students needing academic support"</li>
+                </ul>
+            </div>
+
+            <h3>Impact Metrics</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Use Case</th>
+                        <th>Time Saved</th>
+                        <th>User Accessibility</th>
+                        <th>Decision Speed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Sales Analysis</td>
+                        <td>4-8 hours</td>
+                        <td>Non-technical managers</td>
+                        <td>5-10x faster</td>
+                    </tr>
+                    <tr>
+                        <td>Financial Analysis</td>
+                        <td>2-4 hours</td>
+                        <td>Analysts, traders</td>
+                        <td>10-20x faster</td>
+                    </tr>
+                    <tr>
+                        <td>Customer Analytics</td>
+                        <td>3-6 hours</td>
+                        <td>Marketing teams</td>
+                        <td>8-15x faster</td>
+                    </tr>
+                    <tr>
+                        <td>Healthcare Analytics</td>
+                        <td>6-12 hours</td>
+                        <td>Clinical staff</td>
+                        <td>10-20x faster</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 10: Best Practices -->
+        <section id="best-practices">
+            <h2>10. Best Practices & Safety Guidelines</h2>
+
+            <h3>Design Clear and Specific Prompts</h3>
+            <div class="highlight-box">
+                <h4>✅ Good Practice</h4>
+                <p><strong>Clear:</strong> "Show me the top 5 customers by total spending in Q4 2023, ordered from highest to lowest"</p>
+                <p><strong>Specific:</strong> "Calculate the monthly revenue trend for the Electronics category, excluding returns"</p>
+            </div>
+
+            <div class="highlight-box warning">
+                <h4>❌ Avoid</h4>
+                <p><strong>Vague:</strong> "Show me customer data"</p>
+                <p><strong>Ambiguous:</strong> "What about sales?" (Unclear what metric or timeframe)</p>
+                <p><strong>Risky:</strong> "Execute any query you think is relevant"</p>
+            </div>
+
+            <h3>Security & Sandboxing</h3>
+            <div class="highlight-box">
+                <h4>🔒 Security Measures</h4>
+                <ol>
+                    <li><strong>Use Read-Only Connections:</strong> Configure database with SELECT-only permissions</li>
+                    <li><strong>Implement Row-Level Security:</strong> Limit data access based on user roles</li>
+                    <li><strong>Sandbox Code Execution:</strong> For Pandas agents, use restricted environments</li>
+                    <li><strong>Audit All Queries:</strong> Log all generated SQL and Python code</li>
+                    <li><strong>Validate Outputs:</strong> Always verify agent-generated queries before execution</li>
+                    <li><strong>Resource Limits:</strong> Set timeouts and memory limits on agent execution</li>
+                    <li><strong>Mask Sensitive Data:</strong> Redact PII in logs and results</li>
+                </ol>
+            </div>
+
+            <h3>Iterative Query Refinement</h3>
+            <div class="card">
+                <h4>Conversation Flow Example</h4>
+                <p><strong>User:</strong> "Show me sales trends"</p>
+                <p><strong>Agent Response:</strong> "Sales by month for all regions: [results]"</p>
+                <p><strong>User Follow-up:</strong> "Focus only on North America and show quarterly"</p>
+                <p><strong>Agent Response:</strong> "North America quarterly sales: [refined results]"</p>
+                <p><strong>User Follow-up:</strong> "Which quarter had the highest growth?"</p>
+                <p><strong>Agent Response:</strong> "Q3 had 15% growth, the highest of the year"</p>
+            </div>
+
+            <h3>Validation with Human Expertise</h3>
+            <div class="highlight-box info">
+                <h4>🔍 Validation Checklist</h4>
+                <ul>
+                    <li>Verify the generated query makes logical sense</li>
+                    <li>Check that all relevant tables and columns are included</li>
+                    <li>Validate the output matches the original question</li>
+                    <li>Compare results with known benchmarks</li>
+                    <li>Look for anomalies or unusual patterns</li>
+                    <li>Confirm no sensitive data is exposed</li>
+                    <li>Test with edge cases and extreme values</li>
+                </ul>
+            </div>
+
+            <h3>Error Handling & Troubleshooting</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Error Type</th>
+                        <th>Common Cause</th>
+                        <th>Solution</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Column Not Found</strong></td>
+                        <td>Agent hallucinates column names</td>
+                        <td>Provide schema information in system prompt</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ambiguous Query</strong></td>
+                        <td>Unclear natural language request</td>
+                        <td>Rephrase with specific table/column names</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Timeout Error</strong></td>
+                        <td>Complex query takes too long</td>
+                        <td>Add filters, use indexes, optimize query</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Permission Denied</strong></td>
+                        <td>User lacks access to table</td>
+                        <td>Grant appropriate permissions or notify user</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Memory Error</strong></td>
+                        <td>Too much data loaded in memory</td>
+                        <td>Use sampling, pagination, or streaming</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Production Deployment Checklist</h3>
+            <div class="highlight-box">
+                <h4>✅ Before Going to Production</h4>
+                <ul>
+                    <li>Comprehensive security audit</li>
+                    <li>Load testing with expected query volume</li>
+                    <li>Error handling for edge cases</li>
+                    <li>Logging and monitoring setup</li>
+                    <li>Data retention and privacy policy implementation</li>
+                    <li>User training and documentation</li>
+                    <li>Backup and disaster recovery plan</li>
+                    <li>Regular security updates and patches</li>
+                </ul>
+            </div>
+
+            <h3>Monitoring and Maintenance</h3>
+            <div class="card">
+                <h4>Key Metrics to Monitor</h4>
+                <ul>
+                    <li><strong>Query Success Rate:</strong> % of queries successfully answered</li>
+                    <li><strong>Average Response Time:</strong> Time from query to response</li>
+                    <li><strong>Error Rate:</strong> % of failed queries</li>
+                    <li><strong>LLM Token Usage:</strong> Cost tracking for API-based models</li>
+                    <li><strong>User Satisfaction:</strong> Feedback on result accuracy</li>
+                    <li><strong>Query Distribution:</strong> Most common query types</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 11: Future -->
+        <section id="future">
+            <h2>11. Future Trends & Evolution of AI-Driven Analytics</h2>
+
+            <h3>Emerging Technologies</h3>
+
+            <div class="card">
+                <h4>🎤 Multimodal Interactions</h4>
+                <p><strong>Voice-Activated Analysis:</strong> Speak natural language queries and receive audio summaries</p>
+                <p><strong>Gesture-Based Exploration:</strong> Use hand gestures to manipulate visualizations</p>
+                <p><strong>Visual Query Builders:</strong> Drag-and-drop interfaces combined with natural language</p>
+            </div>
+
+            <div class="card">
+                <h4>🤖 Autonomous Insight Generation</h4>
+                <p><strong>Proactive Analysis:</strong> Systems that automatically identify patterns and anomalies</p>
+                <p><strong>AI-Driven Suggestions:</strong> Recommendations for relevant analyses without user prompting</p>
+                <p><strong>Automated Alerting:</strong> Real-time notifications of significant changes or opportunities</p>
+            </div>
+
+            <div class="card">
+                <h4>🧠 Advanced Reasoning</h4>
+                <p><strong>Multi-Agent Collaboration:</strong> Teams of specialized agents working together</p>
+                <p><strong>Graph-Based Reasoning:</strong> Complex knowledge graphs for domain reasoning</p>
+                <p><strong>Causal Analysis:</strong> Understanding cause-and-effect relationships in data</p>
+            </div>
+
+            <div class="card">
+                <h4>🔬 Explainable AI</h4>
+                <p><strong>Transparency:</strong> Clear explanations of how conclusions were reached</p>
+                <p><strong>Confidence Scores:</strong> Quantified certainty in agent responses</p>
+                <p><strong>Reasoning Traces:</strong> Detailed logs of the agent's thought process</p>
+            </div>
+
+            <div class="card">
+                <h4>🌐 Collaborative Analytics</h4>
+                <p><strong>Multi-User Sessions:</strong> Teams collaborating on analysis simultaneously</p>
+                <p><strong>Shared Context:</strong> Seamless continuation of analysis across team members</p>
+                <p><strong>Consensus Building:</strong> AI-facilitated discussion and agreement on findings</p>
+            </div>
+
+            <h3>Evolution Timeline</h3>
+            <div class="highlight-box info">
+                <h4>📅 Predicted Developments</h4>
+                <ul>
+                    <li><strong>2024-2025:</strong> Multi-modal interfaces, improved accuracy, better explanability</li>
+                    <li><strong>2025-2026:</strong> Advanced reasoning, autonomous insight generation, domain specialization</li>
+                    <li><strong>2026+:</strong> Fully collaborative AI analytics, predictive insights, causal analysis at scale</li>
+                </ul>
+            </div>
+
+            <h3>Challenges & Opportunities</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Challenge</th>
+                        <th>Current State</th>
+                        <th>Future Opportunity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Complex Reasoning</strong></td>
+                        <td>Limited to single-step logic</td>
+                        <td>Multi-step causal reasoning across domains</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Context Limitations</strong></td>
+                        <td>Fixed context window</td>
+                        <td>Infinite context with efficient retrieval</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Real-Time Processing</strong></td>
+                        <td>Batch processing with latency</td>
+                        <td>Streaming analysis with <100ms latency</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Personalization</strong></td>
+                        <td>Generic responses</td>
+                        <td>Fully personalized to user context and preferences</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cost Efficiency</strong></td>
+                        <td>Expensive API calls</td>
+                        <td>Lightweight local models with high accuracy</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>The Impact on Data Professionals</h3>
+            <div class="card">
+                <h4>📊 Evolution of Roles</h4>
+                <p><strong>Data Analysts:</strong> Shift from query writing to insight validation and interpretation</p>
+                <p><strong>Data Scientists:</strong> Focus on complex modeling and AI system improvement</p>
+                <p><strong>Database Admins:</strong> Emphasis on security, optimization, and system reliability</p>
+                <p><strong>New Roles:</strong> AI Analytics Engineers, AI Ethics Officers, Insight Researchers</p>
+            </div>
+
+            <h3>Key Takeaways</h3>
+            <div class="highlight-box">
+                <h4>🎯 Summary of Future Direction</h4>
+                <ol>
+                    <li>Natural language interfaces will become the primary way to interact with data</li>
+                    <li>AI will increasingly do autonomous analysis and pattern discovery</li>
+                    <li>Multi-modal interaction (voice, gesture, visual) will become standard</li>
+                    <li>Explainability and trust will be critical success factors</li>
+                    <li>Real-time, streaming analytics will replace batch processing</li>
+                    <li>Specialist agents will handle domain-specific reasoning</li>
+                    <li>Privacy-preserving AI will enable secure analytics</li>
+                    <li>Costs will decrease while capabilities increase exponentially</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Conclusion -->
+        <section>
+            <h2>Conclusion: The Revolution is Now</h2>
+            
+            <p>LangChain agents represent a fundamental shift in how we interact with data. By bridging the gap between natural language and complex systems, they democratize data analysis, accelerate insights, and empower organizations to make faster, better-informed decisions.</p>
+
+            <div class="highlight-box">
+                <h4>Key Takeaways</h4>
+                <ul>
+                    <li><strong>Accessibility:</strong> Non-technical users can now directly query databases and analyze data</li>
+                    <li><strong>Speed:</strong> Time from question to insight is reduced from hours to seconds</li>
+                    <li><strong>Accuracy:</strong> AI agents can handle complex, multi-step analytical tasks</li>
+                    <li><strong>Flexibility:</strong> Support for multiple data sources and query types</li>
+                    <li><strong>Scalability:</strong> Solutions range from small projects to enterprise deployments</li>
+                    <li><strong>Security:</strong> When properly implemented, provides controlled access with audit trails</li>
+                </ul>
+            </div>
+
+            <h3>Getting Started</h3>
+            <div class="card">
+                <h4>Next Steps</h4>
+                <ol>
+                    <li>Explore LangChain documentation and community resources</li>
+                    <li>Set up a development environment with required libraries</li>
+                    <li>Start with a simple SQL or Pandas agent project</li>
+                    <li>Experiment with different LLM models and agents</li>
+                    <li>Implement security measures and best practices</li>
+                    <li>Share learnings with your team and organization</li>
+                    <li>Scale successful projects to production</li>
+                </ol>
+            </div>
+
+            <h3>Resources</h3>
+            <div class="card">
+                <h4>Recommended Learning Path</h4>
+                <ul>
+                    <li><strong>Official Docs:</strong> langchain.com documentation</li>
+                    <li><strong>GitHub:</strong> langchain-ai/langchain repository</li>
+                    <li><strong>Community:</strong> LangChain Discord server and forums</li>
+                    <li><strong>Courses:</strong> Various platforms offer LangChain tutorials</li>
+                    <li><strong>Research:</strong> ArXiv papers on LLMs and agents</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p><strong>Complete Guide to LangChain Agents for Data Analysis</strong></p>
+            <p>A comprehensive study material covering core concepts, architecture, implementation, and best practices.</p>
+            <p>Last Updated: December 2024 | Total Content: 11 Major Sections | File Size: 250+ KB</p>
+            <p style="margin-top: 1rem; font-size: 0.9rem;">Created with attention to responsive design, accessibility, and educational clarity.</p>
+        </div>
+    </footer>
+
+    <!-- Mermaid Diagram Support -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+        mermaid.contentLoaded();
+    </script>
+
+    <!-- Smooth scrolling for navigation -->
+    <script>
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href.startsWith('#')) {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
