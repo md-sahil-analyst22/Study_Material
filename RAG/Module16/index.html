@@ -1,0 +1,2729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LangGraph Complete Study Material - From Generative to Agentic AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1e40af;
+            --primary-light: #dbeafe;
+            --secondary-color: #7c3aed;
+            --accent-color: #ec4899;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --dark-bg: #0f172a;
+            --light-bg: #f8fafc;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --border-color: #e2e8f0;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.15);
+            --shadow-xl: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.7;
+            color: var(--text-dark);
+            background-color: var(--light-bg);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header & Navigation */
+        header {
+            background: var(--gradient-1);
+            color: #ffffff; /* Changed to pure white for better contrast */
+            padding: 60px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: moveBackground 20s linear infinite;
+        }
+
+        @keyframes moveBackground {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        header .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3); /* Darker shadow for better readability */
+            word-wrap: break-word;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            margin-bottom: 20px;
+            font-weight: 300;
+            color: #f0f9ff; /* Lighter shade for better contrast */
+        }
+
+        .metadata {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .metadata-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.2); /* Increased opacity for better visibility */
+            padding: 10px 20px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            color: #ffffff;
+        }
+
+        /* Navigation */
+        nav {
+            background: white;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0;
+        }
+
+        nav li {
+            flex: 1;
+            min-width: 150px;
+            text-align: center;
+        }
+
+        nav a {
+            display: block;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        nav a:hover {
+            background: var(--primary-light);
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        /* Main Content */
+        main {
+            padding: 40px 0;
+        }
+
+        section {
+            margin-bottom: 60px;
+            scroll-margin-top: 100px;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            position: relative;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        h3 {
+            font-size: 1.8rem;
+            color: var(--secondary-color);
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        h4 {
+            font-size: 1.3rem;
+            color: var(--text-dark);
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+            font-size: 1rem;
+        }
+
+        .section-intro {
+            background: var(--primary-light);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid var(--primary-color);
+            margin-bottom: 30px;
+            font-size: 1.05rem;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-5px);
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .card-content {
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+
+        /* Three Column Grid */
+        .three-cols {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .col-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow-md);
+            border-top: 4px solid var(--primary-color);
+            transition: all 0.3s ease;
+        }
+
+        .col-card:nth-child(2) {
+            border-top-color: var(--secondary-color);
+        }
+
+        .col-card:nth-child(3) {
+            border-top-color: var(--accent-color);
+        }
+
+        .col-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .col-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .col-card:nth-child(2) h4 {
+            color: var(--secondary-color);
+        }
+
+        .col-card:nth-child(3) h4 {
+            color: var(--accent-color);
+        }
+
+        /* Comparison Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-md);
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: var(--gradient-1);
+            color: white;
+        }
+
+        th, td {
+            padding: 18px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr:nth-child(even) {
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        tbody tr:hover {
+            background: rgba(37, 99, 235, 0.1);
+            transition: background 0.2s ease;
+        }
+
+        /* Feature Comparison */
+        .feature-row {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 15px;
+            align-items: start;
+        }
+
+        .feature-name {
+            font-weight: 600;
+            color: var(--primary-color);
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .feature-langchain, .feature-langgraph {
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .feature-langchain {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .feature-langgraph {
+            background: #dbeafe;
+            border-left: 4px solid #2563eb;
+        }
+
+        /* Code Blocks */
+        .code-section {
+            margin-bottom: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            border-top: 5px solid var(--primary-color);
+        }
+
+        .code-header {
+            background: var(--dark-bg);
+            color: white;
+            padding: 15px 20px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .code-language {
+            background: var(--primary-color);
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 20px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        code {
+            font-family: 'Courier New', monospace;
+            background: none;
+        }
+
+        /* Keyword Highlighting */
+        .keyword { color: #f472b6; }
+        .string { color: #86efac; }
+        .function { color: #93c5fd; }
+        .comment { color: #94a3b8; }
+        .number { color: #fed7aa; }
+
+        /* Benefits/Features List */
+        .benefits-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .benefit-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: var(--shadow-md);
+            border-left: 4px solid var(--success-color);
+            display: flex;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .benefit-item:hover {
+            transform: translateX(10px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .benefit-icon {
+            font-size: 2rem;
+            min-width: 40px;
+        }
+
+        .benefit-content h4 {
+            margin-top: 0;
+            color: var(--success-color);
+        }
+
+        /* Lists */
+        ul, ol {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            line-height: 1.8;
+        }
+
+        li strong {
+            color: var(--primary-color);
+        }
+
+        /* Highlights */
+        .highlight {
+            background: #fef08a;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        .highlight-danger {
+            background: #fee2e2;
+            color: var(--danger-color);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        .highlight-success {
+            background: #dcfce7;
+            color: var(--success-color);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        /* Mermaid Diagram */
+        .mermaid-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            overflow-x: auto;
+        }
+
+        .mermaid {
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Alert Boxes */
+        .alert {
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 5px solid;
+            display: flex;
+            gap: 15px;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            border-left-color: var(--primary-color);
+            color: #1e40af;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            border-left-color: var(--warning-color);
+            color: #92400e;
+        }
+
+        .alert-success {
+            background: #dcfce7;
+            border-left-color: var(--success-color);
+            color: #065f46;
+        }
+
+        .alert-icon {
+            font-size: 1.5rem;
+            min-width: 25px;
+        }
+
+        /* Architecture Diagram */
+        .arch-diagram {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 30px;
+        }
+
+        /* Workflow Steps */
+        .workflow-steps {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .step {
+            display: flex;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .step::before {
+            content: '';
+            position: absolute;
+            left: 35px;
+            top: 80px;
+            width: 2px;
+            height: 60px;
+            background: var(--gradient-1);
+        }
+
+        .step:last-child::before {
+            display: none;
+        }
+
+        .step-number {
+            background: var(--gradient-1);
+            color: white;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-content {
+            margin-left: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: var(--shadow-md);
+            flex: 1;
+        }
+
+        .step-content h4 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+
+        /* Use Cases */
+        .use-case-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .use-case-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            border-top: 5px solid var(--secondary-color);
+        }
+
+        .use-case-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .use-case-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .use-case-card h4 {
+            color: var(--secondary-color);
+            margin-top: 0;
+        }
+
+        /* Pros & Cons */
+        .pros-cons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .pros-cons {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .pros, .cons {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .pros {
+            border-top: 5px solid var(--success-color);
+        }
+
+        .cons {
+            border-top: 5px solid var(--danger-color);
+        }
+
+        .pros h4 {
+            color: var(--success-color);
+        }
+
+        .cons h4 {
+            color: var(--danger-color);
+        }
+
+        .pros ul, .cons ul {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .pros li::before, .cons li::before {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .pros li::before {
+            content: '✓ ';
+            color: var(--success-color);
+        }
+
+        .cons li::before {
+            content: '✗ ';
+            color: var(--danger-color);
+        }
+
+        /* Tabs */
+        .tabs {
+            margin-bottom: 30px;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            border-bottom: 2px solid var(--border-color);
+            flex-wrap: wrap;
+            background: white;
+            padding: 10px;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .tab-button {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-light);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            bottom: -10px;
+        }
+
+        .tab-button.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+            padding: 25px;
+            background: white;
+            border-radius: 0 0 10px 10px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-item {
+            padding-left: 50px;
+            padding-bottom: 30px;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 12px;
+            width: 2px;
+            height: 100%;
+            background: var(--border-color);
+        }
+
+        .timeline-item:last-child::after {
+            display: none;
+        }
+
+        .timeline-item h4 {
+            margin-top: 0;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark-bg);
+            color: #ffffff; /* Changed to pure white for better contrast */
+            padding: 40px 20px;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        footer p {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            margin-top: 20px;
+        }
+
+        .footer-links a {
+            color: #93c5fd; /* Lighter blue for better contrast on dark background */
+            text-decoration: none;
+            margin: 0 15px;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #ffffff; /* White on hover for better visibility */
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            h2 {
+                font-size: 1.8rem;
+            }
+
+            h3 {
+                font-size: 1.4rem;
+            }
+
+            nav ul {
+                flex-direction: column;
+            }
+
+            nav li {
+                flex: 1;
+                min-width: 100%;
+            }
+
+            .feature-row {
+                grid-template-columns: 1fr;
+            }
+
+            .pros-cons {
+                grid-template-columns: 1fr;
+            }
+
+            .metadata {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            table {
+                font-size: 0.9rem;
+            }
+
+            th, td {
+                padding: 12px;
+            }
+
+            pre {
+                font-size: 0.85rem;
+                padding: 15px;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            header, nav, footer {
+                display: none;
+            }
+
+            body {
+                background: white;
+            }
+
+            .card, .col-card, .code-section, .mermaid-container {
+                page-break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid var(--border-color);
+            }
+        }
+
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        section {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        section:nth-child(1) { animation-delay: 0.1s; }
+        section:nth-child(2) { animation-delay: 0.2s; }
+        section:nth-child(3) { animation-delay: 0.3s; }
+        section:nth-child(4) { animation-delay: 0.4s; }
+        section:nth-child(5) { animation-delay: 0.5s; }
+
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-1);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+            z-index: 99;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .back-to-top.show {
+            display: flex;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            padding: 15px 0;
+            font-size: 0.95rem;
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+
+        .breadcrumb a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--primary-dark);
+        }
+
+        /* Loading Animation */
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        /* Statistics */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            text-align: center;
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        /* Code highlighting for Python */
+        .python-indent {
+            margin-left: 20px;
+            display: block;
+        }
+
+        .double-indent {
+            margin-left: 40px;
+            display: block;
+        }
+
+        .triple-indent {
+            margin-left: 60px;
+            display: block;
+        }
+
+        /* Full Width Sections */
+        .full-width {
+            margin-left: -20px;
+            margin-right: -20px;
+            padding-left: 20px;
+            padding-right: 20px;
+            background: var(--light-bg);
+            padding-top: 40px;
+            padding-bottom: 40px;
+        }
+
+        /* Quick Reference */
+        .quick-ref {
+            background: var(--primary-light);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .quick-ref strong {
+            color: var(--primary-color);
+        }
+
+        /* Content Images */
+        .content-image {
+            display: block;
+            max-width: 90%;
+            height: auto;
+            margin: 30px auto;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+        }
+        
+        .image-caption {
+            text-align: center;
+            font-style: italic;
+            color: var(--text-light);
+            margin-top: 8px;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop">↑</button>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <h1>🚀 LangGraph & Agentic AI</h1>
+            <p class="subtitle">Complete Study Material: From Generative to Stateful Workflows</p>
+            <div class="metadata">
+                <div class="metadata-item">
+                    <span>📚 Comprehensive Guide</span>
+                </div>
+                <div class="metadata-item">
+                    <span>⏱️ Self-Paced Learning</span>
+                </div>
+                <div class="metadata-item">
+                    <span>💻 Python Examples</span>
+                </div>
+                <div class="metadata-item">
+                    <span>🎓 Production Ready</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav>
+        <ul>
+            <li><a href="#introduction">Introduction</a></li>
+            <li><a href="#generative-vs-agentic">Generative vs Agentic</a></li>
+            <li><a href="#langgraph-overview">LangGraph Overview</a></li>
+            <li><a href="#core-concepts">Core Concepts</a></li>
+            <li><a href="#architecture">Architecture</a></li>
+            <li><a href="#implementation">Implementation</a></li>
+            <li><a href="#use-cases">Use Cases</a></li>
+            <li><a href="#examples">Examples</a></li>
+            <li><a href="#futures">Future & Trends</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <div class="container">
+
+            <!-- SECTION 1: INTRODUCTION -->
+            <section id="introduction">
+                <h2>📖 Introduction: The AI Paradigm Shift</h2>
+                
+                <div class="section-intro">
+                    The release of ChatGPT in late 2022 marked a pivotal moment in artificial intelligence history. What began as sophisticated text generators has evolved into complex, autonomous systems capable of planning, reasoning, and executing actions. This transformation represents a fundamental shift in how we build intelligent applications. This study material explores this evolution and the frameworks that enable it.
+                </div>
+
+                <h3>The Evolution of AI Systems</h3>
+                <p>
+                    The landscape of artificial intelligence has undergone a dramatic transformation. Initially, Large Language Models (LLMs) were primarily viewed as powerful content generators—tools that could write, summarize, and create based on user prompts. However, the addition of <span class="highlight">tool calling capabilities</span>, <span class="highlight">function invocation</span>, and <span class="highlight">memory systems</span> fundamentally changed what's possible.
+                </p>
+
+                <div class="three-cols">
+                    <div class="col-card">
+                        <h4>🤖 First Generation</h4>
+                        <p>Simple prompt-response systems. Models generate content based on direct user input with no persistent context or autonomous action.</p>
+                    </div>
+                    <div class="col-card">
+                        <h4>🔄 Second Generation</h4>
+                        <p>Tool-augmented agents. Models gain ability to call functions, use APIs, and maintain limited context within a single conversation.</p>
+                    </div>
+                    <div class="col-card">
+                        <h4>🌐 Third Generation</h4>
+                        <p>Orchestrated multi-agent systems. Multiple specialized agents collaborate, maintain persistent state, and achieve complex goals autonomously.</p>
+                    </div>
+                </div>
+
+                <h3>Why This Matters for Developers</h3>
+                <p>
+                    Understanding this evolution is critical for software engineers and technical leaders. The frameworks you choose—like <span class="highlight">LangChain</span> versus <span class="highlight">LangGraph</span>—directly impact your system's ability to handle complexity, maintain state, and scale. This guide equips you to make informed architectural decisions.
+                </p>
+
+                <div class="alert alert-info">
+                    <span class="alert-icon">ℹ️</span>
+                    <div>
+                        <strong>Key Insight:</strong> The choice between frameworks is not arbitrary. It reflects your understanding of the problem domain and your system's requirements. A simple chatbot needs different tools than an enterprise automation system.
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: GENERATIVE VS AGENTIC -->
+            <section id="generative-vs-agentic">
+                <h2>⚡ Generative AI vs Agentic AI: Fundamental Paradigms</h2>
+
+                <div class="section-intro">
+                    The distinction between Generative AI and Agentic AI is not merely technical—it represents fundamentally different approaches to solving problems with artificial intelligence. Understanding these differences is essential before choosing your development framework.
+                </div>
+
+                <img src="https://raw.githubusercontent.com/md-sahil-analyst22/Study_Material/main/images/generative_vs_agentic.png" alt="Generative AI vs Agentic AI Comparison" class="content-image">
+                <p class="image-caption">Visual comparison between Generative AI (reactive content creation) and Agentic AI (proactive goal achievement)</p>
+
+                <h3>Generative AI: The Reactive Content Creator</h3>
+                <p>
+                    <span class="highlight">Generative AI</span> can be defined as a <strong>reactive system</strong>. Its core function is to wait for a user prompt and then generate new content—such as text, images, code, or audio—based on statistical patterns learned from massive training datasets.
+                </p>
+
+                <div class="card">
+                    <div class="card-title">Characteristics of Generative AI</div>
+                    <div class="card-content">
+                        <ul>
+                            <li><strong>Reactive Model:</strong> Waits for user input before taking action</li>
+                            <li><strong>Content Generation:</strong> Produces text, images, code, or other creative outputs</li>
+                            <li><strong>Pattern Matching:</strong> Works as a sophisticated predictor based on training data</li>
+                            <li><strong>Human-Directed:</strong> Requires continuous human guidance and curation</li>
+                            <li><strong>Single Pass:</strong> Generates once and returns result without adaptation</li>
+                            <li><strong>Stateless:</strong> No built-in persistent memory across interactions</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="use-case-grid">
+                    <div class="use-case-card">
+                        <div class="use-case-icon">✍️</div>
+                        <h4>Creative Writing Assistant</h4>
+                        <p>Writer prompts the AI to help draft content. The AI generates suggestions; the human reviews and refines them.</p>
+                    </div>
+                    <div class="use-case-card">
+                        <div class="use-case-icon">🎬</div>
+                        <h4>Video Production Help</h4>
+                        <p>YouTuber uses AI to review scripts and generate thumbnail concepts. Human makes final creative decisions.</p>
+                    </div>
+                    <div class="use-case-card">
+                        <div class="use-case-icon">🎨</div>
+                        <h4>Image Generation</h4>
+                        <p>User provides detailed text description. AI generates images. User iterates with new prompts until satisfied.</p>
+                    </div>
+                </div>
+
+                <h3>Agentic AI: The Proactive Goal-Achiever</h3>
+                <p>
+                    In contrast, <span class="highlight">Agentic AI</span> is a <strong>proactive system</strong>. While it may start with a user prompt defining a goal, it operates through a series of autonomous actions with minimal human intervention. An agentic system perceives its environment, makes decisions, executes actions, and learns from outcomes.
+                </p>
+
+                <div class="card">
+                    <div class="card-title">The Agentic Lifecycle: PDEL Loop</div>
+                    <div class="card-content">
+                        <div class="workflow-steps">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h4>🔍 Perceive</h4>
+                                    <p>The agent observes its environment, gathers information, and assesses the current state. This might involve reading documents, checking APIs, or analyzing user behavior.</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h4>🤔 Decide</h4>
+                                    <p>Based on the perceived state and its goal, the agent determines the best action to take. It might use reasoning chains to think through options.</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h4>⚙️ Execute</h4>
+                                    <p>The agent performs the chosen action. This might involve calling an API, updating a database, or triggering another service.</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <h4>📚 Learn</h4>
+                                    <p>The agent assesses the result of its action. Did it move closer to the goal? It uses this feedback to inform the next cycle.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Comparative Analysis: Generative vs Agentic</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Dimension</th>
+                            <th>Generative AI</th>
+                            <th>Agentic AI</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Core Function</strong></td>
+                            <td>Content creation based on prompts</td>
+                            <td>Goal achievement through autonomous actions</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Operational Model</strong></td>
+                            <td>Reactive: Waits for user input, generates output</td>
+                            <td>Proactive: Pursues goals with minimal intervention</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Human Interaction</strong></td>
+                            <td>Requires continuous direction and curation</td>
+                            <td>Operates autonomously after initial goal definition</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Primary Output</strong></td>
+                            <td>Static content (text, images, code, audio)</td>
+                            <td>Series of actions taken to accomplish goal</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Memory</strong></td>
+                            <td>Limited to conversation context</td>
+                            <td>Persistent memory of actions, decisions, learnings</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Adaptation</strong></td>
+                            <td>No adaptation; new prompt needed</td>
+                            <td>Adaptive; adjusts strategy based on feedback</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Complexity Handling</strong></td>
+                            <td>Simple to medium sequential tasks</td>
+                            <td>Complex multi-step problems with loops and branches</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="alert alert-success">
+                    <span class="alert-icon">✓</span>
+                    <div>
+                        <strong>Real-World Example:</strong> A personal shopping agent (Agentic) hunts for products across platforms, monitors prices, handles checkout, and asks you for input only when needed. A generative chatbot would summarize products if asked, but wouldn't autonomously purchase anything.
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: LANGGRAPH OVERVIEW -->
+            <section id="langgraph-overview">
+                <h2>🕸️ LangGraph: Building Stateful, Multi-Agent Workflows</h2>
+
+                <div class="section-intro">
+                    LangGraph is an open-source framework specifically designed for building stateful, multi-agent AI systems. Released in 2023, it represents the next evolution in orchestration frameworks, moving beyond simple chains to graph-based workflows with explicit control flow and persistent state management.
+                </div>
+
+                <img src="https://raw.githubusercontent.com/md-sahil-analyst22/Study_Material/main/images/LangGraph_Building_Smarter_AI_Workflows.png" alt="LangGraph Building Smarter AI Workflows" class="content-image">
+                <p class="image-caption">LangGraph enables building intelligent, stateful workflows for complex AI applications</p>
+
+                <h3>What is LangGraph?</h3>
+                <p>
+                    <span class="highlight">LangGraph</span> is a Python framework that enables developers to build robust, production-grade AI applications by modeling workflows as directed graphs. Unlike its predecessor, <span class="highlight">LangChain</span>, which operates as a linear chain, LangGraph allows nodes (agents/functions) to be connected with edges that define execution flow, enabling loops, branches, and complex control logic.
+                </p>
+
+                <div class="three-cols">
+                    <div class="col-card">
+                        <h4>🏗️ Foundation</h4>
+                        <p>Built on graph theory and state machines, LangGraph provides explicit control over how data flows and how decisions are made.</p>
+                    </div>
+                    <div class="col-card">
+                        <h4>📊 Graph Structure</h4>
+                        <p>Workflows are modeled as directed graphs where nodes represent actions and edges represent transitions, enabling loops and conditional branching.</p>
+                    </div>
+                    <div class="col-card">
+                        <h4>💾 State Management</h4>
+                        <p>Central shared state object maintains context across all nodes, enabling deep inter-agent communication and collaboration.</p>
+                    </div>
+                </div>
+
+                <h3>Installation & Setup</h3>
+
+                <div class="code-section">
+                    <div class="code-header">
+                        <span>Installation Command</span>
+                        <span class="code-language">bash</span>
+                    </div>
+                    <pre>pip install langgraph</pre>
+                </div>
+
+                <h3>LangChain vs LangGraph: The Framework Comparison</h3>
+
+                <img src="https://raw.githubusercontent.com/md-sahil-analyst22/Study_Material/main/images/langchain_vs_lanngraph.png" alt="LangChain vs LangGraph Comparison" class="content-image">
+                <p class="image-caption">Architectural differences between LangChain (linear/DAG) and LangGraph (graph-based with cycles)</p>
+
+                <div class="card">
+                    <div class="card-title">Architectural Differences</div>
+                    <div class="card-content">
+                        <div class="feature-row">
+                            <div class="feature-name">Workflow Structure</div>
+                            <div class="feature-langchain">
+                                <strong>LangChain:</strong> Linear or Directed Acyclic Graph (DAG). No cycles—once a step executes, you move forward only.
+                            </div>
+                            <div class="feature-langgraph">
+                                <strong>LangGraph:</strong> Flexible graph with explicit loops and branches. Nodes can feed back into themselves.
+                            </div>
+                        </div>
+                        <div class="feature-row">
+                            <div class="feature-name">State Management</div>
+                            <div class="feature-langchain">
+                                <strong>LangChain:</strong> Implicit data passing. Context flows forward but isn't explicitly managed.
+                            </div>
+                            <div class="feature-langgraph">
+                                <strong>LangGraph:</strong> Explicit, global state object. All nodes read and update this central memory.
+                            </div>
+                        </div>
+                        <div class="feature-row">
+                            <div class="feature-name">Task Complexity</div>
+                            <div class="feature-langchain">
+                                <strong>LangChain:</strong> Ideal for simple to medium tasks like RAG, chatbots, sequential pipelines.
+                            </div>
+                            <div class="feature-langgraph">
+                                <strong>LangGraph:</strong> Designed for complex, adaptive workflows with branching logic and retries.
+                            </div>
+                        </div>
+                        <div class="feature-row">
+                            <div class="feature-name">Multi-Agent Support</div>
+                            <div class="feature-langchain">
+                                <strong>LangChain:</strong> Primarily single-agent or linear chains of independent agents.
+                            </div>
+                            <div class="feature-langgraph">
+                                <strong>LangGraph:</strong> Natively supports multi-agent collaboration via shared state and graph routing.
+                            </div>
+                        </div>
+                        <div class="feature-row">
+                            <div class="feature-name">Best Use Case</div>
+                            <div class="feature-langchain">
+                                <strong>LangChain:</strong> Rapid prototyping, MVPs, sequential task pipelines.
+                            </div>
+                            <div class="feature-langgraph">
+                                <strong>LangGraph:</strong> Production systems, human-in-the-loop workflows, long-running processes.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning">
+                    <span class="alert-icon">⚠️</span>
+                    <div>
+                        <strong>Important Note:</strong> LangChain is deprecating its legacy agent framework in favor of LangGraph. If you're starting a new project, consider LangGraph as the forward-compatible choice.
+                    </div>
+                </div>
+
+                <h3>Key Capabilities of LangGraph</h3>
+
+                <div class="benefits-list">
+                    <div class="benefit-item">
+                        <div class="benefit-icon">🔄</div>
+                        <div class="benefit-content">
+                            <h4>Looping & Iteration</h4>
+                            <p>Agents can revisit steps, refine queries, and repeat operations until goals are achieved.</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">🌿</div>
+                        <div class="benefit-content">
+                            <h4>Branching Logic</h4>
+                            <p>Conditional edges enable dynamic routing based on state, allowing if/else logic at runtime.</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">💾</div>
+                        <div class="benefit-content">
+                            <h4>Persistent State</h4>
+                            <p>Central state object maintains context across nodes, enabling deep inter-agent communication.</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">👤</div>
+                        <div class="benefit-content">
+                            <h4>Human-in-the-Loop</h4>
+                            <p>Workflows can pause and wait for human approval or input before proceeding.</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">⏮️</div>
+                        <div class="benefit-content">
+                            <h4>Time Travel Debugging</h4>
+                            <p>Inspect and rollback to previous execution states for convenient debugging.</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">⚡</div>
+                        <div class="benefit-content">
+                            <h4>Durable Execution</h4>
+                            <p>Agents can pause and resume work, even after failures, maintaining full context.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>When to Use LangGraph</h3>
+
+                <div class="quick-ref">
+                    Use LangGraph when your application needs:
+                    <ul>
+                        <li>✓ <strong>Loops or iteration:</strong> Agent retries, refinement cycles, planning steps</li>
+                        <li>✓ <strong>Conditional branching:</strong> If/else logic, dynamic decision-making</li>
+                        <li>✓ <strong>Long-running processes:</strong> Agents that persist state and resume after delays</li>
+                        <li>✓ <strong>Complex state:</strong> Multiple variables across many nodes</li>
+                        <li>✓ <strong>Multi-agent coordination:</strong> Different agents working together with shared memory</li>
+                        <li>✓ <strong>Human-in-the-loop:</strong> Approval workflows, manual interventions</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- SECTION 4: CORE CONCEPTS -->
+            <section id="core-concepts">
+                <h2>🔑 Core Concepts & Architecture</h2>
+
+                <div class="section-intro">
+                    To build with LangGraph, you must understand four fundamental components: State, StateGraph, Nodes, and Edges. These building blocks combine to create powerful, adaptive workflows. Let's explore each in detail with code examples.
+                </div>
+
+                <h3>1. State: The Shared Memory</h3>
+                <p>
+                    <span class="highlight">State</span> is the central, evolving data structure that flows through your entire LangGraph workflow. Think of it as a shared memory that all nodes can access and modify. State is typically defined using Python's <span class="highlight">TypedDict</span> or Pydantic models.
+                </p>
+
+                <div class="code-section">
+                    <div class="code-header">
+                        <span>Defining State with TypedDict</span>
+                        <span class="code-language">python</span>
+                    </div>
+                    <pre><span class="keyword">from</span> <span class="function">typing</span> <span class="keyword">import</span> TypedDict
+
+<span class="keyword">class</span> <span class="function">WorkflowState</span>(TypedDict):
+    <span class="string">"""Central state for the workflow"""</span>
+    user_query: str
+    <span class="string"># User's input question</span>
+    
+    retrieved_docs: list
+    <span class="string"># List of documents retrieved from knowledge base</span>
+    
+    summary: str
+    <span class="string"># Summary of retrieved documents</span>
+    
+    final_answer: str
+    <span class="string"># Generated answer to the user query</span>
+    
+    step_count: int
+    <span class="string"># Track number of iterations</span>
+    
+    messages: list
+    <span class="string"># Conversation history</span></pre>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Why State is Powerful</div>
+                    <div class="card-content">
+                        <ul>
+                            <li><strong>Centralized Memory:</strong> All nodes access and update the same state object</li>
+                            <li><strong>Context Persistence:</strong> Every modification is tracked; nothing is lost</li>
+                            <li><strong>Explicit Tracking:</strong> You can inspect state at any point to debug</li>
+                            <li><strong>Multi-Agent Collaboration:</strong> Agents share state to coordinate their actions</li>
+                            <li><strong>Time Travel:</strong> Rollback to previous states for debugging</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>2. StateGraph: The Workflow Blueprint</h3>
+                <p>
+                    <span class="highlight">StateGraph</span> is the orchestrator. It defines the structure of your workflow—what nodes exist, how they're connected, where execution starts and ends, and when to branch or loop.
+                </p>
+
+                <div class="code-section">
+                    <div class="code-header">
+                        <span>Initializing StateGraph</span>
+                        <span class="code-language">python</span>
+                    </div>
+                    <pre><span class="keyword">from</span> <span class="function">langgraph.graph</span> <span class="keyword">import</span> StateGraph
+
+<span class="string"># Create a graph with our state schema</span>
+graph = StateGraph(WorkflowState)
+
+<span class="string"># This StateGraph instance will hold:</span>
+<span class="string"># - All nodes (computation steps)</span>
+<span class="string"># - All edges (connections between nodes)</span>
+<span class="string"># - Entry and exit points</span>
+<span class="string"># - Conditional logic for branching</span></pre>
+                </div>
+
+                <h3>3. Nodes: The Computation Steps</h3>
+                <p>
+                    <span class="highlight">Nodes</span> are Python functions that perform actual work. Each node receives the current state, processes it, and returns an updated state. Nodes can call LLMs, execute tools, compute values, or perform side effects.
+                </p>
+
+                <div class="code-section">
+                    <div class="code-header">
+                        <span>Creating Nodes (Node Functions)</span>
+                        <span class="code-language">python</span>
+                    </div>
+                    <pre><span class="string"># Node 1: Retrieve documents from knowledge base</span>
+<span class="keyword">def</span> <span class="function">retrieve_documents</span>(state: WorkflowState) -> WorkflowState:
+    <span class="string">"""Retrieve relevant documents based on user query"""</span>
+    query = state[<span class="string">"user_query"</span>]
+    
+    <span class="string"># Simulate retrieval (in real: query vector DB)</span>
+    docs = [
+        <span class="string">"Doc 1: LangGraph is a framework for agents"</span>,
+        <span class="string">"Doc 2: State is shared memory across nodes"</span>
+    ]
+    
+    state[<span class="string">"retrieved_docs"</span>] = docs
+    <span class="keyword">return</span> state
+
+
+<span class="string"># Node 2: Summarize retrieved documents</span>
+<span class="keyword">def</span> <span class="function">summarize_documents</span>(state: WorkflowState) -> WorkflowState:
+    <span class="string">"""Summarize retrieved documents using LLM"""</span>
+    docs = state[<span class="string">"retrieved_docs"</span>]
+    
+    <span class="string"># In real: call LLM to summarize</span>
+    summary = <span class="string">"Summarized: "</span> + <span class="string">", "</span>.join(docs[:100])
+    
+    state[<span class="string">"summary"</span>] = summary
+    state[<span class="string">"step_count"</span>] += <span class="number">1</span>
+    <span class="keyword">return</span> state
+
+
+<span class="string"># Node 3: Generate final answer</span>
+<span class="keyword">def</span> <span class="function">generate_answer</span>(state: WorkflowState) -> WorkflowState:
+    <span class="string">"""Generate final answer based on summary"""</span>
+    summary = state[<span class="string">"summary"</span>]
+    
+    <span class="string"># In real: call LLM with summary</span>
+    answer = <span class="string">"Based on the summary: "</span> + summary
+    
+    state[<span class="string">"final_answer"</span>] = answer
+    <span class="keyword">return</span> state</pre>
+                </div>
+
+                <div class="alert alert-info">
+                    <span class="alert-icon">ℹ️</span>
+                    <div>
+                        <strong>Node Function Signature:</strong> All nodes must follow the pattern <code>def node_name(state: StateType) -> StateType:</code>. They take state, modify it, and return the updated state.
+                    </div>
+                </div>
+
+                <h3>4. Edges: Connecting Nodes</h3>
+                <p>
+                    <span class="highlight">Edges</span> define how execution flows between nodes. There are two types: <span class="highlight">normal edges</span> (deterministic flow) and <span class="highlight">conditional edges</span> (dynamic routing based on state).
+                </p>
+
+                <div class="code-section">
+                    <div class="code-header">
+                        <span>Adding Nodes & Edges to the Graph</span>
+                        <span class="code-language">python</span>
+                    </div>
+                    <pre><span class="keyword">from</span> <span class="function">langgraph.graph</span> <span class="keyword">import</span> START, END
+
+<span class="string"># Add nodes to the graph</span>
+graph.add_node(<span class="string">"retrieve"</span>, retrieve_documents)
+graph.add_node(<span class="string">"summarize"</span>, summarize_documents)
+graph.add_node(<span class="string">"generate"</span>, generate_answer)
+
+<span class="string"># Add normal (deterministic) edges</span>
+graph.add_edge(START, <span class="string">"retrieve"</span>)
+graph.add_edge(<span class="string">"retrieve"</span>, <span class="string">"summarize"</span>)
+graph.add_edge(<span class="string">"summarize"</span>, <span class="string">"generate"</span>)
+graph.add_edge(<span class="string">"generate"</span>, END)
+
+<span class="string"># This creates a linear flow:</span>
+<span class="string"># START → retrieve → summarize → generate → END</span></pre>
+                </div>
+
+                <h3>Conditional Edges: Adding Intelligence</h3>
+                <p>
+                    Conditional edges are where LangGraph truly shines. They allow your workflow to make decisions at runtime, enabling loops, retries, and adaptive behavior.
+                </p>
+
+                <div class="code-section">
+                    <div class="code-header">
+                        <span>Implementing Conditional Edges</span>
+                        <span class="code-language">python</span>
+                    </div>
+                    <pre><span class="string"># Decision function: evaluates state and returns routing key</span>
+<span class="keyword">def</span> <span class="function">decide_if_done</span>(state: WorkflowState) -> str:
+    <span class="string">"""Decide whether to loop back or finish"""</span>
+    step_count = state[<span class="string">"step_count"</span>]
+    summary = state[<span class="string">"summary"</span>]
+    
+    <span class="string"># Retry if summary is too short and steps < 3</span>
+    <span class="keyword">if</span> len(summary) < <span class="number">50</span> <span class="keyword">and</span> step_count < <span class="number">3</span>:
+        <span class="keyword">return</span> <span class="string">"refine"</span>
+    <span class="keyword">else</span>:
+        <span class="keyword">return</span> <span class="string">"done"</span>
+
+
+<span class="string"># Add conditional edge</span>
+graph.add_conditional_edges(
+    <span class="string">"summarize"</span>,
+    decide_if_done,
+    {
+        <span class="string">"refine"</span>: <span class="string">"retrieve"</span>,  <span class="string"># Loop back to retrieve</span>
+        <span class="string">"done"</span>: <span class="string">"generate"</span>     <span class="string"># Move to generate</span>
+    }
+)</pre>
+                </div>
+
+                <div class="quick-ref">
+                    <strong>How Conditional Edges Work:</strong>
+                    <ol>
+                        <li>Decision function evaluates current state</li>
+                        <li>Returns a string key (e.g., "refine" or "done")</li>
+                        <li>Graph looks up the key in the mapping dictionary</li>
+                        <li>Executes the corresponding next node</li>
+                    </ol>
+                </div>
+
+                <h3>Compiling & Executing the Graph</h3>
+
+                <div class="code-section">
+                    <div class="code-header">
+                        <span>Compile and Run Your Workflow</span>
+                        <span class="code-language">python</span>
+                    </div>
+                    <pre><span class="string"># Compile the graph into a runnable application</span>
+app = graph.compile()
+
+<span class="string"># Define initial state</span>
+initial_state = {
+    <span class="string">"user_query"</span>: <span class="string">"What is LangGraph?"</span>,
+    <span class="string">"retrieved_docs"</span>: [],
+    <span class="string">"summary"</span>: <span class="string">""</span>,
+    <span class="string">"final_answer"</span>: <span class="string">""</span>,
+    <span class="string">"step_count"</span>: <span class="number">0</span>,
+    <span class="string">"messages"</span>: []
+}
+
+<span class="string"># Run the workflow</span>
+final_state = app.invoke(initial_state)
+
+<span class="string"># Access results</span>
+print(final_state[<span class="string">"final_answer"</span>])</pre>
+                </div>
+
+                <h3>Visualizing Your Graph</h3>
+                <p>
+                    One of LangGraph's most powerful features is the ability to visualize your workflow as a diagram. This helps you understand execution flow and debug complex systems.
+                </p>
+
+                <div class="code-section">
+                    <div class="code-header">
+                        <span>Generate Mermaid Diagram</span>
+                        <span class="code-language">python</span>
+                    </div>
+                    <pre><span class="string"># Generate Mermaid diagram representation</span>
+mermaid_code = app.get_graph().draw_mermaid()
+print(mermaid_code)
+
+<span class="string"># Output (example):</span>
+<span class="string"># graph TD;</span>
+<span class="string">#     START --> retrieve;</span>
+<span class="string">#     retrieve --> summarize;</span>
+<span class="string">#     summarize --> decide_if_done;</span>
+<span class="string">#     decide_if_done -->|refine| retrieve;</span>
+<span class="string">#     decide_if_done -->|done| generate;</span>
+<span class="string">#     generate --> END;</span></pre>
+                </div>
+
+                <div class="mermaid-container">
+                    <svg width="100%" height="400" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                                <polygon points="0 0, 10 3, 0 6" fill="#2563eb"/>
+                            </marker>
+                        </defs>
+                        <!-- Nodes -->
+                        <rect x="50" y="150" width="100" height="60" fill="#dbeafe" stroke="#2563eb" stroke-width="2" rx="5"/>
+                        <text x="100" y="185" text-anchor="middle" font-weight="bold" font-size="14">START</text>
+                        
+                        <rect x="220" y="150" width="100" height="60" fill="#e0e7ff" stroke="#7c3aed" stroke-width="2" rx="5"/>
+                        <text x="270" y="185" text-anchor="middle" font-weight="bold" font-size="14">Retrieve</text>
+                        
+                        <rect x="390" y="150" width="100" height="60" fill="#e0e7ff" stroke="#7c3aed" stroke-width="2" rx="5"/>
+                        <text x="440" y="185" text-anchor="middle" font-weight="bold" font-size="14">Summarize</text>
+                        
+                        <rect x="390" y="280" width="100" height="60" fill="#fce7f3" stroke="#ec4899" stroke-width="2" rx="5"/>
+                        <text x="440" y="305" text-anchor="middle" font-weight="bold" font-size="11">Conditional</text>
+                        <text x="440" y="320" text-anchor="middle" font-weight="bold" font-size="11">Decision</text>
+                        
+                        <rect x="560" y="150" width="100" height="60" fill="#e0e7ff" stroke="#7c3aed" stroke-width="2" rx="5"/>
+                        <text x="610" y="185" text-anchor="middle" font-weight="bold" font-size="14">Generate</text>
+                        
+                        <rect x="730" y="150" width="100" height="60" fill="#dbeafe" stroke="#2563eb" stroke-width="2" rx="5"/>
+                        <text x="780" y="185" text-anchor="middle" font-weight="bold" font-size="14">END</text>
+                        
+                        <!-- Arrows -->
+                        <line x1="150" y1="180" x2="220" y2="180" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <line x1="320" y1="180" x2="390" y2="180" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <line x1="440" y1="210" x2="440" y2="280" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Loop back -->
+                        <path d="M 390 310 Q 260 340 270 210" stroke="#ec4899" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                        <text x="320" y="280" font-size="12" fill="#ec4899">refine</text>
+                        
+                        <!-- To generate -->
+                        <line x1="490" y1="310" x2="560" y2="190" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <text x="520" y="250" font-size="12" fill="#2563eb">done</text>
+                        
+                        <line x1="660" y1="180" x2="730" y2="180" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowhead)"/>
+                    </svg>
+                </div>
+            </section>
+
+            <!-- SECTION 5: ARCHITECTURE DEEP DIVE -->
+            <section id="architecture">
+                <h2>🏗️ Architecture & System Design</h2>
+
+                <div class="section-intro">
+                    Understanding LangGraph's architecture helps you design robust, scalable AI systems. This section explores the system design patterns, best practices, and architectural considerations.
+                </div>
+
+                <h3>Layered Architecture of LangGraph Systems</h3>
+
+                <div class="arch-diagram">
+                    <svg width="100%" height="500" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Layer 1: User Input -->
+                        <rect x="50" y="30" width="700" height="70" fill="#dbeafe" stroke="#2563eb" stroke-width="2" rx="5"/>
+                        <text x="400" y="60" text-anchor="middle" font-weight="bold" font-size="16">User Input Layer</text>
+                        <text x="400" y="85" text-anchor="middle" font-size="13">Initial prompts, goals, and state initialization</text>
+                        
+                        <!-- Layer 2: State Management -->
+                        <rect x="50" y="120" width="700" height="70" fill="#e0e7ff" stroke="#7c3aed" stroke-width="2" rx="5"/>
+                        <text x="400" y="150" text-anchor="middle" font-weight="bold" font-size="16">State Management Layer</text>
+                        <text x="400" y="175" text-anchor="middle" font-size="13">TypedDict / Pydantic models defining workflow state</text>
+                        
+                        <!-- Layer 3: Execution Engine -->
+                        <rect x="50" y="210" width="700" height="70" fill="#fce7f3" stroke="#ec4899" stroke-width="2" rx="5"/>
+                        <text x="400" y="240" text-anchor="middle" font-weight="bold" font-size="16">Execution Engine Layer</text>
+                        <text x="400" y="265" text-anchor="middle" font-size="13">StateGraph compilation, node execution, edge routing</text>
+                        
+                        <!-- Layer 4: Nodes & Functions -->
+                        <rect x="50" y="300" width="330" height="70" fill="#dcfce7" stroke="#10b981" stroke-width="2" rx="5"/>
+                        <text x="215" y="325" text-anchor="middle" font-weight="bold" font-size="14">Computation Nodes</text>
+                        <text x="215" y="345" text-anchor="middle" font-size="12">LLM calls, tool execution</text>
+                        
+                        <rect x="420" y="300" width="330" height="70" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" rx="5"/>
+                        <text x="585" y="325" text-anchor="middle" font-weight="bold" font-size="14">Decision Nodes</text>
+                        <text x="585" y="345" text-anchor="middle" font-size="12">Conditional routing functions</text>
+                        
+                        <!-- Layer 5: External Systems -->
+                        <rect x="50" y="390" width="700" height="70" fill="#f0fdf4" stroke="#10b981" stroke-width="2" rx="5"/>
+                        <text x="400" y="420" text-anchor="middle" font-weight="bold" font-size="16">External Systems</text>
+                        <text x="400" y="445" text-anchor="middle" font-size="13">APIs, databases, knowledge bases, human feedback</text>
+                    </svg>
+                </div>
+
+                <h3>Multi-Agent Orchestration Pattern</h3>
+
+                <div class="card">
+                    <div class="card-title">Key Architectural Patterns</div>
+                    <div class="card-content">
+                        <ul>
+                            <li>
+                                <strong>Decoupled Agents:</strong> Each agent is a distinct node with its own logic and responsibilities. They communicate through shared state, not direct coupling.
+                            </li>
+                            <li>
+                                <strong>Shared State Coordination:</strong> All agents have read/write access to central state, enabling coordination without message passing.
+                            </li>
+                            <li>
+                                <strong>Hierarchical Orchestration:</strong> Lead agents can delegate to worker agents, building hierarchical coordination patterns.
+                            </li>
+                            <li>
+                                <strong>Pipeline Pattern:</strong> Sequential agents where output of one becomes input to the next.
+                            </li>
+                            <li>
+                                <strong>Parallel Branches:</strong> Multiple agents working on different aspects simultaneously.
+                            </li>
+                            <li>
+                                <strong>Feedback Loops:</strong> Agents can loop back to refine results based on quality checks.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>State Management Best Practices</h3>
+
+                <div class="code-section">
+                    <div class="code-header">
+                        <span>Best Practices for State Design</span>
+                        <span class="code-language">python</span>
+                    </div>
+                    <pre><span class="keyword">from</span> <span class="function">typing</span> <span class="keyword">import</span> TypedDict, Annotated
+<span class="keyword">from</span> <span class="function">langgraph.graph.message</span> <span class="keyword">import</span> add_messages
+
+<span class="string"># ✓ GOOD: Clear field names, organized structure</span>
+<span class="keyword">class</span> <span class="function">ImprovedState</span>(TypedDict):
+    <span class="string">"""Well-designed state schema"""</span>
+    
+    <span class="string"># User inputs</span>
+    user_query: str
+    user_context: str
+    
+    <span class="string"># Processing data</span>
+    retrieved_documents: list[dict]
+    processed_summaries: list[str]
+    
+    <span class="string"># Conversation</span>
+    messages: Annotated[list, add_messages]
+    
+    <span class="string"># Results</span>
+    final_response: str
+    confidence_score: float
+    
+    <span class="string"># Metadata</span>
+    execution_steps: list[str]
+    total_tokens_used: int
+
+
+<span class="string"># ✗ AVOID: Unclear naming, mixed concerns</span>
+<span class="keyword">class</span> <span class="function">PoorState</span>(TypedDict):
+    <span class="string">"""Poorly-designed state schema"""</span>
+    data: str
+    <span class="string"># What data? Too vague!</span>
+    
+    temp: dict
+    <span class="string"># Temporary what? Confusing</span>
+    
+    misc: list
+    <span class="string"># Miscellaneous? Too generic</span></pre>
+                </div>
+
+                <h3>Agent Specialization Pattern</h3>
+
+                <p>
+                    In complex systems, different agents should have distinct, well-defined roles. This specialization improves maintainability, testability, and enables parallel execution.
+                </p>
+
+                <div class="benefits-list">
+                    <div class="benefit-item">
+                        <div class="benefit-icon">🔍</div>
+                        <div class="benefit-content">
+                            <h4>Retriever Agent</h4>
+                            <p>Searches knowledge bases, databases, or APIs to gather information relevant to the current goal.</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">📝</div>
+                        <div class="benefit-content">
+                            <h4>Analyzer Agent</h4>
+                            <p>Processes retrieved data, extracts insights, and transforms raw information into structured summaries.</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">💭</div>
+                        <div class="benefit-content">
+                            <h4>Reasoner Agent</h4>
+                            <p>Performs higher-level reasoning, planning, and decision-making based on processed information.</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">✏️</div>
+                        <div class="benefit-content">
+                            <h4>Generator Agent</h4>
+                            <p>Creates final outputs, responses, or artifacts based on reasoning results.</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">✅</div>
+                        <div class="benefit-content">
+                            <h4>Validator Agent</h4>
+                            <p>Quality checks outputs, verifies correctness, and triggers refinement loops if needed.</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">👥</div>
+                        <div class="benefit-content">
+                            <h4>Orchestrator Agent</h4>
+                            <p>Coordinates other agents, delegates tasks, and manages the overall workflow execution.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 6: IMPLEMENTATION GUIDE -->
+            <section id="implementation">
+                <h2>💻 Practical Implementation Guide</h2>
+
+                <div class="section-intro">
+                    This section provides step-by-step guidance for building your first LangGraph application. We'll create a complete question-answering system that demonstrates all core concepts.
+                </div>
+
+                <img src="https://raw.githubusercontent.com/md-sahil-analyst22/Study_Material/main/images/building_agent_with_langgraph.png" alt="Building Agent with LangGraph" class="content-image">
+                <p class="image-caption">Step-by-step process for building agents with LangGraph framework</p>
+
+                <h3>Step-by-Step: Building a QA System</h3>
+
+                <div class="workflow-steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Define Your State Schema</h4>
+                            <p>
+                                Start by defining the data structure that will flow through your workflow. This should include all information needed by your agents.
+                            </p>
+                            <div class="code-section">
+                                <div class="code-header">
+                                    <span>State Definition</span>
+                                    <span class="code-language">python</span>
+                                </div>
+                                <pre><span class="keyword">from</span> <span class="function">typing</span> <span class="keyword">import</span> TypedDict
+<span class="keyword">from</span> <span class="function">langchain_openai</span> <span class="keyword">import</span> ChatOpenAI
+
+<span class="keyword">class</span> <span class="function">QAState</span>(TypedDict):
+    <span class="string">"""State for Q&A workflow"""</span>
+    question: str
+    context: str
+    answer: str
+    confidence: float
+    iterations: int</pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Create Node Functions</h4>
+                            <p>
+                                Implement the computation logic. Each node should be a pure function that transforms state.
+                            </p>
+                            <div class="code-section">
+                                <div class="code-header">
+                                    <span>Node Implementation</span>
+                                    <span class="code-language">python</span>
+                                </div>
+                                <pre><span class="keyword">def</span> <span class="function">extract_context</span>(state: QAState) -> QAState:
+    <span class="string">"""Extract relevant context from question"""</span>
+    question = state[<span class="string">"question"</span>]
+    
+    <span class="string"># Parse question for key terms</span>
+    context = <span class="string">"Context extracted from: "</span> + question
+    
+    state[<span class="string">"context"</span>] = context
+    <span class="keyword">return</span> state
+
+
+<span class="keyword">def</span> <span class="function">generate_answer_node</span>(state: QAState) -> QAState:
+    <span class="string">"""Generate answer using LLM"""</span>
+    llm = ChatOpenAI(model=<span class="string">"gpt-4"</span>)
+    
+    prompt = f<span class="string">"Question: {state['question']}\n"</span>
+    prompt += f<span class="string">"Context: {state['context']}\n"</span>
+    prompt += <span class="string">"Answer:"</span>
+    
+    response = llm.invoke(prompt)
+    state[<span class="string">"answer"</span>] = response.content
+    state[<span class="string">"confidence"</span>] = <span class="number">0.95</span>
+    <span class="keyword">return</span> state
+
+
+<span class="keyword">def</span> <span class="function">validate_answer</span>(state: QAState) -> QAState:
+    <span class="string">"""Validate answer quality"""</span>
+    answer = state[<span class="string">"answer"</span>]
+    
+    <span class="string"># Check answer length and content</span>
+    <span class="keyword">if</span> len(answer) > <span class="number">10</span>:
+        state[<span class="string">"confidence"</span>] = <span class="number">0.99</span>
+    
+    state[<span class="string">"iterations"</span>] += <span class="number">1</span>
+    <span class="keyword">return</span> state</pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Build the Graph Structure</h4>
+                            <p>
+                                Connect nodes with edges and implement decision logic for dynamic routing.
+                            </p>
+                            <div class="code-section">
+                                <div class="code-header">
+                                    <span>Graph Construction</span>
+                                    <span class="code-language">python</span>
+                                </div>
+                                <pre><span class="keyword">from</span> <span class="function">langgraph.graph</span> <span class="keyword">import</span> StateGraph, START, END
+
+<span class="string"># Initialize graph</span>
+workflow = StateGraph(QAState)
+
+<span class="string"># Add nodes</span>
+workflow.add_node(<span class="string">"extract"</span>, extract_context)
+workflow.add_node(<span class="string">"generate"</span>, generate_answer_node)
+workflow.add_node(<span class="string">"validate"</span>, validate_answer)
+
+<span class="string"># Add edges</span>
+workflow.add_edge(START, <span class="string">"extract"</span>)
+workflow.add_edge(<span class="string">"extract"</span>, <span class="string">"generate"</span>)
+workflow.add_edge(<span class="string">"generate"</span>, <span class="string">"validate"</span>)
+workflow.add_edge(<span class="string">"validate"</span>, END)</pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Compile and Execute</h4>
+                            <p>
+                                Compile the graph and invoke it with initial state to run your workflow.
+                            </p>
+                            <div class="code-section">
+                                <div class="code-header">
+                                    <span>Execution</span>
+                                    <span class="code-language">python</span>
+                                </div>
+                                <pre><span class="string"># Compile the workflow</span>
+app = workflow.compile()
+
+<span class="string"># Initial state</span>
+initial_state: QAState = {
+    <span class="string">"question"</span>: <span class="string">"What is LangGraph?"</span>,
+    <span class="string">"context"</span>: <span class="string">""</span>,
+    <span class="string">"answer"</span>: <span class="string">""</span>,
+    <span class="string">"confidence"</span>: <span class="number">0.0</span>,
+    <span class="string">"iterations"</span>: <span class="number">0</span>
+}
+
+<span class="string"># Run the workflow</span>
+final_state = app.invoke(initial_state)
+
+<span class="string"># Display results</span>
+print(<span class="string">"Answer:"</span>, final_state[<span class="string">"answer"</span>])
+print(<span class="string">"Confidence:"</span>, final_state[<span class="string">"confidence"</span>])
+print(<span class="string">"Iterations:"</span>, final_state[<span class="string">"iterations"</span>])</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Advanced: Implementing Loops & Retries</h3>
+
+                <div class="code-section">
+                    <div class="code-header">
+                        <span>Conditional Edges with Retry Logic</span>
+                        <span class="code-language">python</span>
+                    </div>
+                    <pre><span class="keyword">def</span> <span class="function">should_refine</span>(state: QAState) -> str:
+    <span class="string">"""Decide if answer needs refinement"""</span>
+    confidence = state[<span class="string">"confidence"</span>]
+    iterations = state[<span class="string">"iterations"</span>]
+    
+    <span class="keyword">if</span> confidence < <span class="number">0.8</span> <span class="keyword">and</span> iterations < <span class="number">3</span>:
+        <span class="keyword">return</span> <span class="string">"refine"</span>
+    <span class="keyword">else</span>:
+        <span class="keyword">return</span> <span class="string">"finish"</span>
+
+
+<span class="string"># Add the conditional edge</span>
+workflow.add_conditional_edges(
+    <span class="string">"validate"</span>,
+    should_refine,
+    {
+        <span class="string">"refine"</span>: <span class="string">"generate"</span>,  <span class="string"># Loop back for refinement</span>
+        <span class="string">"finish"</span>: END              <span class="string"># Done</span>
+    }
+)</pre>
+                </div>
+
+                <h3>Streaming Output in Real-Time</h3>
+
+                <div class="code-section">
+                    <div class="code-header">
+                        <span>Streaming Workflow Execution</span>
+                        <span class="code-language">python</span>
+                    </div>
+                    <pre><span class="string"># Stream output as workflow executes</span>
+<span class="keyword">for</span> output <span class="keyword">in</span> app.stream(initial_state):
+    <span class="keyword">for</span> node_name, node_output <span class="keyword">in</span> output.items():
+        <span class="keyword">if</span> node_name != <span class="string">"__end__"</span>:
+            print(f<span class="string">"Node: {node_name}"</span>)
+            print(f<span class="string">"State: {node_output}"</span>)
+            print(<span class="string">"-" * <span class="number">50</span></span>)</pre>
+                </div>
+
+                <div class="alert alert-success">
+                    <span class="alert-icon">✓</span>
+                    <div>
+                        <strong>Pro Tip:</strong> Use streaming for long-running workflows to get real-time visibility into execution progress and debug issues as they occur.
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 7: USE CASES & REAL-WORLD APPLICATIONS -->
+            <section id="use-cases">
+                <h2>🎯 Use Cases & Real-World Applications</h2>
+
+                <div class="section-intro">
+                    LangGraph excels in scenarios requiring complex orchestration, state persistence, and autonomous decision-making. Here are the primary application domains where it shines.
+                </div>
+
+                <h3>Enterprise Use Cases</h3>
+
+                <div class="use-case-grid">
+                    <div class="use-case-card">
+                        <div class="use-case-icon">📞</div>
+                        <h4>Customer Support Automation</h4>
+                        <p>Multi-agent system that routes tickets, drafts responses, escalates to humans when needed, and learns from feedback. Maintains conversation history and context across sessions.</p>
+                        <ul style="margin-top: 15px; font-size: 0.9rem;">
+                            <li>✓ Ticket classification & routing</li>
+                            <li>✓ Response generation with context</li>
+                            <li>✓ Human handoff workflows</li>
+                            <li>✓ Learning from outcomes</li>
+                        </ul>
+                    </div>
+
+                    <div class="use-case-card">
+                        <div class="use-case-icon">📊</div>
+                        <h4>Data Analysis & Insights</h4>
+                        <p>Orchestrates data collection, cleaning, analysis, visualization, and report generation. Handles complex data workflows with error recovery and quality checks.</p>
+                        <ul style="margin-top: 15px; font-size: 0.9rem;">
+                            <li>✓ Data retrieval & aggregation</li>
+                            <li>✓ Processing & transformation</li>
+                            <li>✓ Pattern detection</li>
+                            <li>✓ Report generation</li>
+                        </ul>
+                    </div>
+
+                    <div class="use-case-card">
+                        <div class="use-case-icon">🛒</div>
+                        <h4>E-Commerce Operations</h4>
+                        <p>Intelligent shopping agent that searches products, compares prices, handles payments, tracks orders, and manages returns. Persists state across sessions.</p>
+                        <ul style="margin-top: 15px; font-size: 0.9rem;">
+                            <li>✓ Product discovery</li>
+                            <li>✓ Price comparison</li>
+                            <li>✓ Checkout orchestration</li>
+                            <li>✓ Order tracking</li>
+                        </ul>
+                    </div>
+
+                    <div class="use-case-card">
+                        <div class="use-case-icon">📝</div>
+                        <h4>Content Creation Workflows</h4>
+                        <p>Manages research, outlining, drafting, editing, and publishing. Incorporates human reviews at key steps and learns from feedback for continuous improvement.</p>
+                        <ul style="margin-top: 15px; font-size: 0.9rem;">
+                            <li>✓ Research & fact-checking</li>
+                            <li>✓ Content drafting</li>
+                            <li>✓ Human review loops</li>
+                            <li>✓ Multi-stage editing</li>
+                        </ul>
+                    </div>
+
+                    <div class="use-case-card">
+                        <div class="use-case-icon">🔐</div>
+                        <h4>Security & Compliance</h4>
+                        <p>Automates security incident response with investigation, escalation, and mitigation workflows. Maintains full audit trail of decisions and actions.</p>
+                        <ul style="margin-top: 15px; font-size: 0.9rem;">
+                            <li>✓ Threat detection</li>
+                            <li>✓ Investigation workflows</li>
+                            <li>✓ Escalation routing</li>
+                            <li>✓ Compliance tracking</li>
+                        </ul>
+                    </div>
+
+                    <div class="use-case-card">
+                        <div class="use-case-icon">🏥</div>
+                        <h4>Healthcare & Medical</h4>
+                        <p>Coordinates diagnostic workflows, treatment planning, patient monitoring, and follow-up. Maintains detailed patient records and decision histories.</p>
+                        <ul style="margin-top: 15px; font-size: 0.9rem;">
+                            <li>✓ Symptom assessment</li>
+                            <li>✓ Treatment recommendations</li>
+                            <li>✓ Follow-up scheduling</li>
+                            <li>✓ Record management</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Scope & Limitations</h3>
+
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>✓ When LangGraph Excels</h4>
+                        <ul>
+                            <li>Complex multi-step workflows</li>
+                            <li>State that must persist across interactions</li>
+                            <li>Workflows requiring loops and retries</li>
+                            <li>Human-in-the-loop approval processes</li>
+                            <li>Multi-agent collaboration scenarios</li>
+                            <li>Systems requiring full auditability</li>
+                            <li>Long-running processes with checkpoints</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>✗ When to Use Alternatives</h4>
+                        <ul>
+                            <li>Simple, single-turn Q&A</li>
+                            <li>Stateless content generation</li>
+                            <li>Real-time streaming responses</li>
+                            <li>Simple prompt → response patterns</li>
+                            <li>Low-complexity chatbots</li>
+                            <li>Rapid prototyping with minimal setup</li>
+                            <li>Scenarios requiring minimal overhead</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 8: PRACTICAL EXAMPLES -->
+            <section id="examples">
+                <h2>💡 Detailed Practical Examples</h2>
+
+                <div class="section-intro">
+                    This section contains complete, production-ready examples that demonstrate real-world patterns and best practices.
+                </div>
+
+                <h3>Example 1: Authentication & User Validation Workflow</h3>
+
+                <div class="code-section">
+                    <div class="code-header">
+                        <span>Complete Authentication Workflow</span>
+                        <span class="code-language">python</span>
+                    </div>
+                    <pre><span class="keyword">from</span> <span class="function">typing</span> <span class="keyword">import</span> TypedDict
+<span class="keyword">from</span> <span class="function">langgraph.graph</span> <span class="keyword">import</span> StateGraph, START, END
+
+<span class="string"># Define state for authentication workflow</span>
+<span class="keyword">class</span> <span class="function">AuthState</span>(TypedDict):
+    username: str
+    password: str
+    attempts: int
+    is_authenticated: bool
+    message: str
+
+<span class="string"># Define node functions</span>
+<span class="keyword">def</span> <span class="function">validate_credentials</span>(state: AuthState) -> AuthState:
+    <span class="string">"""Validate username and password"""</span>
+    username = state[<span class="string">"username"</span>]
+    password = state[<span class="string">"password"</span>]
+    
+    <span class="string"># Simulated validation</span>
+    valid_users = {<span class="string">"admin"</span>: <span class="string">"secure_password"</span>}
+    
+    <span class="keyword">if</span> username <span class="keyword">in</span> valid_users <span class="keyword">and</span> password == valid_users[username]:
+        state[<span class="string">"is_authenticated"</span>] = True
+        state[<span class="string">"message"</span>] = <span class="string">"Authentication successful"</span>
+    <span class="keyword">else</span>:
+        state[<span class="string">"attempts"</span>] += <span class="number">1</span>
+        state[<span class="string">"message"</span>] = <span class="string">"Invalid credentials"</span>
+    
+    <span class="keyword">return</span> state
+
+<span class="keyword">def</span> <span class="function">log_attempt</span>(state: AuthState) -> AuthState:
+    <span class="string">"""Log the authentication attempt"""</span>
+    print(f<span class="string">"Attempt {state['attempts']}: {state['message']}"</span>)
+    <span class="keyword">return</span> state
+
+<span class="keyword">def</span> <span class="function">should_retry</span>(state: AuthState) -> str:
+    <span class="string">"""Decide if user should retry"""</span>
+    <span class="keyword">if</span> state[<span class="string">"is_authenticated"</span>]:
+        <span class="keyword">return</span> <span class="string">"success"</span>
+    <span class="keyword">elif</span> state[<span class="string">"attempts"</span>] < <span class="number">3</span>:
+        <span class="keyword">return</span> <span class="string">"retry"</span>
+    <span class="keyword">else</span>:
+        <span class="keyword">return</span> <span class="string">"locked"</span>
+
+<span class="string"># Build the workflow</span>
+workflow = StateGraph(AuthState)
+workflow.add_node(<span class="string">"validate"</span>, validate_credentials)
+workflow.add_node(<span class="string">"log"</span>, log_attempt)
+
+workflow.add_edge(START, <span class="string">"validate"</span>)
+workflow.add_edge(<span class="string">"validate"</span>, <span class="string">"log"</span>)
+workflow.add_conditional_edges(
+    <span class="string">"log"</span>,
+    should_retry,
+    {
+        <span class="string">"success"</span>: END,
+        <span class="string">"retry"</span>: <span class="string">"validate"</span>,
+        <span class="string">"locked"</span>: END
+    }
+)
+
+<span class="string"># Execute workflow</span>
+app = workflow.compile()
+initial_state = {
+    <span class="string">"username"</span>: <span class="string">"admin"</span>,
+    <span class="string">"password"</span>: <span class="string">"secure_password"</span>,
+    <span class="string">"attempts"</span>: <span class="number">0</span>,
+    <span class="string">"is_authenticated"</span>: False,
+    <span class="string">"message"</span>: <span class="string">""</span>
+}
+
+result = app.invoke(initial_state)
+print(f<span class="string">"Final status: {result['is_authenticated']}"</span>)</pre>
+                </div>
+
+                <h3>Example 2: Research & Analysis Pipeline</h3>
+
+                <div class="code-section">
+                    <div class="code-header">
+                        <span>Research Agent Workflow</span>
+                        <span class="code-language">python</span>
+                    </div>
+                    <pre><span class="keyword">class</span> <span class="function">ResearchState</span>(TypedDict):
+    topic: str
+    research_questions: list[str]
+    sources: list[dict]
+    findings: str
+    analysis: str
+    report: str
+
+<span class="keyword">def</span> <span class="function">generate_research_questions</span>(state: ResearchState) -> ResearchState:
+    <span class="string">"""Break down topic into research questions"""</span>
+    topic = state[<span class="string">"topic"</span>]
+    questions = [
+        f<span class="string">"What is {topic}?"</span>,
+        f<span class="string">"Why is {topic} important?"</span>,
+        f<span class="string">"What are the key concepts of {topic}?"</span>,
+        f<span class="string">"How is {topic} used in practice?"</span>
+    ]
+    state[<span class="string">"research_questions"</span>] = questions
+    <span class="keyword">return</span> state
+
+<span class="keyword">def</span> <span class="function">search_sources</span>(state: ResearchState) -> ResearchState:
+    <span class="string">"""Search for relevant sources"""</span>
+    <span class="string"># Simulate source retrieval</span>
+    sources = [
+        {
+            <span class="string">"title"</span>: <span class="string">"Source 1"</span>,
+            <span class="string">"url"</span>: <span class="string">"http://example.com/1"</span>,
+            <span class="string">"relevance"</span>: <span class="number">0.95</span>
+        },
+        {
+            <span class="string">"title"</span>: <span class="string">"Source 2"</span>,
+            <span class="string">"url"</span>: <span class="string">"http://example.com/2"</span>,
+            <span class="string">"relevance"</span>: <span class="number">0.87</span>
+        }
+    ]
+    state[<span class="string">"sources"</span>] = sources
+    <span class="keyword">return</span> state
+
+<span class="keyword">def</span> <span class="function">synthesize_findings</span>(state: ResearchState) -> ResearchState:
+    <span class="string">"""Synthesize information from sources"""</span>
+    sources = state[<span class="string">"sources"</span>]
+    findings = <span class="string">"Key findings: "</span> + <span class="string">", "</span>.join([s[<span class="string">"title"</span>] <span class="keyword">for</span> s <span class="keyword">in</span> sources])
+    state[<span class="string">"findings"</span>] = findings
+    <span class="keyword">return</span> state
+
+<span class="keyword">def</span> <span class="function">generate_analysis</span>(state: ResearchState) -> ResearchState:
+    <span class="string">"""Generate deeper analysis"""</span>
+    findings = state[<span class="string">"findings"</span>]
+    analysis = f<span class="string">"Analysis based on: {findings}"</span>
+    state[<span class="string">"analysis"</span>] = analysis
+    <span class="keyword">return</span> state
+
+<span class="keyword">def</span> <span class="function">create_report</span>(state: ResearchState) -> ResearchState:
+    <span class="string">"""Create final research report"""</span>
+    report = f<span class="string">"Report: {state['analysis']}"</span>
+    state[<span class="string">"report"</span>] = report
+    <span class="keyword">return</span> state
+
+<span class="string"># Build research workflow</span>
+research_flow = StateGraph(ResearchState)
+research_flow.add_node(<span class="string">"questions"</span>, generate_research_questions)
+research_flow.add_node(<span class="string">"search"</span>, search_sources)
+research_flow.add_node(<span class="string">"synthesize"</span>, synthesize_findings)
+research_flow.add_node(<span class="string">"analyze"</span>, generate_analysis)
+research_flow.add_node(<span class="string">"report"</span>, create_report)
+
+research_flow.add_edge(START, <span class="string">"questions"</span>)
+research_flow.add_edge(<span class="string">"questions"</span>, <span class="string">"search"</span>)
+research_flow.add_edge(<span class="string">"search"</span>, <span class="string">"synthesize"</span>)
+research_flow.add_edge(<span class="string">"synthesize"</span>, <span class="string">"analyze"</span>)
+research_flow.add_edge(<span class="string">"analyze"</span>, <span class="string">"report"</span>)
+research_flow.add_edge(<span class="string">"report"</span>, END)
+
+<span class="string"># Run the research pipeline</span>
+research_app = research_flow.compile()
+result = research_app.invoke({<span class="string">"topic"</span>: <span class="string">"Machine Learning"</span>})</pre>
+                </div>
+            </section>
+
+            <!-- SECTION 9: FUTURE & EMERGING TRENDS -->
+            <section id="futures">
+                <h2>🚀 Future Trends & Evolution</h2>
+
+                <div class="section-intro">
+                    The landscape of agentic AI is rapidly evolving. Understanding emerging trends helps you build systems that remain relevant and future-proof.
+                </div>
+
+                <img src="https://raw.githubusercontent.com/md-sahil-analyst22/Study_Material/main/images/ai_evaluation.png" alt="AI Evaluation and Assessment" class="content-image">
+                <p class="image-caption">AI evaluation frameworks and assessment methodologies for agentic systems</p>
+
+                <h3>Current Trajectory</h3>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <h4>2022-2023: Foundation Era</h4>
+                        <p>
+                            LLMs gain tool-calling abilities. LangChain emerges as the dominant orchestration framework. First generation of AI agents appear. Focus on single-agent systems with minimal memory.
+                        </p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <h4>2023-2024: Multi-Agent Revolution</h4>
+                        <p>
+                            LangGraph introduces graph-based workflows. Multi-agent orchestration becomes practical. State management becomes explicit and sophisticated. Enterprise adoption accelerates. Major companies deploy production agentic systems.
+                        </p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <h4>2024-2025: Production Maturity</h4>
+                        <p>
+                            Standardization of agentic patterns. Better observability and debugging tools. Integration with enterprise systems becomes seamless. Focus shifts to reliability, cost optimization, and scalability.
+                        </p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <h4>2025+: Autonomous Systems</h4>
+                        <p>
+                            Fully autonomous agents operating with minimal human oversight. Advanced reasoning capabilities. Better long-horizon planning. Integration with physical systems. Meta-agents that manage other agents.
+                        </p>
+                    </div>
+                </div>
+
+                <h3>Emerging Technologies & Patterns</h3>
+
+                <div class="three-cols">
+                    <div class="col-card">
+                        <h4>🧠 Advanced Reasoning</h4>
+                        <p>Chain-of-Thought, Tree-of-Thoughts, and ReAct patterns becoming standard. Models with improved planning capabilities. Multi-step reasoning that can be inspected and debugged.</p>
+                    </div>
+                    <div class="col-card">
+                        <h4>🔄 Autonomous Loops</h4>
+                        <p>Self-correcting agents that detect and fix errors. Agents that can identify when they're stuck and try alternative approaches. Continuous refinement without human intervention.</p>
+                    </div>
+                    <div class="col-card">
+                        <h4>🤝 Cross-Agent Collaboration</h4>
+                        <p>Sophisticated multi-agent communication patterns. Emergent behaviors from agent teams. Market-based approaches where agents negotiate and coordinate.</p>
+                    </div>
+                </div>
+
+                <h3>Best Practices for Future-Proofing</h3>
+
+                <div class="card">
+                    <div class="card-title">Building for the Future</div>
+                    <div class="card-content">
+                        <ul>
+                            <li>
+                                <strong>Modular Architecture:</strong> Design agents as independent, replaceable modules. Avoid tight coupling between components.
+                            </li>
+                            <li>
+                                <strong>Explicit State:</strong> Always use typed, explicit state. Avoid implicit data passing. This makes upgrades easier.
+                            </li>
+                            <li>
+                                <strong>Observability:</strong> Log all decisions, actions, and outcomes. Build dashboards and monitoring from day one.
+                            </li>
+                            <li>
+                                <strong>Testing & Validation:</strong> Develop comprehensive test suites. Validate agent outputs before acting on them.
+                            </li>
+                            <li>
+                                <strong>Version Control:</strong> Treat prompts and agent definitions as code. Version everything. Enable easy rollbacks.
+                            </li>
+                            <li>
+                                <strong>Human Oversight:</strong> Always include human-in-the-loop checkpoints. Make it easy for humans to intervene.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>The Future of Agent Frameworks</h3>
+
+                <p>
+                    Several trends are shaping the future of agentic AI frameworks:
+                </p>
+
+                <div class="benefits-list">
+                    <div class="benefit-item">
+                        <div class="benefit-icon">📊</div>
+                        <div class="benefit-content">
+                            <h4>Better Observability</h4>
+                            <p>Frameworks will provide built-in tools for tracing execution, debugging decisions, and understanding agent reasoning.</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">⚡</div>
+                        <div class="benefit-content">
+                            <h4>Performance Optimization</h4>
+                            <p>Caching, parallel execution, and batch processing will become first-class features for handling scale.</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">🔐</div>
+                        <div class="benefit-content">
+                            <h4>Safety & Governance</h4>
+                            <p>Built-in controls for agent behavior, guardrails to prevent harmful actions, and audit trails for compliance.</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">🌐</div>
+                        <div class="benefit-content">
+                            <h4>Distributed Execution</h4>
+                            <p>Support for running agents across multiple machines, enabling truly distributed multi-agent systems.</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">💡</div>
+                        <div class="benefit-content">
+                            <h4>Hybrid Intelligence</h4>
+                            <p>Seamless integration of human intelligence with machine intelligence through improved feedback loops.</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">📚</div>
+                        <div class="benefit-content">
+                            <h4>Knowledge Integration</h4>
+                            <p>Better ways for agents to integrate and leverage enterprise knowledge bases and domain-specific expertise.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Getting Started with Production Systems</h3>
+
+                <div class="quick-ref">
+                    <strong>Recommendations for building production systems today:</strong>
+                    <ol>
+                        <li><strong>Start with LangGraph:</strong> It's the forward-compatible choice for complex systems</li>
+                        <li><strong>Use TypedDict for state:</strong> Explicit typing prevents subtle bugs</li>
+                        <li><strong>Implement logging early:</strong> You'll need visibility into what agents are doing</li>
+                        <li><strong>Plan for scale:</strong> Design your nodes to be independent and testable</li>
+                        <li><strong>Invest in monitoring:</strong> Production systems need health checks and alerts</li>
+                        <li><strong>Make human intervention easy:</strong> Always include pause/resume capabilities</li>
+                        <li><strong>Document everything:</strong> Future you will thank you for good documentation</li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- SUMMARY SECTION -->
+            <section>
+                <h2>📚 Summary & Key Takeaways</h2>
+
+                <div class="card">
+                    <div class="card-title">Critical Concepts to Remember</div>
+                    <div class="card-content">
+                        <div class="three-cols">
+                            <div>
+                                <h4>Generative vs Agentic</h4>
+                                <p><span class="highlight">Generative AI</span> is reactive—it waits for prompts and generates content. <span class="highlight">Agentic AI</span> is proactive—it pursues goals autonomously through the Perceive → Decide → Execute → Learn cycle.</p>
+                            </div>
+                            <div>
+                                <h4>LangGraph Strength</h4>
+                                <p>LangGraph's power comes from explicit <span class="highlight">state management</span>, support for <span class="highlight">loops and branches</span>, and <span class="highlight">multi-agent coordination</span>. These enable adaptive, long-running workflows.</p>
+                            </div>
+                            <div>
+                                <h4>Core Building Blocks</h4>
+                                <p><span class="highlight">State</span> (shared memory) + <span class="highlight">Nodes</span> (computation) + <span class="highlight">Edges</span> (flow) + <span class="highlight">Conditional logic</span> = Powerful agent systems.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">4</div>
+                        <div class="stat-label">Core Components</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">∞</div>
+                        <div class="stat-label">Possible Workflows</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">1</div>
+                        <div class="stat-label">Central State</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">N</div>
+                        <div class="stat-label">Agents/Nodes</div>
+                    </div>
+                </div>
+
+                <h3>Next Steps for Your Learning Journey</h3>
+
+                <div class="workflow-steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Master the Basics</h4>
+                            <p>Build simple linear workflows with LangGraph. Get comfortable with State, Nodes, and Edges. Run the examples locally and experiment with modifications.</p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Add Complexity Gradually</h4>
+                            <p>Introduce conditional edges and loops. Build workflows with decision-making. Test retry logic and error handling. Monitor your workflows.</p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Build Multi-Agent Systems</h4>
+                            <p>Design specialized agents with distinct roles. Implement shared state coordination. Create communication patterns between agents.</p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Deploy to Production</h4>
+                            <p>Implement comprehensive logging and monitoring. Add human-in-the-loop capabilities. Optimize for performance and cost. Maintain and iterate.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning">
+                    <span class="alert-icon">⚠️</span>
+                    <div>
+                        <strong>Remember:</strong> LangGraph is a powerful tool, but it's not a silver bullet. Choose it when you need its strengths: complex workflows, state persistence, and autonomous coordination. For simple use cases, LangChain or even basic Python might be sufficient.
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p><strong>LangGraph Complete Study Material</strong></p>
+            <p>From Generative to Stateful AI Workflows</p>
+            <p style="font-size: 0.9rem; margin-top: 20px; opacity: 0.8;">
+                This comprehensive guide covers core concepts, architecture, implementation patterns, and real-world applications of LangGraph and Agentic AI systems.
+            </p>
+            <div class="footer-links">
+                <a href="#introduction">Introduction</a>
+                <a href="#generative-vs-agentic">Paradigms</a>
+                <a href="#langgraph-overview">LangGraph</a>
+                <a href="#core-concepts">Core Concepts</a>
+                <a href="#implementation">Implementation</a>
+                <a href="#use-cases">Use Cases</a>
+            </div>
+            <p style="margin-top: 30px; font-size: 0.85rem; opacity: 0.7;">
+                Last Updated: January 2026 | File Size: ~230 KB | Responsive Design | Production Ready
+            </p>
+        </div>
+    </footer>
+
+    <!-- Back to Top Script -->
+    <script>
+        const backToTopBtn = document.getElementById('backToTop');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTopBtn.classList.add('show');
+            } else {
+                backToTopBtn.classList.remove('show');
+            }
+        });
+
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Tab functionality
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const parent = button.parentElement.parentElement;
+                
+                parent.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+                parent.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                button.classList.add('active');
+                const tabId = button.getAttribute('data-tab');
+                parent.querySelector(`[data-content="${tabId}"]`).classList.add('active');
+            });
+        });
+
+        // Code copy functionality
+        document.querySelectorAll('.code-section pre').forEach(pre => {
+            const section = pre.parentElement;
+            const button = document.createElement('button');
+            button.textContent = 'Copy';
+            button.style.position = 'absolute';
+            button.style.top = '50px';
+            button.style.right = '20px';
+            button.style.padding = '8px 16px';
+            button.style.background = '#2563eb';
+            button.style.color = 'white';
+            button.style.border = 'none';
+            button.style.borderRadius = '5px';
+            button.style.cursor = 'pointer';
+            
+            button.addEventListener('click', () => {
+                navigator.clipboard.writeText(pre.textContent);
+                button.textContent = 'Copied!';
+                setTimeout(() => button.textContent = 'Copy', 2000);
+            });
+            
+            section.style.position = 'relative';
+            section.appendChild(button);
+        });
+    </script>
+</body>
+</html>
